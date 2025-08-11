@@ -1,0 +1,447 @@
+/* Delete Profile Section */
+.delete-profile-section {
+    background: linear-gradient(135deg, var(--bg-primary) 0%, var(--gray-50) 100%);
+    padding: var(--space-xl) 0;
+    min-height: 70vh;
+    position: relative;
+}
+
+.delete-profile-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at 60% 40%, rgba(239, 68, 68, 0.05) 0%, transparent 50%);
+    pointer-events: none;
+}
+
+.delete-profile-section .container {
+    position: relative;
+    z-index: 1;
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+.delete-profile-section .section-title {
+    text-align: center;
+    margin-bottom: var(--space-sm);
+    color: var(--error-color);
+    font-size: 2rem;
+    font-weight: 700;
+    position: relative;
+}
+
+.delete-profile-section .section-title::after {
+    content: '';
+    position: absolute;
+    bottom: -6px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 3px;
+    background: linear-gradient(135deg, var(--error-color), #dc2626);
+    border-radius: var(--radius-sm);
+}
+
+.delete-profile-section .section-subtitle {
+    text-align: center;
+    font-size: 1rem;
+    color: var(--text-secondary);
+    margin-bottom: var(--space-xl);
+}
+
+/* Warning Card */
+.warning-card {
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(239, 68, 68, 0.05));
+    border: 2px solid var(--error-color);
+    border-radius: var(--radius-xl);
+    margin-bottom: var(--space-xl);
+    overflow: hidden;
+    animation: pulse-warning 2s infinite;
+}
+
+.warning-header {
+    background: linear-gradient(135deg, var(--error-color), #dc2626);
+    color: white;
+    padding: var(--space-lg);
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+}
+
+.warning-header i {
+    font-size: 1.5rem;
+    animation: bounce 1s infinite;
+}
+
+.warning-header h3 {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+.warning-content {
+    padding: var(--space-lg);
+}
+
+.warning-content p {
+    color: var(--text-primary);
+    font-weight: 600;
+    margin-bottom: var(--space-md);
+    font-size: 1rem;
+}
+
+.warning-content ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.warning-content li {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    padding: var(--space-xs) 0;
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+}
+
+.warning-content li i {
+    color: var(--error-color);
+    width: 16px;
+}
+
+/* Delete Form Card */
+.delete-card {
+    background: var(--bg-primary);
+    padding: var(--space-xl);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-xl);
+    border: 2px solid var(--error-color);
+    position: relative;
+}
+
+.delete-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: linear-gradient(135deg, var(--error-color), #dc2626);
+    border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+}
+
+.delete-card h3 {
+    color: var(--error-color);
+    margin-bottom: var(--space-lg);
+    font-size: 1.25rem;
+    font-weight: 600;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-sm);
+}
+
+/* Form Grid */
+.delete-form .form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-lg) var(--space-xl);
+    margin-bottom: var(--space-xl);
+}
+
+/* Form Groups */
+.delete-form .form-group {
+    position: relative;
+    margin-bottom: 0;
+}
+
+.delete-form .form-group label {
+    display: block;
+    margin-bottom: var(--space-xs);
+    color: var(--text-primary);
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.delete-form .form-group input {
+    width: 100%;
+    padding: var(--space-sm) var(--space-md);
+    border: 2px solid var(--gray-200);
+    border-radius: var(--radius-md);
+    font-size: 0.95rem;
+    color: var(--text-primary);
+    background: var(--bg-primary);
+    transition: all var(--transition-fast);
+    box-sizing: border-box;
+    height: 42px;
+}
+
+.delete-form .form-group input:focus {
+    outline: none;
+    border-color: var(--error-color);
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+    transform: translateY(-1px);
+}
+
+.delete-form .form-group input::placeholder {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+/* Icons */
+.delete-form .form-group.with-icon input {
+    padding-left: 2.5rem;
+}
+
+.delete-form .form-group.with-icon .form-icon {
+    position: absolute;
+    left: var(--space-sm);
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-secondary);
+    font-size: 1rem;
+    margin-top: 12px;
+    transition: all var(--transition-fast);
+}
+
+.delete-form .form-group.with-icon:focus-within .form-icon {
+    color: var(--error-color);
+}
+
+/* Confirmation Section */
+.confirmation-section {
+    margin-bottom: var(--space-xl);
+    padding: var(--space-lg);
+    background: rgba(239, 68, 68, 0.05);
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    border-radius: var(--radius-md);
+}
+
+.checkbox-group {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-md);
+    cursor: pointer;
+}
+
+.checkbox-group input[type="checkbox"] {
+    display: none;
+}
+
+.checkbox-group .checkmark {
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--error-color);
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all var(--transition-fast);
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.checkbox-group input[type="checkbox"]:checked + label .checkmark {
+    background: var(--error-color);
+    color: white;
+}
+
+.checkbox-group input[type="checkbox"]:checked + label .checkmark::before {
+    content: '\f00c';
+    font-family: 'Font Awesome 6 Free';
+    font-weight: 900;
+    font-size: 0.8rem;
+}
+
+.checkbox-group label {
+    color: var(--text-primary);
+    font-weight: 500;
+    font-size: 0.95rem;
+    line-height: 1.4;
+    cursor: pointer;
+    margin: 0;
+}
+
+/* Form Actions */
+.delete-form .form-actions {
+    display: flex;
+    justify-content: center;
+    gap: var(--space-lg);
+    margin-bottom: var(--space-lg);
+}
+
+.delete-form .btn {
+    min-width: 150px;
+    padding: var(--space-md) var(--space-xl);
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: var(--radius-md);
+    transition: all var(--transition-normal);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-sm);
+    height: 48px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    position: relative;
+    overflow: hidden;
+}
+
+.delete-form .btn-danger {
+    background: linear-gradient(135deg, var(--error-color), #dc2626);
+    color: white;
+    border: none;
+    box-shadow: var(--shadow-md);
+}
+
+.delete-form .btn-danger:hover {
+    background: linear-gradient(135deg, #dc2626, var(--error-color));
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-2px);
+}
+
+.delete-form .btn-secondary {
+    background: transparent;
+    color: var(--text-secondary);
+    border: 2px solid var(--gray-300);
+}
+
+.delete-form .btn-secondary:hover {
+    background: var(--gray-100);
+    color: var(--text-primary);
+    border-color: var(--gray-400);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+/* Loading State */
+.delete-form .btn.loading {
+    color: transparent;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+.delete-form .btn.loading::after {
+    content: '';
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    top: 50%;
+    left: 50%;
+    margin-left: -10px;
+    margin-top: -10px;
+    border: 2px solid transparent;
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+/* Form Messages */
+.delete-form .form-message {
+    text-align: center;
+    padding: var(--space-md);
+    border-radius: var(--radius-md);
+    font-weight: 500;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-sm);
+}
+
+.form-message.error {
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(239, 68, 68, 0.05));
+    color: var(--error-color);
+    border: 2px solid rgba(239, 68, 68, 0.2);
+    animation: shake 0.5s ease-in-out;
+}
+
+.form-message.info {
+    background: linear-gradient(135deg, rgba(37, 99, 235, 0.1), rgba(37, 99, 235, 0.05));
+    color: var(--primary-color);
+    border: 2px solid rgba(37, 99, 235, 0.2);
+}
+
+.form-message.warning {
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(245, 158, 11, 0.05));
+    color: #d97706;
+    border: 2px solid rgba(245, 158, 11, 0.2);
+}
+
+/* Animations */
+@keyframes pulse-warning {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.3); }
+    50% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+}
+
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+    40% { transform: translateY(-5px); }
+    60% { transform: translateY(-3px); }
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .delete-profile-section {
+        padding: var(--space-lg) 0;
+    }
+
+    .delete-form .form-grid {
+        grid-template-columns: 1fr;
+        gap: var(--space-md);
+    }
+
+    .delete-card {
+        padding: var(--space-lg);
+    }
+
+    .delete-profile-section .section-title {
+        font-size: 1.7rem;
+    }
+
+    .delete-form .form-actions {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .delete-form .btn {
+        width: 100%;
+        max-width: 250px;
+    }
+}
+
+@media (max-width: 480px) {
+    .delete-profile-section {
+        padding: var(--space-md) 0;
+    }
+
+    .delete-card {
+        padding: var(--space-md);
+        margin: 0 var(--space-xs);
+    }
+
+    .delete-profile-section .section-title {
+        font-size: 1.5rem;
+    }
+
+    .delete-form .form-group input {
+        height: 40px;
+        font-size: 0.9rem;
+    }
+}

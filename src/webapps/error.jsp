@@ -15,7 +15,7 @@ catch all unhandled exceptions and display a user-friendly error message.
             <%= exception != null ? exception.getMessage() : "Unknown error" %>
         </p>
         <p>
-            <a href="signin.jsp">Back to Home</a>
+            <a href="landingpage.jsp">Back to Home</a>
         </p>
     </div>
 </body>

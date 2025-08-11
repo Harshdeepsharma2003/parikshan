@@ -1,71 +1,45 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Sign In - Modern Portal</title>
-   <link rel="stylesheet" href="css/login.css">
-   </head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parikshan - Online Testing Platform</title>
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="stylesheet" href="css/login.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
 <body>
-    <div class="main-container">
-        <div class="signin-header">
-            <div class="logo">
-                <i class="fas fa-shield-alt"></i>
-            </div>
-            <h1>Welcome Back</h1>
-            <p>Sign in to your account</p>
-        </div>
 
-        <form action="LoginServlet" method="post" class="signin-form" id="signinForm" autocomplete="off">
-            <div class="form-group">
-                <label for="userid">User ID</label>
-                <div class="input-container">
-                    <i class="fas fa-user input-icon"></i>
-                    <input type="text" id="userid" name="userid" required />
-                </div>
-            </div>
+ <!-- Header -->
+    <div id="header-container"></div>
 
-            <div class="form-group">
-                <label for="password">Password</label>
-                <div class="input-container">
-                    <i class="fas fa-lock input-icon"></i>
-                    <input type="password" id="password" name="password" required />
-                    <button type="button" class="toggle-password" id="togglePassword" aria-label="Toggle password visibility">
-                        <i class="fas fa-eye"></i>
-                    </button>
-                </div>
-            </div>
-
-            <div class="form-options">
-                <label class="remember-me">
-                    <input type="checkbox" id="remember" name="remember" />
-                    Remember me
-                </label>
-                <a href="#" class="forgot-password">Forgot password?</a>
-            </div>
-
-            <button type="submit" class="signin-btn">
-                <span class="btn-text">Sign In</span>
-                <div class="btn-loader">
-                    <div class="spinner"></div>
-                </div>
-            </button>
-
+    <!-- Student Login Form Section -->
+    <section class="student-login-section">
+      <div class="container">
+        <h2 class="section-title">Login</h2>
+        <form class="login-form" action="StudentLogin" method="post" autocomplete="off">
+          <div class="form-group with-icon">
+            <label for="studentid">User ID</label>
+            <input type="text" id="studentid" name="studentid" maxlength="100" required placeholder="Enter your User ID">
+            <i class="fas fa-user form-icon"></i>
+          </div>
+          <div class="form-group with-icon">
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" minlength="6" maxlength="60" required placeholder="Enter your password">
+            <i class="fas fa-lock form-icon"></i>
+          </div>
+          <button type="submit" class="btn btn-primary">Login</button>
         </form>
-
-        <div class="error-container" id="errorContainer">
-            <%
-                String error = (String) request.getAttribute("error");
-                if (error != null) {
-            %>
-            <div class="error-message">
-                <i class="fas fa-exclamation-triangle"></i>
-                <span><%= error %></span>
-            </div>
-            <% } %>
+        <div class="register-link">
+          Don't have an account? <a href="register.jsp">Register here</a>
         </div>
+      </div>
+    </section>
 
+    </main>
+
+    <!-- Footer -->
+    <div id="footer-container"></div>
 
     <script src="js/login.js"></script>
 </body>

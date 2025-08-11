@@ -1,0 +1,366 @@
+/* Student Registration Form Section - Compact Grid Layout */
+.student-register-section {
+    background: linear-gradient(135deg, var(--bg-primary) 0%, var(--gray-50) 100%);
+    padding: var(--space-xl) 0;
+    position: relative;
+    overflow: hidden;
+    min-height: 60vh;
+    display: flex;
+    align-items: center;
+}
+
+.student-register-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at 30% 70%, rgba(37, 99, 235, 0.08) 0%, transparent 50%);
+    pointer-events: none;
+}
+
+.student-register-section .container {
+    position: relative;
+    z-index: 1;
+    max-width: 900px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+.student-register-section .section-title {
+    text-align: center;
+    margin-bottom: var(--space-lg);
+    color: var(--text-primary);
+    font-size: 2rem;
+    font-weight: 700;
+    position: relative;
+}
+
+.student-register-section .section-title::after {
+    content: '';
+    position: absolute;
+    bottom: -6px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 70px;
+    height: 3px;
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+    border-radius: var(--radius-sm);
+}
+
+/* Registration Form - Compact Grid */
+.register-form {
+    background: var(--bg-primary);
+    padding: var(--space-xl);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-xl);
+    border: 1px solid var(--gray-200);
+    position: relative;
+    overflow: hidden;
+}
+
+.register-form::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+}
+
+/* Compact Form Grid Layout */
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-lg) var(--space-xl);
+    margin-bottom: var(--space-lg);
+}
+
+.form-group {
+    position: relative;
+    margin-bottom: 0;
+}
+
+.form-group.full-width {
+    grid-column: 1 / -1;
+}
+
+/* Compact Labels */
+.register-form .form-group label {
+    display: block;
+    margin-bottom: var(--space-xs);
+    color: var(--text-primary);
+    font-weight: 600;
+    font-size: 0.85rem;
+    position: relative;
+}
+
+.register-form .form-group label::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -1px;
+    width: 0;
+    height: 1px;
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+    transition: width var(--transition-fast);
+}
+
+.register-form .form-group:focus-within label::after {
+    width: 100%;
+}
+
+/* Compact Input Fields */
+.register-form .form-group input {
+    width: 100%;
+    padding: var(--space-sm) var(--space-md);
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius-sm);
+    font-size: 0.9rem;
+    color: var(--text-primary);
+    background: var(--bg-primary);
+    transition: all var(--transition-fast);
+    box-sizing: border-box;
+    height: 38px;
+}
+
+.register-form .form-group input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
+    transform: translateY(-1px);
+}
+
+.register-form .form-group input::placeholder {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    transition: all var(--transition-fast);
+}
+
+.register-form .form-group input:focus::placeholder {
+    opacity: 0.6;
+}
+
+/* Compact Helper Text */
+.register-form .form-group small {
+    display: block;
+    margin-top: 2px;
+    color: var(--text-secondary);
+    font-size: 0.75rem;
+    font-style: italic;
+    opacity: 0.8;
+    line-height: 1.2;
+}
+
+.register-form .form-group:focus-within small {
+    color: var(--primary-color);
+    opacity: 1;
+}
+
+/* Compact Icons */
+.form-group.with-icon input {
+    padding-left: 2.2rem;
+}
+
+.form-group.with-icon .form-icon {
+    position: absolute;
+    left: var(--space-xs);
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    z-index: 2;
+    margin-top: 10px;
+    transition: all var(--transition-fast);
+}
+
+.form-group.with-icon:focus-within .form-icon {
+    color: var(--primary-color);
+    transform: translateY(-50%) scale(1.05);
+}
+
+/* Submit Button - Compact */
+.submit-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-sm);
+    margin-top: var(--space-md);
+}
+
+.register-form .btn {
+    min-width: 180px;
+    padding: var(--space-sm) var(--space-xl);
+    font-size: 0.95rem;
+    font-weight: 600;
+    border-radius: var(--radius-md);
+    transition: all var(--transition-normal);
+    position: relative;
+    overflow: hidden;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    height: 42px;
+}
+
+.register-form .btn-primary {
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+    color: var(--text-light);
+    border: none;
+    box-shadow: var(--shadow-md);
+}
+
+.register-form .btn-primary::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
+}
+
+.register-form .btn-primary:hover {
+    background: linear-gradient(135deg, var(--primary-dark), var(--primary-color));
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-1px);
+}
+
+.register-form .btn-primary:hover::before {
+    left: 100%;
+}
+
+/* Compact Login Link */
+.login-link {
+    text-align: center;
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+}
+
+.login-link a {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 600;
+    transition: all var(--transition-fast);
+    position: relative;
+}
+
+.login-link a::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 0;
+    height: 1px;
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+    transition: width var(--transition-fast);
+}
+
+.login-link a:hover {
+    color: var(--primary-dark);
+}
+
+.login-link a:hover::after {
+    width: 100%;
+}
+
+/* Validation States - Compact */
+.register-form .form-group input:valid:not(:placeholder-shown) {
+    border-color: var(--success-color);
+    background-image: linear-gradient(45deg, transparent 40%, rgba(34, 197, 94, 0.02) 40%, rgba(34, 197, 94, 0.02) 60%, transparent 60%);
+}
+
+.register-form .form-group input:invalid:not(:placeholder-shown) {
+    border-color: var(--error-color);
+    background-image: linear-gradient(45deg, transparent 40%, rgba(239, 68, 68, 0.02) 40%, rgba(239, 68, 68, 0.02) 60%, transparent 60%);
+}
+
+/* Responsive Grid Layout */
+@media (max-width: 768px) {
+    .student-register-section {
+        padding: var(--space-lg) 0;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr;
+        gap: var(--space-md);
+    }
+
+    .register-form {
+        padding: var(--space-lg);
+    }
+
+    .student-register-section .section-title {
+        font-size: 1.7rem;
+        margin-bottom: var(--space-md);
+    }
+}
+
+@media (max-width: 480px) {
+    .student-register-section {
+        padding: var(--space-md) 0;
+    }
+
+    .register-form {
+        padding: var(--space-md);
+        margin: 0 var(--space-xs);
+    }
+
+    .student-register-section .section-title {
+        font-size: 1.5rem;
+    }
+
+    .register-form .form-group input {
+        height: 36px;
+        padding: var(--space-xs) var(--space-sm);
+    }
+
+    .form-group.with-icon input {
+        padding-left: 2rem;
+    }
+
+    .form-group.with-icon .form-icon {
+        font-size: 0.8rem;
+        left: 6px;
+    }
+}
+
+/* Three Column Layout for Larger Screens */
+@media (min-width: 1200px) {
+    .form-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: var(--space-md) var(--space-lg);
+    }
+
+    .form-group.half-width {
+        grid-column: span 1;
+    }
+
+    .form-group.two-thirds {
+        grid-column: span 2;
+    }
+}
+
+/* Loading State - Compact */
+.register-form .btn.loading {
+    position: relative;
+    color: transparent;
+    cursor: not-allowed;
+}
+
+.register-form .btn.loading::after {
+    content: '';
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    top: 50%;
+    left: 50%;
+    margin-left: -8px;
+    margin-top: -8px;
+    border: 2px solid transparent;
+    border-top-color: var(--text-light);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}

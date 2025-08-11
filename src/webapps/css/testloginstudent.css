@@ -1,0 +1,421 @@
+/* Test Verification Form Section */
+.test-verify-section {
+    background: linear-gradient(135deg, var(--bg-primary) 0%, var(--gray-50) 100%);
+    padding: var(--space-xl) 0;
+    position: relative;
+    overflow: hidden;
+    min-height: 60vh;
+    display: flex;
+    align-items: center;
+}
+
+.test-verify-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at 50% 30%, rgba(37, 99, 235, 0.1) 0%, transparent 50%);
+    pointer-events: none;
+}
+
+.test-verify-section .container {
+    position: relative;
+    z-index: 1;
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.test-verify-section .section-title {
+    text-align: center;
+    margin-bottom: var(--space-sm);
+    color: var(--text-primary);
+    font-size: 2rem;
+    font-weight: 700;
+    position: relative;
+}
+
+.test-verify-section .section-title::after {
+    content: '';
+    position: absolute;
+    bottom: -6px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 3px;
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+    border-radius: var(--radius-sm);
+}
+
+.test-verify-section .section-subtitle {
+    text-align: center;
+    font-size: 1rem;
+    color: var(--text-secondary);
+    margin-bottom: var(--space-xl);
+}
+
+/* Verify Form Styling */
+.verify-form {
+    background: var(--bg-primary);
+    padding: var(--space-xl);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-xl);
+    border: 1px solid var(--gray-200);
+    position: relative;
+    overflow: hidden;
+    margin-bottom: var(--space-lg);
+}
+
+.verify-form::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+}
+
+.verify-form .form-group {
+    margin-bottom: var(--space-xl);
+    position: relative;
+}
+
+.verify-form .form-group label {
+    display: block;
+    margin-bottom: var(--space-xs);
+    color: var(--text-primary);
+    font-weight: 600;
+    font-size: 0.95rem;
+    position: relative;
+}
+
+.verify-form .form-group label::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -1px;
+    width: 0;
+    height: 2px;
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+    transition: width var(--transition-fast);
+}
+
+.verify-form .form-group:focus-within label::after {
+    width: 100%;
+}
+
+.verify-form .form-group input {
+    width: 100%;
+    padding: var(--space-md) var(--space-lg);
+    border: 2px solid var(--gray-200);
+    border-radius: var(--radius-md);
+    font-size: 1rem;
+    color: var(--text-primary);
+    background: var(--bg-primary);
+    transition: all var(--transition-fast);
+    box-sizing: border-box;
+    height: 48px;
+    text-align: center;
+    font-weight: 500;
+    letter-spacing: 1px;
+}
+
+.verify-form .form-group input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    transform: translateY(-1px);
+}
+
+.verify-form .form-group input::placeholder {
+    color: var(--text-secondary);
+    text-align: center;
+    letter-spacing: normal;
+    font-weight: 400;
+}
+
+.verify-form .form-group input:focus::placeholder {
+    opacity: 0.6;
+}
+
+/* Icon styling for verify form */
+.verify-form .form-group.with-icon input {
+    padding-left: 3rem;
+    text-align: left;
+}
+
+.verify-form .form-group.with-icon .form-icon {
+    position: absolute;
+    left: var(--space-md);
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-secondary);
+    font-size: 1rem;
+    z-index: 2;
+    margin-top: 12px;
+    transition: all var(--transition-fast);
+}
+
+.verify-form .form-group.with-icon:focus-within .form-icon {
+    color: var(--primary-color);
+    transform: translateY(-50%) scale(1.1);
+}
+
+/* Submit Section */
+.submit-section {
+    display: flex;
+    justify-content: center;
+}
+
+.verify-form .btn {
+    min-width: 200px;
+    padding: var(--space-md) var(--space-xl);
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: var(--radius-md);
+    transition: all var(--transition-normal);
+    position: relative;
+    overflow: hidden;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-sm);
+}
+
+.verify-form .btn-primary {
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+    color: var(--text-light);
+    border: none;
+    box-shadow: var(--shadow-md);
+}
+
+.verify-form .btn-primary::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.6s;
+}
+
+.verify-form .btn-primary:hover {
+    background: linear-gradient(135deg, var(--primary-dark), var(--primary-color));
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-2px);
+}
+
+.verify-form .btn-primary:hover::before {
+    left: 100%;
+}
+
+/* Info Section */
+.info-section {
+    margin-top: var(--space-lg);
+}
+
+.info-card {
+    background: linear-gradient(135deg, var(--accent-light), var(--accent-color));
+    color: white;
+    padding: var(--space-md);
+    border-radius: var(--radius-lg);
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-sm);
+    box-shadow: var(--shadow-md);
+}
+
+.info-card i {
+    font-size: 1.2rem;
+    opacity: 0.9;
+}
+
+.info-card p {
+    margin: 0;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+/* Quick Access Section */
+.quick-access-section {
+    background: var(--gray-50);
+    padding: var(--space-xl) 0;
+}
+
+.quick-access-content {
+    text-align: center;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.quick-access-content h3 {
+    color: var(--text-primary);
+    margin-bottom: var(--space-sm);
+    font-size: 1.5rem;
+}
+
+.quick-access-content p {
+    color: var(--text-secondary);
+    margin-bottom: var(--space-lg);
+    font-size: 1rem;
+}
+
+.quick-buttons {
+    display: flex;
+    justify-content: center;
+    gap: var(--space-lg);
+    flex-wrap: wrap;
+}
+
+.quick-buttons .btn {
+    min-width: 180px;
+    padding: var(--space-md) var(--space-lg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-sm);
+    font-weight: 500;
+    border-radius: var(--radius-md);
+    transition: all var(--transition-normal);
+}
+
+.quick-buttons .btn-outline {
+    background: transparent;
+    color: var(--primary-color);
+    border: 2px solid var(--primary-color);
+}
+
+.quick-buttons .btn-outline:hover {
+    background: var(--primary-color);
+    color: var(--text-light);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+.quick-buttons .btn-secondary {
+    background: linear-gradient(135deg, var(--secondary-color), var(--secondary-dark));
+    color: var(--text-light);
+    border: none;
+    box-shadow: var(--shadow-md);
+}
+
+.quick-buttons .btn-secondary:hover {
+    background: linear-gradient(135deg, var(--secondary-dark), var(--secondary-color));
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+/* Error States */
+.verify-form .form-group.error input {
+    border-color: var(--error-color);
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+    animation: shake 0.5s ease-in-out;
+}
+
+.form-error-message {
+    color: var(--error-color);
+    font-size: 0.85rem;
+    margin-top: var(--space-xs);
+    display: none;
+    text-align: center;
+    font-weight: 500;
+}
+
+.verify-form .form-group.error .form-error-message {
+    display: block;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+}
+
+/* Loading State */
+.verify-form .btn.loading {
+    position: relative;
+    color: transparent;
+    cursor: not-allowed;
+}
+
+.verify-form .btn.loading::after {
+    content: '';
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    top: 50%;
+    left: 50%;
+    margin-left: -10px;
+    margin-top: -10px;
+    border: 2px solid transparent;
+    border-top-color: var(--text-light);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .test-verify-section {
+        padding: var(--space-lg) 0;
+        min-height: 50vh;
+    }
+
+    .test-verify-section .container {
+        padding: 0 var(--space-md);
+    }
+
+    .verify-form {
+        padding: var(--space-lg);
+        margin: 0 var(--space-sm);
+    }
+
+    .test-verify-section .section-title {
+        font-size: 1.7rem;
+    }
+
+    .quick-buttons {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .quick-buttons .btn {
+        width: 100%;
+        max-width: 250px;
+    }
+}
+
+@media (max-width: 480px) {
+    .test-verify-section {
+        padding: var(--space-md) 0;
+    }
+
+    .verify-form {
+        padding: var(--space-md);
+    }
+
+    .test-verify-section .section-title {
+        font-size: 1.5rem;
+    }
+
+    .verify-form .form-group input {
+        height: 44px;
+        font-size: 0.9rem;
+    }
+
+    .verify-form .btn {
+        min-width: 150px;
+        font-size: 0.9rem;
+    }
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
