@@ -14,14 +14,13 @@ public class RecordingDaoImpl implements RecordingDao {
     public boolean saveRecording(Recording recording) {
         try (Connection conn = DbUtil.getConnection();
              PreparedStatement stmt = conn.prepareStatement(
-                     "INSERT INTO recordings (testid, studentid, tempuserid, recordingdata, filesize) VALUES (?, ?, ?, ?, ?)",
+                     "INSERT INTO recordings (testid, studentid, recordingdata, filesize) VALUES (?, ?, ?, ?)",
                      java.sql.Statement.RETURN_GENERATED_KEYS)) {
 
             stmt.setString(1, recording.getTestid());
             stmt.setString(2, recording.getStudentid());
-            stmt.setString(3, recording.getTempuserid());
-            stmt.setBytes(4, recording.getRecordingData());
-            stmt.setLong(5, recording.getFileSize());
+            stmt.setBytes(3, recording.getRecordingData());
+            stmt.setLong(4, recording.getFileSize());
 
             int result = stmt.executeUpdate();
             if (result > 0) {
@@ -58,8 +57,7 @@ public class RecordingDaoImpl implements RecordingDao {
                     recording.setId(Long.valueOf(rs.getString("id")));
                     recording.setTestid(rs.getString("testid"));
                     recording.setStudentid(rs.getString("studentid"));
-                    recording.setTempuserid(rs.getString("tempuserid"));
-                    recording.setRecordingData(rs.getBytes("recordingdata"));
+                     recording.setRecordingData(rs.getBytes("recordingdata"));
                     recording.setFileSize(rs.getLong("filesize"));
                     recording.setCreatedAt(rs.getTimestamp("createdat"));
                     return recording;

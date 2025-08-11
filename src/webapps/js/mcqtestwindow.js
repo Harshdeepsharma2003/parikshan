@@ -1,9 +1,5 @@
-
-// Global variables - declare only once
-const totalQuestions = <%= questions.size() %>;
-const userid = '<%= userid %>';
-const testId = '<%= testId %>';
-
+// Use variables from JSP (declared globally in HTML)
+// These should be available from the inline script in JSP
 let currentQuestion = 1;
 let timeRemaining = 1800; // 30 minutes = 1800 seconds
 let timerInterval = null;
@@ -17,16 +13,38 @@ let recordingStartTime = null;
 let recordingTimer = null;
 let isRecording = false;
 
-console.log("Initializing test with", totalQuestions, "questions");
+// Initialization flag
+let isInitialized = false;
 
-// Initialize when page loads
-document.addEventListener('DOMContentLoaded', function() {
-    console.log("DOM loaded, starting initialization...");
+console.log("External JS loaded");
 
-    // Start timer immediately
+// Function to start all test systems
+window.startTestSystems = function() {
+    if (isInitialized) {
+        console.log("Already initialized, skipping");
+        return;
+    }
+
+    console.log("Starting test systems with config:", window.MCQ_CONFIG);
+
+    // Validate required variables
+    if (typeof totalQuestions === 'undefined' || typeof userid === 'undefined' || typeof testId === 'undefined') {
+        console.error("Required variables not found:", {
+            totalQuestions: typeof totalQuestions,
+            userid: typeof userid,
+            testId: typeof testId
+        });
+        return;
+    }
+
+    isInitialized = true;
+
+    console.log("Initializing test with", totalQuestions, "questions for user", userid);
+
+    // Start timer IMMEDIATELY
     startTimer();
 
-    // Initialize camera/mic
+    // Start camera/mic IMMEDIATELY
     initializeRecording();
 
     // Show first question and update UI
@@ -35,16 +53,38 @@ document.addEventListener('DOMContentLoaded', function() {
     updateNavigationButtons();
     updateQuestionNavigationButtons();
 
-    console.log("Initialization complete");
-});
+    console.log("Test systems initialization complete");
+};
 
-// FIXED TIMER FUNCTIONS
+// Force start functions for fallback
+window.forceStartTimer = function() {
+    console.log("Force starting timer");
+    if (!timerInterval) {
+        startTimer();
+    }
+};
+
+window.forceStartRecording = function() {
+    console.log("Force starting recording");
+    initializeRecording();
+};
+
+// Initialize as soon as this script loads if DOM is ready
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', window.startTestSystems);
+} else {
+    // DOM already loaded
+    setTimeout(window.startTestSystems, 50);
+}
+
+// TIMER FUNCTIONS
 function startTimer() {
     console.log("Starting timer with", timeRemaining, "seconds");
 
     // Clear any existing timer
     if (timerInterval) {
         clearInterval(timerInterval);
+        timerInterval = null;
     }
 
     // Update display immediately
@@ -69,14 +109,15 @@ function startTimer() {
         // Auto-submit when time expires
         if (timeRemaining <= 0) {
             clearInterval(timerInterval);
+            timerInterval = null;
             autoSubmitTest();
         }
     }, 1000);
 }
 
 function updateTimerDisplay() {
-    const minutes = Math.floor(timeRemaining / 60);
-    const seconds = timeRemaining % 60;
+    const minutes = Math.floor(Math.max(0, timeRemaining) / 60);
+    const seconds = Math.max(0, timeRemaining) % 60;
     const timerElement = document.getElementById('timer');
 
     if (timerElement) {
@@ -94,70 +135,136 @@ function autoSubmitTest() {
         loadingOverlay.style.display = 'flex';
     }
 
-    if (isRecording) {
+    // Stop recording before submitting
+    if (isRecording && mediaRecorder && mediaRecorder.state === 'recording') {
         stopRecording();
     }
 
+    // Give a moment for recording to stop, then submit
     setTimeout(function() {
-        document.getElementById('testForm').submit();
+        const form = document.getElementById('testForm');
+        if (form) {
+            form.submit();
+        }
     }, 2000);
 }
 
+// RECORDING INITIALIZATION
 async function initializeRecording() {
     const recordingStatus = document.getElementById('recordingStatus');
     const recordingDot = document.getElementById('recordingDot');
     const videoPreview = document.getElementById('videoPreview');
 
-    try {
-        console.log("Requesting camera and microphone access...");
+    console.log("Starting recording initialization...");
 
-        // Secure context check (helps avoid silent failures)
-        if (location.protocol !== 'https:' && location.hostname !== 'localhost') {
-            throw new Error('Camera/mic require HTTPS or localhost.');
+    // Update status immediately
+    if (recordingStatus) recordingStatus.textContent = "Requesting camera/microphone access...";
+
+    try {
+        // Check if getUserMedia is supported
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+            throw new Error('Camera/microphone not supported in this browser');
         }
 
+        // Enhanced constraints for better compatibility
         const constraints = {
-            video: { width: { ideal: 640 }, height: { ideal: 480 }, facingMode: 'user' },
-            audio: true
+            video: {
+                width: { ideal: 640, max: 1280 },
+                height: { ideal: 480, max: 720 },
+                facingMode: 'user',
+                frameRate: { ideal: 15, max: 30 }
+            },
+            audio: {
+                echoCancellation: true,
+                noiseSuppression: true,
+                autoGainControl: true
+            }
         };
 
+        console.log("Requesting media permissions...");
         const localStream = await navigator.mediaDevices.getUserMedia(constraints);
-        stream = localStream;
-        console.log("Media stream obtained successfully");
 
-        // Attach preview
-        if (videoPreview) {
-            videoPreview.srcObject = stream;
-            try {
-                await videoPreview.play();
-                console.log("Video preview started");
-            } catch (playErr) {
-                console.warn("Autoplay failed, waiting for user gesture:", playErr);
-            }
+        if (!localStream) {
+            throw new Error('No media stream received');
         }
 
-        // Setup recorder only if supported
-        setupMediaRecorder();
+        stream = localStream;
+        console.log("✅ Media stream obtained successfully");
+        console.log("Video tracks:", stream.getVideoTracks().length);
+        console.log("Audio tracks:", stream.getAudioTracks().length);
 
-        // Start recording if possible
+        // Attach preview with error handling
+        if (videoPreview) {
+            videoPreview.srcObject = stream;
+
+            // Handle video loading
+            videoPreview.onloadedmetadata = function() {
+                console.log("Video metadata loaded");
+                videoPreview.play().then(() => {
+                    console.log("✅ Video preview started successfully");
+                    if (recordingStatus) recordingStatus.textContent = "Camera preview active";
+                }).catch(playErr => {
+                    console.warn("Video autoplay failed:", playErr);
+                    if (recordingStatus) recordingStatus.textContent = "Camera ready (click to activate preview)";
+                    // Try to play on first user interaction
+                    videoPreview.addEventListener('click', function() {
+                        videoPreview.play();
+                    }, { once: true });
+                });
+            };
+
+            videoPreview.onerror = function(error) {
+                console.error("Video preview error:", error);
+            };
+        }
+
+        // Setup and start recording
+        await setupMediaRecorder();
+
+        // Start recording if recorder is ready
         if (mediaRecorder) {
             startRecording();
             if (recordingStatus) recordingStatus.textContent = "Recording active";
-            if (recordingDot) recordingDot.classList.remove('inactive');
+            if (recordingDot) {
+                recordingDot.classList.remove('inactive');
+                recordingDot.classList.add('active');
+            }
         } else {
-            if (recordingStatus) recordingStatus.textContent = "Preview active (recording unsupported)";
+            if (recordingStatus) recordingStatus.textContent = "Camera active (recording not supported)";
             if (recordingDot) recordingDot.classList.add('inactive');
         }
 
+        // Hide retry button if it was shown
+        const retryBtn = document.getElementById('retryRecordingBtn');
+        if (retryBtn) retryBtn.style.display = 'none';
+
     } catch (error) {
-        console.error("Error accessing camera/microphone:", error);
-        if (recordingStatus) recordingStatus.textContent = "Access denied or unavailable: " + (error && error.message ? error.message : '');
+        console.error("❌ Error initializing recording:", error);
+
+        let errorMessage = "Camera/microphone access failed: ";
+        if (error.name === 'NotAllowedError') {
+            errorMessage = "Permission denied. Please allow camera and microphone access and refresh the page.";
+        } else if (error.name === 'NotFoundError') {
+            errorMessage = "No camera or microphone found on this device.";
+        } else if (error.name === 'NotSupportedError') {
+            errorMessage = "Camera/microphone not supported in this browser.";
+        } else {
+            errorMessage += error.message || "Unknown error";
+        }
+
+        if (recordingStatus) recordingStatus.textContent = errorMessage;
         if (recordingDot) recordingDot.classList.add('inactive');
-        alert("Please allow camera and microphone access and ensure the site is served over HTTPS (or localhost).");
+
+        // Show retry button
+        const retryBtn = document.getElementById('retryRecordingBtn');
+        if (retryBtn) retryBtn.style.display = 'inline-block';
+
+        console.log("Showing user-friendly error message");
     }
 }
 
-function setupMediaRecorder() {
+// IMPROVED MEDIA RECORDER SETUP
+async function setupMediaRecorder() {
     try {
         if (typeof MediaRecorder === 'undefined') {
             console.warn("MediaRecorder not supported in this browser");
@@ -165,37 +272,59 @@ function setupMediaRecorder() {
             return;
         }
 
+        if (!stream) {
+            console.error("No stream available for MediaRecorder");
+            return;
+        }
+
+        // Test different MIME types for better compatibility
         let options = {};
-        if (MediaRecorder.isTypeSupported('video/webm;codecs=vp9')) {
-            options.mimeType = 'video/webm;codecs=vp9';
-        } else if (MediaRecorder.isTypeSupported('video/webm;codecs=vp8')) {
-            options.mimeType = 'video/webm;codecs=vp8';
-        } else if (MediaRecorder.isTypeSupported('video/webm')) {
-            options.mimeType = 'video/webm';
+        const mimeTypes = [
+            'video/webm;codecs=vp9,opus',
+            'video/webm;codecs=vp8,opus',
+            'video/webm;codecs=vp9',
+            'video/webm;codecs=vp8',
+            'video/webm',
+            'video/mp4'
+        ];
+
+        for (const mimeType of mimeTypes) {
+            if (MediaRecorder.isTypeSupported(mimeType)) {
+                options.mimeType = mimeType;
+                console.log("Using MIME type:", mimeType);
+                break;
+            }
         }
 
         mediaRecorder = new MediaRecorder(stream, options);
 
         mediaRecorder.onstart = function() {
-            console.log("MediaRecorder started");
+            console.log("✅ MediaRecorder started");
+            isRecording = true;
         };
 
         mediaRecorder.ondataavailable = function(event) {
             if (event.data && event.data.size > 0) {
                 recordedChunks.push(event.data);
+                console.log("Recording chunk received:", event.data.size, "bytes");
             }
         };
 
-        mediaRecorder.onerror = function(e) {
-            console.error("MediaRecorder error:", e);
+        mediaRecorder.onerror = function(event) {
+            console.error("MediaRecorder error:", event);
+            isRecording = false;
         };
 
         mediaRecorder.onstop = function() {
-            console.log("Recording stopped");
-            saveRecordingToDatabase();
+            console.log("MediaRecorder stopped, total chunks:", recordedChunks.length);
+            isRecording = false;
+            // Save recording asynchronously
+            if (recordedChunks.length > 0) {
+                setTimeout(() => saveRecordingToDatabase(), 500);
+            }
         };
 
-        console.log("MediaRecorder setup complete");
+        console.log("✅ MediaRecorder setup complete");
     } catch (error) {
         console.error("Error setting up MediaRecorder:", error);
         mediaRecorder = null;
@@ -204,35 +333,48 @@ function setupMediaRecorder() {
 
 function startRecording() {
     if (!mediaRecorder) {
-        console.warn("Recording not supported or not initialized");
-        isRecording = false;
+        console.warn("MediaRecorder not available");
         return;
     }
+
     if (mediaRecorder.state === 'inactive') {
         try {
             recordedChunks = [];
-            mediaRecorder.start(5000); // 5s timeslice
+            mediaRecorder.start(1000); // Record in 1-second chunks
             recordingStartTime = Date.now();
-            isRecording = true;
+
+            // Start duration timer
+            if (recordingTimer) {
+                clearInterval(recordingTimer);
+            }
             recordingTimer = setInterval(updateRecordingDuration, 1000);
-            console.log("Recording started");
+
+            console.log("✅ Recording started successfully");
         } catch (error) {
             console.error("Error starting recording:", error);
             isRecording = false;
         }
+    } else {
+        console.log("MediaRecorder not in inactive state:", mediaRecorder.state);
     }
 }
 
-
 function stopRecording() {
     if (mediaRecorder && mediaRecorder.state === 'recording') {
-        mediaRecorder.stop();
-        isRecording = false;
-
-        if (recordingTimer) {
-            clearInterval(recordingTimer);
+        try {
+            mediaRecorder.stop();
+            console.log("Recording stop initiated");
+        } catch (error) {
+            console.error("Error stopping recording:", error);
         }
     }
+
+    if (recordingTimer) {
+        clearInterval(recordingTimer);
+        recordingTimer = null;
+    }
+
+    isRecording = false;
 }
 
 function updateRecordingDuration() {
@@ -250,14 +392,24 @@ function updateRecordingDuration() {
 
 function testCameraMic() {
     const videoPreview = document.getElementById('videoPreview');
-    if (videoPreview && videoPreview.srcObject) {
-        alert("Camera preview is active. " + (mediaRecorder ? "Recording is supported." : "Recording not supported on this browser."));
+    const recordingStatus = document.getElementById('recordingStatus');
+
+    if (stream && stream.active) {
+        const videoTracks = stream.getVideoTracks();
+        const audioTracks = stream.getAudioTracks();
+
+        let message = "✅ Camera/Microphone Test Results:\n\n";
+        message += "Video tracks: " + videoTracks.length + (videoTracks.length > 0 ? " (Active)" : " (None)") + "\n";
+        message += "Audio tracks: " + audioTracks.length + (audioTracks.length > 0 ? " (Active)" : " (None)") + "\n";
+        message += "Recording support: " + (mediaRecorder ? "Yes" : "No") + "\n";
+        message += "Current status: " + (recordingStatus ? recordingStatus.textContent : "Unknown");
+
+        alert(message);
     } else {
-        alert("Camera/microphone not accessible. Ensure HTTPS or localhost and allow permissions, then try again.");
+        alert("❌ Camera/microphone not accessible. Retrying initialization...");
         initializeRecording();
     }
 }
-
 
 async function saveRecordingToDatabase() {
     if (recordedChunks.length === 0) {
@@ -266,11 +418,14 @@ async function saveRecordingToDatabase() {
     }
 
     try {
-        const recordingBlob = new Blob(recordedChunks, { type: 'video/webm' });
-        console.log("Recording blob size:", recordingBlob.size);
+        const recordingBlob = new Blob(recordedChunks, {
+            type: mediaRecorder && mediaRecorder.mimeType ? mediaRecorder.mimeType : 'video/webm'
+        });
+
+        console.log("Saving recording blob size:", recordingBlob.size, "bytes");
 
         const formData = new FormData();
-        formData.append('recording', recordingBlob);
+        formData.append('recording', recordingBlob, 'test-recording.webm');
         formData.append('testid', testId);
         formData.append('userid', userid);
 
@@ -280,9 +435,10 @@ async function saveRecordingToDatabase() {
         });
 
         if (response.ok) {
-            console.log("Recording saved successfully");
+            const result = await response.text();
+            console.log("✅ Recording saved successfully:", result);
         } else {
-            console.error("Failed to save recording");
+            console.error("Failed to save recording, status:", response.status);
         }
 
     } catch (error) {
@@ -290,18 +446,16 @@ async function saveRecordingToDatabase() {
     }
 }
 
-// FIXED QUESTION NAVIGATION FUNCTIONS
+// QUESTION NAVIGATION FUNCTIONS
 function showQuestion(questionNumber) {
     console.log("Showing question:", questionNumber);
 
-    // Hide all questions
     const allQuestions = document.querySelectorAll('.question-card');
     allQuestions.forEach(q => {
         q.classList.remove('active');
         q.style.display = 'none';
     });
 
-    // Hide summary
     const summary = document.getElementById('testSummary');
     if (summary) {
         summary.classList.remove('active');
@@ -309,138 +463,34 @@ function showQuestion(questionNumber) {
     }
 
     // Show current question
-    const targetQuestion = document.querySelector('.question-card[data-question="' + questionNumber + '"]');
-    if (targetQuestion) {
-        targetQuestion.style.display = 'block';
-        targetQuestion.classList.add('active');
-        targetQuestion.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        console.log("Successfully showed question", questionNumber);
-    } else {
-        // Fallback - use index
-        const questionByIndex = allQuestions[questionNumber - 1];
-        if (questionByIndex) {
-            questionByIndex.style.display = 'block';
-            questionByIndex.classList.add('active');
-            console.log("Showed question using index fallback");
-        } else {
-            console.error("Could not find question", questionNumber);
-        }
+    const currentQuestionElement = document.querySelector(`.question-card[data-question="${questionNumber}"]`);
+    if (currentQuestionElement) {
+        currentQuestionElement.classList.add('active');
+        currentQuestionElement.style.display = 'block';
     }
-}
 
-function nextQuestion() {
-    console.log("Next button clicked - current:", currentQuestion, "total:", totalQuestions);
-
-    if (currentQuestion < totalQuestions) {
-        currentQuestion++;
-        showQuestion(currentQuestion);
-        updateProgress();
-        updateNavigationButtons();
-        updateQuestionNavigationButtons();
-        console.log("Moved to question:", currentQuestion);
-    } else {
-        console.log("Last question reached, showing summary");
-        showSummary();
-    }
-}
-
-function previousQuestion() {
-    console.log("Previous button clicked");
-
-    if (currentQuestion > 1) {
-        currentQuestion--;
-        showQuestion(currentQuestion);
-        updateProgress();
-        updateNavigationButtons();
-        updateQuestionNavigationButtons();
-        console.log("Moved to question:", currentQuestion);
-    }
-}
-
-function goToQuestion(questionNum) {
-    console.log("Going directly to question:", questionNum);
-
-    currentQuestion = questionNum;
-    showQuestion(currentQuestion);
+    currentQuestion = questionNumber;
     updateProgress();
     updateNavigationButtons();
     updateQuestionNavigationButtons();
 }
 
-// FIXED PROGRESS AND UI FUNCTIONS
-function updateProgress() {
-    const progressPercent = ((currentQuestion - 1) / totalQuestions) * 100;
-    const progressFill = document.getElementById('progressFill');
-    const questionCounter = document.getElementById('questionCounter');
-
-    if (progressFill) {
-        progressFill.style.width = progressPercent + '%';
-    }
-
-    if (questionCounter) {
-        questionCounter.textContent = 'Question ' + currentQuestion + ' of ' + totalQuestions;
-        console.log("Updated counter:", questionCounter.textContent);
-    }
+function goToQuestion(questionNumber) {
+    showQuestion(questionNumber);
 }
 
-function updateNavigationButtons() {
-    const prevBtn = document.getElementById('prevBtn');
-    const nextBtn = document.getElementById('nextBtn');
-    const reviewBtn = document.getElementById('reviewBtn');
-
-    if (prevBtn) {
-        prevBtn.disabled = (currentQuestion === 1);
-        prevBtn.style.display = 'inline-block';
-    }
-
-    if (currentQuestion === totalQuestions) {
-        if (nextBtn) nextBtn.style.display = 'none';
-        if (reviewBtn) reviewBtn.style.display = 'inline-block';
+function nextQuestion() {
+    if (currentQuestion < totalQuestions) {
+        showQuestion(currentQuestion + 1);
     } else {
-        if (nextBtn) nextBtn.style.display = 'inline-block';
-        if (reviewBtn) reviewBtn.style.display = 'none';
+        showSummary();
     }
 }
 
-function updateQuestionNavigationButtons() {
-    const questionBtns = document.querySelectorAll('.question-num-btn');
-
-    questionBtns.forEach((btn, index) => {
-        const questionNum = index + 1;
-        btn.classList.remove('current', 'answered');
-
-        if (questionNum === currentQuestion) {
-            btn.classList.add('current');
-        } else if (answers[questionNum]) {
-            btn.classList.add('answered');
-        }
-    });
-}
-
-function selectOption(optionElement, questionNum, optionValue) {
-    console.log("Option selected:", questionNum, optionValue);
-
-    // Remove selection from other options in this question
-    const questionCard = optionElement.closest('.question-card');
-    if (questionCard) {
-        questionCard.querySelectorAll('.option').forEach(opt => {
-            opt.classList.remove('selected');
-        });
+function previousQuestion() {
+    if (currentQuestion > 1) {
+        showQuestion(currentQuestion - 1);
     }
-
-    // Select this option
-    optionElement.classList.add('selected');
-    const radioInput = optionElement.querySelector('input[type="radio"]');
-    if (radioInput) {
-        radioInput.checked = true;
-    }
-
-    // Store answer
-    answers[questionNum] = optionValue;
-
-    // Update UI
-    updateSummaryStats();
-    updateQuestionNavigationButtons();
 }
 
 function showSummary() {
@@ -460,106 +510,249 @@ function showSummary() {
         summary.style.display = 'block';
     }
 
-    // Update buttons
-    const submitBtn = document.getElementById('submitBtn');
-    const reviewBtn = document.getElementById('reviewBtn');
+    // Update summary stats
+    updateSummaryStats();
+    updateNavigationButtons();
+    updateQuestionNavigationButtons();
+}
 
-    if (submitBtn) submitBtn.style.display = 'inline-block';
-    if (reviewBtn) reviewBtn.style.display = 'none';
+// OPTION SELECTION
+function selectOption(optionElement, questionNum, optionValue) {
+    console.log(`Selected option ${optionValue} for question ${questionNum}`);
 
-    // Update progress bar and counter
+    // Update answers object
+    answers[`question_${questionNum}`] = optionValue;
+
+    // Clear previous selections for this question
+    const questionCard = optionElement.closest('.question-card');
+    const allOptions = questionCard.querySelectorAll('.option');
+    allOptions.forEach(opt => opt.classList.remove('selected'));
+
+    // Mark current option as selected
+    optionElement.classList.add('selected');
+
+    // Check the radio button
+    const radioButton = optionElement.querySelector('.option-radio');
+    if (radioButton) {
+        radioButton.checked = true;
+    }
+
+    // Update question navigation button
+    updateQuestionNavigationButtons();
+}
+
+// UPDATE FUNCTIONS
+function updateProgress() {
     const progressFill = document.getElementById('progressFill');
     const questionCounter = document.getElementById('questionCounter');
 
-    if (progressFill) progressFill.style.width = '100%';
-    if (questionCounter) questionCounter.textContent = 'Test Summary';
+    if (progressFill) {
+        const progress = (currentQuestion / totalQuestions) * 100;
+        progressFill.style.width = progress + '%';
+    }
 
-    updateSummaryStats();
+    if (questionCounter) {
+        if (document.getElementById('testSummary').style.display === 'block') {
+            questionCounter.textContent = "Review Summary";
+        } else {
+            questionCounter.textContent = `Question ${currentQuestion} of ${totalQuestions}`;
+        }
+    }
+}
+
+function updateNavigationButtons() {
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const reviewBtn = document.getElementById('reviewBtn');
+    const submitBtn = document.getElementById('submitBtn');
+    const summaryVisible = document.getElementById('testSummary').style.display === 'block';
+
+    if (summaryVisible) {
+        // On summary page
+        if (prevBtn) {
+            prevBtn.disabled = false;
+            prevBtn.textContent = "← Back to Questions";
+            prevBtn.onclick = () => showQuestion(totalQuestions);
+        }
+        if (nextBtn) nextBtn.style.display = 'none';
+        if (reviewBtn) reviewBtn.style.display = 'none';
+        if (submitBtn) submitBtn.style.display = 'inline-block';
+    } else {
+        // On question pages
+        if (prevBtn) {
+            prevBtn.disabled = currentQuestion === 1;
+            prevBtn.textContent = "← Previous";
+            prevBtn.onclick = previousQuestion;
+        }
+
+        if (nextBtn) {
+            nextBtn.style.display = 'inline-block';
+            if (currentQuestion < totalQuestions) {
+                nextBtn.textContent = "Next →";
+                nextBtn.onclick = nextQuestion;
+            } else {
+                nextBtn.textContent = "Review →";
+                nextBtn.onclick = showSummary;
+            }
+        }
+
+        if (reviewBtn) reviewBtn.style.display = currentQuestion === totalQuestions ? 'inline-block' : 'none';
+        if (submitBtn) submitBtn.style.display = 'none';
+    }
+}
+
+function updateQuestionNavigationButtons() {
+    const questionButtons = document.querySelectorAll('.question-num-btn');
+
+    questionButtons.forEach((btn, index) => {
+        const questionNum = index + 1;
+        const isAnswered = answers[`question_${questionNum}`];
+        const isCurrent = questionNum === currentQuestion;
+
+        btn.classList.remove('answered', 'current', 'unanswered');
+
+        if (isCurrent && document.getElementById('testSummary').style.display !== 'block') {
+            btn.classList.add('current');
+        } else if (isAnswered) {
+            btn.classList.add('answered');
+        } else {
+            btn.classList.add('unanswered');
+        }
+    });
 }
 
 function updateSummaryStats() {
     const answeredCount = Object.keys(answers).length;
     const unansweredCount = totalQuestions - answeredCount;
-    const timeTaken = (1800 - timeRemaining); // 30 minutes - remaining
-    const minutes = Math.floor(timeTaken / 60);
-    const seconds = timeTaken % 60;
+    const totalTimeUsed = 1800 - timeRemaining; // Total seconds used
 
-    const answeredCountEl = document.getElementById('answeredCount');
-    const unansweredCountEl = document.getElementById('unansweredCount');
-    const totalTimeEl = document.getElementById('totalTime');
+    const answeredElement = document.getElementById('answeredCount');
+    const unansweredElement = document.getElementById('unansweredCount');
+    const totalTimeElement = document.getElementById('totalTime');
 
-    if (answeredCountEl) answeredCountEl.textContent = answeredCount;
-    if (unansweredCountEl) unansweredCountEl.textContent = unansweredCount;
-    if (totalTimeEl) {
-        totalTimeEl.textContent = minutes.toString().padStart(2, '0') + ':' + seconds.toString().padStart(2, '0');
+    if (answeredElement) answeredElement.textContent = answeredCount;
+    if (unansweredElement) unansweredElement.textContent = unansweredCount;
+    if (totalTimeElement) {
+        const minutes = Math.floor(totalTimeUsed / 60);
+        const seconds = totalTimeUsed % 60;
+        totalTimeElement.textContent = minutes.toString().padStart(2, '0') + ':' + seconds.toString().padStart(2, '0');
     }
 }
 
-// Form submission handling
-document.getElementById('testForm').addEventListener('submit', function(e) {
-    console.log("Form submitted");
+// FORM SUBMISSION
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('testForm');
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            // Stop recording before submitting
+            if (isRecording && mediaRecorder && mediaRecorder.state === 'recording') {
+                stopRecording();
+            }
 
-    if (timerInterval) {
-        clearInterval(timerInterval);
+            // Show loading overlay
+            const loadingOverlay = document.getElementById('loadingOverlay');
+            if (loadingOverlay) {
+                loadingOverlay.style.display = 'flex';
+            }
+
+            // Let form submit normally
+            return true;
+        });
     }
+});
 
-    if (isRecording) {
+// CLEANUP ON PAGE UNLOAD
+window.addEventListener('beforeunload', function(e) {
+    // Stop recording
+    if (isRecording && mediaRecorder && mediaRecorder.state === 'recording') {
         stopRecording();
     }
 
-    const answeredCount = Object.keys(answers).length;
-    if (answeredCount < totalQuestions && timeRemaining > 0) {
-        const confirmed = confirm('You have answered ' + answeredCount + ' out of ' + totalQuestions + ' questions. Do you want to submit?');
-        if (!confirmed) {
-            e.preventDefault();
-            startTimer();
-            if (!isRecording && stream) {
-                startRecording();
-            }
-            return;
-        }
-    }
-
-    // Add time taken to form
-    const timeTaken = (1800 - timeRemaining);
-    const hiddenTime = document.createElement('input');
-    hiddenTime.type = 'hidden';
-    hiddenTime.name = 'timeTaken';
-    hiddenTime.value = timeTaken;
-    this.appendChild(hiddenTime);
-
-    const submitBtn = document.getElementById('submitBtn');
-    if (submitBtn) {
-        submitBtn.innerHTML = 'Submitting...';
-        submitBtn.disabled = true;
-    }
-});
-
-// Prevent page navigation during test
-window.addEventListener('beforeunload', function(e) {
-    if (timeRemaining > 0) {
-        if (isRecording) stopRecording();
-        e.preventDefault();
-        e.returnValue = 'Are you sure you want to leave the test?';
-        return 'Are you sure you want to leave the test?';
-    }
-});
-
-// Cleanup on page unload
-window.addEventListener('unload', function() {
+    // Stop camera/microphone
     if (stream) {
         stream.getTracks().forEach(track => track.stop());
     }
-    if (isRecording) {
-        stopRecording();
+
+    // Clear timers
+    if (timerInterval) clearInterval(timerInterval);
+    if (recordingTimer) clearInterval(recordingTimer);
+});
+
+// Add this function to calculate time taken
+function getTimeTaken() {
+    const timeUsed = 1800 - timeRemaining; // Total seconds used (30 minutes = 1800 seconds)
+    return Math.max(0, timeUsed); // Ensure it's never negative
+}
+
+// Update your form submission to include time taken
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('testForm');
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            // Add time taken to form before submission
+            const timeTakenInput = document.createElement('input');
+            timeTakenInput.type = 'hidden';
+            timeTakenInput.name = 'timeTaken';
+            timeTakenInput.value = getTimeTaken();
+            form.appendChild(timeTakenInput);
+
+            // Also add it in minutes format if needed
+            const timeTakenMinutesInput = document.createElement('input');
+            timeTakenMinutesInput.type = 'hidden';
+            timeTakenMinutesInput.name = 'timeTakenMinutes';
+            timeTakenMinutesInput.value = Math.round(getTimeTaken() / 60);
+            form.appendChild(timeTakenMinutesInput);
+
+            // Stop recording before submitting
+            if (isRecording && mediaRecorder && mediaRecorder.state === 'recording') {
+                stopRecording();
+            }
+
+            // Show loading overlay
+            const loadingOverlay = document.getElementById('loadingOverlay');
+            if (loadingOverlay) {
+                loadingOverlay.style.display = 'flex';
+            }
+
+            return true;
+        });
     }
 });
 
-// Keyboard shortcuts
-document.addEventListener('keydown', function(e) {
-    if (e.key === 'ArrowLeft' && currentQuestion > 1) {
-        previousQuestion();
-    } else if (e.key === 'ArrowRight' && currentQuestion < totalQuestions) {
-        nextQuestion();
+// Also update the autoSubmitTest function
+function autoSubmitTest() {
+    console.log("Time expired - auto submitting");
+
+    const loadingOverlay = document.getElementById('loadingOverlay');
+    if (loadingOverlay) {
+        loadingOverlay.style.display = 'flex';
     }
-});
+
+    // Stop recording before submitting
+    if (isRecording && mediaRecorder && mediaRecorder.state === 'recording') {
+        stopRecording();
+    }
+
+    // Add time taken to form
+    const form = document.getElementById('testForm');
+    if (form) {
+        const timeTakenInput = document.createElement('input');
+        timeTakenInput.type = 'hidden';
+        timeTakenInput.name = 'timeTaken';
+        timeTakenInput.value = 1800; // Full 30 minutes when auto-submitted
+        form.appendChild(timeTakenInput);
+
+        const timeTakenMinutesInput = document.createElement('input');
+        timeTakenMinutesInput.type = 'hidden';
+        timeTakenMinutesInput.name = 'timeTakenMinutes';
+        timeTakenMinutesInput.value = 30;
+        form.appendChild(timeTakenMinutesInput);
+    }
+
+    // Give a moment for recording to stop, then submit
+    setTimeout(function() {
+        if (form) {
+            form.submit();
+        }
+    }, 2000);
+}

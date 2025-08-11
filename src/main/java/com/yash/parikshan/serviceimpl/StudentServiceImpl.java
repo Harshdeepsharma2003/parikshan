@@ -77,11 +77,12 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public void deleteProfile(String studentId, String password) {
+    public boolean deleteProfile(String studentId, String password) {
         try {
             studentDao.deleteProfile(studentId,password);
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return false;
     }
 }

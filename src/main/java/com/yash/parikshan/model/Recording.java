@@ -6,29 +6,26 @@ public class Recording {
     private Long id;
     private String testid;
     private String studentid;
-    private String tempuserid;
     private byte[] recordingData;
     private long fileSize;
     private Timestamp createdAt;
 
     public Recording(){}
 
-    public Recording(Long id, String testid, String studentid, String tempuserid, byte[] recordingData, long fileSize, Timestamp createdAt) {
+    public Recording(Long id, String testid, String studentid, byte[] recordingData, long fileSize, Timestamp createdAt) {
         this.id = id;
         this.testid = testid;
         this.studentid = studentid;
-        this.tempuserid = tempuserid;
         this.recordingData = recordingData;
         this.fileSize = fileSize;
         this.createdAt = createdAt;
     }
 
     // ADD THIS NEW CONSTRUCTOR - for creating new recordings
-    public Recording(String testid, String studentid, String tempuserid, byte[] recordingData, long fileSize) {
+    public Recording(String testid, String studentid,byte[] recordingData, long fileSize) {
 
         this.testid = testid;
         this.studentid = studentid;
-        this.tempuserid = tempuserid;
         this.recordingData = recordingData;
         this.fileSize = fileSize;
         // createdAt will be set by database DEFAULT CURRENT_TIMESTAMP
@@ -58,13 +55,6 @@ public class Recording {
         this.studentid = studentid;
     }
 
-    public String getTempuserid() {
-        return tempuserid;
-    }
-
-    public void setTempuserid(String tempuserid) {
-        this.tempuserid = tempuserid;
-    }
 
     public byte[] getRecordingData() {
         return recordingData;

@@ -29,7 +29,7 @@ public class RecordingServiceImpl implements RecordingService {
             }
 
             // RecordingServiceImpl.java - Fix in saveRecording method
-            Recording recording = new Recording(testid, studentid, tempuserid, recordingData, (long) recordingData.length);
+            Recording recording = new Recording(testid, studentid, recordingData, (long) recordingData.length);
             return recordingDao.saveRecording(recording);
 
 
