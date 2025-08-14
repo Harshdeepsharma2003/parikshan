@@ -46,4 +46,9 @@ public interface TestResultDao {
      * @return boolean indicating success
      */
     boolean saveTestResult(TestResult testResult);
+
+    boolean terminateTest(String testId, String studentId, String reason);
+    boolean isTestTerminated(String testId, String studentId);
+    TestResult getTestResult(String testId, String studentId);
+    List<TestResult> getResultsWithViolations();
 }

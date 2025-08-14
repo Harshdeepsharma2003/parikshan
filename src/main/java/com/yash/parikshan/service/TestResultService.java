@@ -52,4 +52,9 @@ public interface TestResultService {
      * @return String unique result ID
      */
     String generateResultId();
+
+    boolean terminateTestForViolations(String testId, String studentId, int violationCount);
+    boolean isTestAlreadyTerminated(String testId, String studentId);
+    TestResult getTestResult(String testId, String studentId);
+
 }

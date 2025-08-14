@@ -111,4 +111,37 @@ public class TestResultServiceImpl implements TestResultService {
             return "RESULT_" + System.currentTimeMillis();
         }
     }
+
+    @Override
+    public boolean terminateTestForViolations(String testId, String studentId, int violationCount) {
+        try {
+            String reason = "Test terminated - " + violationCount + " violations detected";
+            boolean terminated = testResultDao.terminateTest(testId, studentId, reason);
+
+            if (terminated) {
+                System.out.println("Test terminated for student: " + studentId + ", violations: " + violationCount);
+            }
+
+            return terminated;
+
+        } catch (Exception e) {
+            System.err.println("Error in service terminating test: " + e.getMessage());
+            return false;
+        }
+    }
+
+    @Override
+    public boolean isTestAlreadyTerminated(String testId, String studentId) {
+        try {
+            return testResultDao.isTestTerminated(testId, studentId);
+        } catch (Exception e) {
+            System.err.println("Error checking if test terminated: " + e.getMessage());
+            return false;
+        }
+    }
+
+    @Override
+    public TestResult getTestResult(String testId, String studentId) {
+        return null;
+    }
 }

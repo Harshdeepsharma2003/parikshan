@@ -1,10 +1,3 @@
-<%
-// If no data exists, redirect to servlet
-if (request.getAttribute("tests") == null && request.getAttribute("errorMessage") == null) {
-    response.sendRedirect(request.getContextPath() + "/AvailableTests");
-    return;
-}
-%>
 
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
@@ -95,14 +88,18 @@ if (request.getAttribute("tests") == null && request.getAttribute("errorMessage"
                                    <td>${t.title}</td>
                                    <td>${t.noOfQuestions}</td>
                                    <td>
-                                       <c:choose>
-                                           <c:when test="${not empty t.description}">
-                                               ${fn:length(t.description) > 80 ? fn:substring(t.description,0,77) += '…' : t.description}
-                                           </c:when>
-                                           <c:otherwise>
-                                               <span style="color: #666;">[No Description]</span>
-                                           </c:otherwise>
-                                       </c:choose>
+                                      <c:choose>
+                                          <c:when test="${not empty t.description and fn:length(t.description) > 80}">
+                                              ${fn:substring(t.description, 0, 77)}…
+                                          </c:when>
+                                          <c:when test="${not empty t.description}">
+                                              ${t.description}
+                                          </c:when>
+                                          <c:otherwise>
+                                              <span style="color: #666;">[No Description]</span>
+                                          </c:otherwise>
+                                      </c:choose>
+
                                    </td>
                                    <td>
                                        <form action="testloginstudent.jsp" method="get" onsubmit="return startTest(this);">

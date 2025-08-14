@@ -36,6 +36,7 @@ public class AddQuestion extends HttpServlet {
 
         try {
             String testId = request.getParameter("testId");
+            String expectedQuestionsStr = request.getParameter("expectedQuestions");
             logger.info("Processing questions for test ID: " + testId);
 
             // Validate testId
@@ -44,16 +45,28 @@ public class AddQuestion extends HttpServlet {
                 throw GlobalException.validationError("Test ID is required and cannot be empty");
             }
 
+            // Get expected questions count for validation
+            int expectedQuestions = 0;
+            if (expectedQuestionsStr != null) {
+                try {
+                    expectedQuestions = Integer.parseInt(expectedQuestionsStr);
+                } catch (NumberFormatException e) {
+                    logger.warning("Invalid expected questions format: " + expectedQuestionsStr);
+                }
+            }
+
             List<Question> questions = new ArrayList<>();
             int successfullyProcessed = 0;
 
-            // Process questions - check up to 10 possible questions (changed from 20)
-            logger.info("Starting to process questions (max 10 questions allowed)");
-            for (int i = 1; i <= 10; i++) {
+            // Dynamically determine maximum question number to check
+            // Fixed limit of 5 questions maximum
+            int maxToCheck = 5; // Fixed maximum of 5 questions
+
+            logger.info("Starting to process questions (maximum 5 questions allowed)");
+            for (int i = 1; i <= maxToCheck; i++) {
                 String questionContent = request.getParameter("question_" + i);
 
                 if (questionContent == null || questionContent.trim().isEmpty()) {
-                    logger.fine("Question " + i + " is empty, skipping"); // Fixed: changed from debug to fine
                     continue; // Skip this number and check next
                 }
 
@@ -83,7 +96,7 @@ public class AddQuestion extends HttpServlet {
 
                 // Create Question object
                 Question question = new Question();
-                String questionId = "Q_" + testId + "_" + i + "_" + System.currentTimeMillis();
+                String questionId = "Q_" + testId + "_" + String.format("%03d", i) + "_" + System.currentTimeMillis();
                 question.setQuestionId(questionId);
                 question.setTestId(testId);
                 question.setContent(questionContent.trim());
@@ -110,6 +123,12 @@ public class AddQuestion extends HttpServlet {
             }
 
             logger.info("Total questions to be saved: " + questions.size() + " for test ID: " + testId);
+
+            // Optional: Validate against 5 question limit
+            if (questions.size() > 5) {
+                logger.warning("Too many questions submitted: " + questions.size() + ". Maximum allowed is 5.");
+                throw GlobalException.validationError("Maximum 5 questions allowed per test. You submitted " + questions.size() + " questions.");
+            }
 
             // Save to database - wrap potential database exceptions
             try {
@@ -143,13 +162,15 @@ public class AddQuestion extends HttpServlet {
             request.setAttribute("questionsAdded", successfullyProcessed);
             request.setAttribute("totalRecords", questions.size());
             request.setAttribute("questions", questions);
-            request.setAttribute("successMessage", "Questions Successfully Added to Database!");
+            request.setAttribute("expectedQuestions", expectedQuestions);
+            request.setAttribute("successMessage",
+                    String.format("Successfully added %d questions to test %s!", successfullyProcessed, testId));
 
             logger.info("Question addition completed successfully. Test ID: " + testId +
                     ", Questions added: " + successfullyProcessed);
 
             // Forward to success JSP
-            request.getRequestDispatcher("question-success.jsp").forward(request, response);
+            request.getRequestDispatcher("adminhome.jsp").forward(request, response);
 
         } catch (GlobalException e) {
             logger.log(Level.WARNING, "GlobalException occurred: " + e.getMessage(), e);

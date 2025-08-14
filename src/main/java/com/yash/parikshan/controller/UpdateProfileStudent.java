@@ -52,7 +52,7 @@ public class UpdateProfileStudent extends HttpServlet {
             student.setPhone(phone);
             studentService.updateStudentProfile(studentId,student);
 
-            response.sendRedirect("testformats.jsp"); // or wherever you want to redirect
+            response.sendRedirect("homestudent.jsp"); // or wherever you want to redirect
         }
 }
 

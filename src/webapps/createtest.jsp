@@ -74,16 +74,17 @@
                     <div class="success-message" id="successMessage">
                         <i class="fas fa-check-circle"></i>
                         <span><%= successMessage %></span>
-                    </div>
+    </div>
                     <% } %>
 
                     <div class="form-header">
                         <h2>Create New <span class="brand-highlight">Test</span></h2>
-                        <p>Set up your comprehensive test configuration</p>
+                        <p>Set up your test configuration (Maximum 5 questions)</p>
                     </div>
 
                     <div class="test-form-card">
-                        <form id="registerTestForm" action="RegisterTest" method="post" autocomplete="off" novalidate>
+                        <!-- Fixed form action URL -->
+                        <form id="registerTestForm" action="<%= request.getContextPath() %>/RegisterTest" method="post" autocomplete="off" novalidate>
 
                             <div class="form-row">
                                 <div class="form-group">
@@ -149,9 +150,9 @@
                                             id="noofquestions"
                                             name="noofquestions"
                                             class="form-input"
-                                            placeholder="Enter number"
+                                            placeholder="1-5 questions"
                                             min="1"
-                                            max="200"
+                                            max="5"
                                             required
                                             value="${param.noofquestions}"
                                         />
@@ -160,6 +161,9 @@
                                         <i class="fas fa-exclamation-circle"></i>
                                         <span></span>
                                     </div>
+                                    <small style="color: #666; font-size: 12px; margin-top: 5px; display: block;">
+                                        <i class="fas fa-info-circle"></i> Maximum 5 questions allowed per test
+                                    </small>
                                 </div>
 
                                 <div class="form-group">
@@ -178,7 +182,6 @@
                             </div>
 
                             <div class="form-actions" style="display: flex; justify-content: space-between; margin-top: 2rem;">
-
                                 <button type="submit" class="form-submit" id="submitBtn">
                                     Next: Add Questions
                                     <i class="fas fa-arrow-right"></i>
@@ -194,5 +197,39 @@
     <!-- Footer -->
     <div id="footer-container"></div>
  <script src="js/createtest.js"></script>
+
+ <script>
+// Add client-side validation for the 5-question limit
+document.getElementById('noofquestions').addEventListener('input', function() {
+    const value = parseInt(this.value);
+    const errorDiv = document.getElementById('noofquestions-error');
+
+    if (value > 5) {
+        this.value = 5;
+        errorDiv.style.display = 'block';
+        errorDiv.querySelector('span').textContent = 'Maximum 5 questions allowed';
+        setTimeout(() => {
+            errorDiv.style.display = 'none';
+        }, 3000);
+    }
+});
+
+// Form submission validation
+document.getElementById('registerTestForm').addEventListener('submit', function(e) {
+    const noOfQuestions = parseInt(document.getElementById('noofquestions').value);
+
+    if (noOfQuestions > 5) {
+        e.preventDefault();
+        alert('Maximum 5 questions allowed per test. Please enter a number between 1 and 5.');
+        return false;
+    }
+
+    if (noOfQuestions < 1) {
+        e.preventDefault();
+        alert('Please enter at least 1 question.');
+        return false;
+    }
+});
+</script>
 </body>
 </html>
