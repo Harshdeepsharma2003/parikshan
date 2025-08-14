@@ -16,10 +16,13 @@ public class TestResult {
     private String studentName;
     private String testTitle;
     private String percentage;
+    private String status = "COMPLETED"; // COMPLETED, TERMINATED
+    private String invalidationReason;
+    private int violationCount = 0;
 
     public TestResult(){}
 
-    public TestResult(String resultId, String studentId, String testId, String score, String totalMarks, String timeTaken, Timestamp testDate, String studentName, String testTitle, String percentage) {
+    public TestResult(String resultId, String studentId, String testId, String score, String totalMarks, String timeTaken, Timestamp testDate, String studentName, String testTitle, String percentage, String status, String invalidationReason, int violationCount) {
         this.resultId = resultId;
         this.studentId = studentId;
         this.testId = testId;
@@ -30,6 +33,9 @@ public class TestResult {
         this.studentName = studentName;
         this.testTitle = testTitle;
         this.percentage = percentage;
+        this.status = status;
+        this.invalidationReason = invalidationReason;
+        this.violationCount = violationCount;
     }
 
     public String getResultId() {
@@ -112,6 +118,30 @@ public class TestResult {
         this.percentage = percentage;
     }
 
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getInvalidationReason() {
+        return invalidationReason;
+    }
+
+    public void setInvalidationReason(String invalidationReason) {
+        this.invalidationReason = invalidationReason;
+    }
+
+    public int getViolationCount() {
+        return violationCount;
+    }
+
+    public void setViolationCount(int violationCount) {
+        this.violationCount = violationCount;
+    }
+
     @Override
     public String toString() {
         return "TestResult{" +
@@ -125,6 +155,9 @@ public class TestResult {
                 ", studentName='" + studentName + '\'' +
                 ", testTitle='" + testTitle + '\'' +
                 ", percentage='" + percentage + '\'' +
+                ", status='" + status + '\'' +
+                ", invalidationReason='" + invalidationReason + '\'' +
+                ", violationCount=" + violationCount +
                 '}';
     }
 }

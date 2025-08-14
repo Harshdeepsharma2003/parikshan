@@ -182,8 +182,8 @@
                                 <i class="fas fa-user"></i>
                             </div>
                             <div class="author-info">
-                                <h4>Dr. Priya Sharma</h4>
-                                <span>Professor, Delhi University</span>
+                                <h4>Priya Sharma</h4>
+                                <span>Student, Delhi University</span>
                             </div>
                         </div>
                         <div class="rating">

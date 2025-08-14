@@ -111,8 +111,8 @@ public class DeleteProfileStudent extends HttpServlet {
                 // 6. Set success message and redirect
                 logger.info("Setting success message and redirecting after profile deletion");
                 request.getSession().setAttribute("successMessage", "Your profile has been successfully deleted.");
-                logger.info("Redirecting to testformats.jsp after successful profile deletion");
-                response.sendRedirect("testformats.jsp");
+                logger.info("Redirecting to landingpage.jsp after successful profile deletion");
+                response.sendRedirect("landingpage.jsp");
 
             } catch (Exception e) {
                 logger.log(Level.WARNING, "Exception occurred during profile deletion service call for student: " + studentId, e);

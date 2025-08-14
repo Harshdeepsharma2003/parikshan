@@ -16,6 +16,9 @@
     <!-- Navbar -->
     <div id="navbar-container"></div>
 
+<a href="AdminResultsServlet" class="btn">📊 Test Results Dashboard</a>
+
+
     <!-- Teacher Dashboard Section -->
     <section class="teacher-dashboard">
         <div class="container">

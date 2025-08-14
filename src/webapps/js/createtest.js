@@ -1,4 +1,3 @@
-
 // Global error handler
 window.addEventListener('error', function(event) {
     console.error('JavaScript Error:', event.error);
@@ -70,7 +69,8 @@ document.addEventListener('DOMContentLoaded', function() {
         noofquestions: (value) => {
             const num = parseInt(value);
             if (!value) return { valid: false, message: 'Number of questions is required' };
-            if (isNaN(num) || num < 1 || num > 200) return { valid: false, message: 'Must be between 1 and 200' };
+            // Updated validation for 5 question limit
+            if (isNaN(num) || num < 1 || num > 5) return { valid: false, message: 'Must be between 1 and 5' };
             return { valid: true };
         }
     };
@@ -94,21 +94,28 @@ document.addEventListener('DOMContentLoaded', function() {
 
         if (!validation.valid) {
             field.classList.add('form-field-error');
-            errorElement.style.display = 'flex';
-            errorElement.querySelector('span').textContent = validation.message;
+            if (errorElement) {
+                errorElement.style.display = 'flex';
+                const spanElement = errorElement.querySelector('span');
+                if (spanElement) {
+                    spanElement.textContent = validation.message;
+                }
+            }
             return false;
         } else {
             field.classList.remove('form-field-error');
-            errorElement.style.display = 'none';
+            if (errorElement) {
+                errorElement.style.display = 'none';
+            }
             return true;
         }
     }
 
-    // Form submission
+    // Form submission - FIXED: Let form submit naturally instead of using fetch
     form.addEventListener('submit', function(e) {
-        e.preventDefault();
+        console.log('Form submission started');
 
-        // Validate all fields
+        // Validate all fields first
         let isValid = true;
         Object.keys(validations).forEach(fieldName => {
             const field = document.getElementById(fieldName);
@@ -118,65 +125,49 @@ document.addEventListener('DOMContentLoaded', function() {
         });
 
         if (!isValid) {
+            e.preventDefault();
             const firstError = document.querySelector('.form-field-error');
             if (firstError) {
                 firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
             }
-            return;
+            return false;
         }
 
-        // Show loading
-        loadingOverlay.style.display = 'flex';
-        submitBtn.disabled = true;
+        // Show loading overlay
+        if (loadingOverlay) {
+            loadingOverlay.style.display = 'flex';
+        }
 
-        // Submit with timeout
-        const formData = new FormData(form);
+        if (submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = 'Processing... <i class="fas fa-spinner fa-spin"></i>';
+        }
 
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
+        console.log('Form validation passed, submitting naturally...');
 
-        fetch(form.action, {
-            method: 'POST',
-            body: formData,
-            signal: controller.signal
-        })
-            .then(response => {
-            clearTimeout(timeoutId);
-            if (!response.ok) {
-                throw new Error('Server error: ' + response.status);
-            }
-            return response.text();
-        })
-            .then(data => {
-            if (data.includes('error') || data.includes('exception')) {
-                throw new Error('Server returned an error');
-            }
-            // Success - redirect or show success
-            window.location.href = 'addQuestions.jsp?testId=' + encodeURIComponent(formData.get('testid'));
-        })
-            .catch(error => {
-            clearTimeout(timeoutId);
-            loadingOverlay.style.display = 'none';
-            submitBtn.disabled = false;
+        // Let the form submit naturally to the servlet
+        // Don't prevent default - let the browser handle the POST request
+        return true;
+    });
 
-            let errorMessage = 'Failed to submit form. Please try again.';
-            if (error.name === 'AbortError') {
-                errorMessage = 'Request timed out. Please check your connection and try again.';
-            }
-
-            showErrorMessage(errorMessage, error.message);
-        });
+    // Prevent multiple submissions
+    let isSubmitting = false;
+    form.addEventListener('submit', function(e) {
+        if (isSubmitting) {
+            e.preventDefault();
+            return false;
+        }
+        isSubmitting = true;
     });
 });
 
-// Function to show error messages dynamically (CORRECTED)
+// Function to show error messages dynamically
 function showErrorMessage(message, details) {
     const existingError = document.getElementById('errorContainer');
     if (existingError) {
         existingError.remove();
     }
 
-    // Build error HTML using proper string concatenation (NO TEMPLATE LITERALS IN JSP CONTEXT)
     let errorHTML = '<div class="error-container" id="errorContainer">' +
     '<div class="error-header">' +
     '<i class="fas fa-exclamation-triangle error-icon"></i>' +
@@ -184,7 +175,6 @@ function showErrorMessage(message, details) {
     '</div>' +
     '<p class="error-message">' + message + '</p>';
 
-    // Add details section if details exist
     if (details) {
         errorHTML += '<details class="error-details">' +
         '<summary>Error Details</summary>' +
@@ -241,10 +231,15 @@ function loadComponent(url, containerId) {
     })
         .catch(error => {
         console.warn('Failed to load component:', url, error);
+        // Don't show error for missing components
     });
 }
 
-// Load components
-loadComponent('html/headerhomestudent.html', 'header-container');
-loadComponent('html/navbarhomestudent.html', 'navbar-container');
-loadComponent('html/footerhomestudent.html', 'footer-container');
+// Load components - these are optional
+try {
+    loadComponent('html/headerhomestudent.html', 'header-container');
+    loadComponent('html/navbarhomestudent.html', 'navbar-container');
+    loadComponent('html/footerhomestudent.html', 'footer-container');
+} catch (error) {
+    console.warn('Some components could not be loaded:', error);
+}

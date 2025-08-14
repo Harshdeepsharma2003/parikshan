@@ -192,7 +192,7 @@
             <c:choose>
                 <c:when test="${userType eq 'admin'}">
                     <a href="adminhome.jsp" class="btn">🏠 Admin Dashboard</a>
-                    <a href="AdminResults" class="btn">📊 Detailed Analytics</a>
+                    <a href="processrecording.jsp" class="btn">📊 Detailed Analytics</a>
                 </c:when>
                 <c:otherwise>
                     <a href="homestudent.jsp" class="btn">🏠 Student Dashboard</a>

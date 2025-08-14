@@ -30,7 +30,7 @@ public class DeleteTest extends HttpServlet {
             if (testId == null || testId.trim().isEmpty()) {
                 logger.warning("Test ID is empty");
                 request.getSession().setAttribute("errorMessage", "Test ID is required");
-                response.sendRedirect("testformats.jsp");
+                response.sendRedirect("adminhome.jsp");
                 return;
             }
 
@@ -44,6 +44,6 @@ public class DeleteTest extends HttpServlet {
             request.getSession().setAttribute("errorMessage", "Failed to delete test");
         }
 
-        response.sendRedirect("testformats.jsp");
+        response.sendRedirect("adminhome.jsp");
     }
 }

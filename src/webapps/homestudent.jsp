@@ -26,7 +26,7 @@
 
                 <div class="formats-grid">
                     <div class="format-card">
-                     <a href="availabletests.jsp">
+                     <a href="AvailableTests">
 
                         <div class="format-icon">
                             <i class="fas fa-list-ul"></i>
