@@ -39,7 +39,7 @@ public class AddQuestion extends HttpServlet {
             String expectedQuestionsStr = request.getParameter("expectedQuestions");
             logger.info("Processing questions for test ID: " + testId);
 
-            // Validate testId
+
             if (testId == null || testId.trim().isEmpty()) {
                 logger.warning("Test ID validation failed: Test ID is null or empty");
                 throw GlobalException.validationError("Test ID is required and cannot be empty");
@@ -94,7 +94,7 @@ public class AddQuestion extends HttpServlet {
                             "Invalid correct answer format for question " + i + ". Must be A, B, C, or D");
                 }
 
-                // Create Question object
+
                 Question question = new Question();
                 String questionId = "Q_" + testId + "_" + String.format("%03d", i) + "_" + System.currentTimeMillis();
                 question.setQuestionId(questionId);
@@ -124,13 +124,13 @@ public class AddQuestion extends HttpServlet {
 
             logger.info("Total questions to be saved: " + questions.size() + " for test ID: " + testId);
 
-            // Optional: Validate against 5 question limit
+            //  Validate against 5 question limit
             if (questions.size() > 5) {
                 logger.warning("Too many questions submitted: " + questions.size() + ". Maximum allowed is 5.");
                 throw GlobalException.validationError("Maximum 5 questions allowed per test. You submitted " + questions.size() + " questions.");
             }
 
-            // Save to database - wrap potential database exceptions
+            // Save to database
             try {
                 logger.info("Attempting to save questions to database");
                 questionService.addQuestions(questions);

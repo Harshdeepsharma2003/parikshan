@@ -3,71 +3,124 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Parikshan - Online Testing Platform</title>
-    <link rel="stylesheet" href="css/common.css">
-    <link rel="stylesheet" href="css/landingpage.css">
-    <link rel="stylesheet" href="css/register.css">
+    <title>Student Registration - Parikshan</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/landingpage.css"> <!-- Your main theme CSS -->
+    <link rel="stylesheet" href="css/register.css"> <!-- Simplified register styles -->
 </head>
 <body>
-
- <!-- Header -->
-    <div id="header-container"></div>
-
-    <!-- Navbar -->
-    <div id="navbar-container"></div>
-
-<!-- Student Registration Form Section -->
-<section class="student-register-section">
-  <div class="container">
-    <h2 class="section-title">User Registration</h2>
-    <form class="register-form" action="RegisterStudent" method="post" autocomplete="off">
-
-      <div class="form-grid">
-        <!-- Row 1: Student ID and Full Name -->
-        <div class="form-group with-icon">
-          <label for="studentid">Student ID *</label>
-          <input type="text" id="studentid" name="studentid" maxlength="100" required placeholder="Enter ID">
-          <i class="fas fa-id-card form-icon"></i>
+    <!-- Header (using your theme) -->
+    <header class="main-header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <a href="landingpage.jsp">
+                        <div class="logo-icon">
+                            <i class="fas fa-graduation-cap"></i>
+                        </div>
+                        <span class="logo-text">Parikshan</span>
+                    </a>
+                </div>
+                <div class="header-actions">
+                    <div class="auth-buttons">
+                        <a href="login.jsp" class="btn btn-outline-small">
+                            <i class="fas fa-sign-in-alt"></i>
+                            Login
+                        </a>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="form-group with-icon">
-          <label for="name">Full Name *</label>
-          <input type="text" id="name" name="name" maxlength="100" required placeholder="Enter name">
-          <i class="fas fa-user form-icon"></i>
-        </div>
+    </header>
 
-        <!-- Row 2: Email and Phone -->
-        <div class="form-group with-icon">
-          <label for="email">Email Address *</label>
-          <input type="email" id="email" name="email" maxlength="150" required placeholder="Enter email">
-          <i class="fas fa-envelope form-icon"></i>
+    <!-- Navigation (using your theme) -->
+    <nav class="main-navbar">
+        <div class="container">
+            <div class="nav-content">
+                <ul class="nav-links">
+                    <li><a href="landingpage.jsp">Home</a></li>
+                    <li><a href="aboutus.jsp">About Us</a></li>
+                    <li><a href="login.jsp">Login</a></li>
+                </ul>
+            </div>
         </div>
-        <div class="form-group with-icon">
-          <label for="phone">Phone Number</label>
-          <input type="tel" id="phone" name="phone" maxlength="20" pattern="[\d\s\-+]*" placeholder="+91 9876543210">
-          <i class="fas fa-phone form-icon"></i>
-        </div>
+    </nav>
 
-        <!-- Row 3: Password (Full Width) -->
-        <div class="form-group with-icon ">
-          <label for="password">Password *</label>
-          <input type="password" id="password" name="password" minlength="6" maxlength="60" required placeholder="Create password (min. 6 characters)">
-          <i class="fas fa-lock form-icon"></i>
-          <small>Minimum 6 characters required</small>
-        </div>
-      </div>
+    <!-- Main Content -->
+    <main>
+        <!-- Registration Section -->
+        <section class="register-section">
+            <div class="container">
+                <div class="register-container">
+                    <h2 class="register-title">Student Registration</h2>
+                    <form class="register-form" action="RegisterStudent" method="post">
+                        <div class="form-grid">
+                            <!-- Row 1: Student ID and Full Name -->
+                            <div class="form-group">
+                                <label for="studentid">
+                                    <i class="fas fa-id-card"></i>
+                                    Student ID *
+                                </label>
+                                <input type="text" id="studentid" name="studentid"
+                                       placeholder="Enter Student ID" required>
+                            </div>
 
-      <div class="submit-section">
-        <button type="submit" class="btn btn-primary">Register</button>
-        <div class="login-link">
-          Already registered? <a href="login.jsp">Login here</a>
-        </div>
-      </div>
-    </form>
-  </div>
-</section>
+                            <div class="form-group">
+                                <label for="name">
+                                    <i class="fas fa-user"></i>
+                                    Full Name *
+                                </label>
+                                <input type="text" id="name" name="name"
+                                       placeholder="Enter Full Name" required>
+                            </div>
 
-        <!-- Testimonials Section -->
+                            <!-- Row 2: Email and Phone -->
+                            <div class="form-group">
+                                <label for="email">
+                                    <i class="fas fa-envelope"></i>
+                                    Email Address *
+                                </label>
+                                <input type="email" id="email" name="email"
+                                       placeholder="Enter Email Address" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="phone">
+                                    <i class="fas fa-phone"></i>
+                                    Phone Number
+                                </label>
+                                <input type="tel" id="phone" name="phone"
+                                       placeholder="+91 9876543210">
+                            </div>
+
+                            <!-- Row 3: Password (Full Width) -->
+                            <div class="form-group full-width">
+                                <label for="password">
+                                    <i class="fas fa-lock"></i>
+                                    Password *
+                                </label>
+                                <input type="password" id="password" name="password"
+                                       placeholder="Create Password (min. 6 characters)" required>
+                                <small>Minimum 6 characters required</small>
+                            </div>
+                        </div>
+
+                        <div class="submit-section">
+                            <button type="submit" class="btn btn-primary register-btn">
+                                <i class="fas fa-user-plus"></i>
+                                Register
+                            </button>
+                            <p class="login-link">
+                                Already registered?
+                                <a href="login.jsp">Login here</a>
+                            </p>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <!-- Testimonials Section (using your theme) -->
         <section class="testimonials">
             <div class="container">
                 <h2 class="section-title">What Our Users Say</h2>
@@ -77,7 +130,7 @@
                     <div class="testimonial-card">
                         <div class="testimonial-content">
                             <i class="fas fa-quote-left"></i>
-                            <p>"Parikshan transformed how we conduct online exams. The proctoring system is reliable and the interface is incredibly user-friendly."</p>
+                            <p>"Parikshan transformed how we conduct online exams. The proctoring system is reliable and user-friendly."</p>
                         </div>
                         <div class="testimonial-author">
                             <div class="author-avatar">
@@ -100,7 +153,7 @@
                     <div class="testimonial-card">
                         <div class="testimonial-content">
                             <i class="fas fa-quote-left"></i>
-                            <p>"The variety of question formats helped me prepare better for my exams. The instant results feature is fantastic!"</p>
+                            <p>"The variety of question formats helped me prepare better. The instant results feature is fantastic!"</p>
                         </div>
                         <div class="testimonial-author">
                             <div class="author-avatar">
@@ -123,7 +176,7 @@
                     <div class="testimonial-card">
                         <div class="testimonial-content">
                             <i class="fas fa-quote-left"></i>
-                            <p>"Secure, efficient, and comprehensive. Parikshan has made online testing seamless for our entire institution."</p>
+                            <p>"Secure, efficient, and comprehensive. Parikshan has made online testing seamless for our institution."</p>
                         </div>
                         <div class="testimonial-author">
                             <div class="author-avatar">
@@ -145,13 +198,22 @@
                 </div>
             </div>
         </section>
-
-
     </main>
 
+    <!-- Footer (using your theme) -->
+    <footer class="main-footer">
+        <div class="container">
+            <div class="footer-bottom">
+                <div class="footer-bottom-content">
+                    <div class="copyright">
+                        <p>&copy; 2025 Parikshan - Online Testing Platform</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
     <!-- Footer -->
-    <div id="footer-container"></div>
-
-   <script src="js/register.js"></script>
+        <div id="footer-container"></div>
+        <script src="js/register.js"></script>
 </body>
 </html>

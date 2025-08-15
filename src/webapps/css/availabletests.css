@@ -21,7 +21,7 @@ table.test-table {
     min-width: 800px;
 }
 .test-table thead {
-    background: var(--primary-color);
+    background: black;
     color: #fff;
 }
 .test-table th,
@@ -76,3 +76,46 @@ table.test-table {
     margin: 0 auto var(--space-md);
 }
 @keyframes spin { to { transform: rotate(360deg); } }
+/* ----- Navbar dropdown ----- */
+.nav-links .dropdown { position: relative; }
+.dropdown-toggle i   { margin-left: 4px; font-size: 0.7rem; }
+
+/* menu hidden by default */
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    top: 100%; left: 0;
+    background: var(--bg-primary);
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius-md);
+    min-width: 180px;
+    box-shadow: var(--shadow-md);
+    z-index: 20;
+}
+
+/* show on hover or keyboard focus */
+.dropdown:hover .dropdown-menu,
+.dropdown:focus-within .dropdown-menu { display: block; }
+
+/* menu links */
+.dropdown-menu a {
+    display: block;
+    padding: var(--space-sm) var(--space-md);
+    color: var(--text-primary);
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background var(--transition-fast);
+}
+
+.dropdown-menu a:hover,
+.dropdown-menu a:focus {
+    background: var(--gray-100);
+    color: var(--primary-color);
+}
+
+/* rotate caret when open */
+.dropdown:hover .dropdown-toggle i,
+.dropdown:focus-within .dropdown-toggle i {
+    transform: rotate(180deg);
+    transition: transform var(--transition-fast);
+}

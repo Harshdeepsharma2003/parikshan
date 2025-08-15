@@ -17,16 +17,7 @@ public class RecordingServiceImpl implements RecordingService {
     @Override
     public boolean saveRecording(String testid, String userid, byte[] recordingData) {
         try {
-            // Check if userid is student or tempuser
             String studentid = null;
-            String tempuserid = null;
-
-            // Simple logic: if userid length > 10, it's probably a tempuser UUID
-            if (userid.length() > 10) {
-                tempuserid = userid;
-            } else {
-                studentid = userid;
-            }
 
             // RecordingServiceImpl.java - Fix in saveRecording method
             Recording recording = new Recording(testid, studentid, recordingData, (long) recordingData.length);

@@ -33,7 +33,7 @@ public class QuestionDaoImpl implements QuestionDao {
     @Override
     public List<Question> getQuestionsByTestId(String testId) throws Exception {
         List<Question> questions = new ArrayList<>();
-        // FIXED: Add DISTINCT and better filtering to avoid duplicates
+
         String sql = "SELECT DISTINCT questionid, content, questiontype, imageurl, testid, answertext, iscorrect " +
                 "FROM questions WHERE testid = ? AND questiontype = 'MCQ' AND iscorrect = true " +
                 "ORDER BY questionid";

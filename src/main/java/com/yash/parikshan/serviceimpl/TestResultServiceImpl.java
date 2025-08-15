@@ -144,4 +144,10 @@ public class TestResultServiceImpl implements TestResultService {
     public TestResult getTestResult(String testId, String studentId) {
         return null;
     }
-}
+
+    @Override
+    public List<TestResult> findByStudentId(String studentId) throws Exception {
+        return testResultDao.findByStudentId(studentId);
+        }
+    }
+

@@ -21,14 +21,13 @@ public class Recording {
         this.createdAt = createdAt;
     }
 
-    // ADD THIS NEW CONSTRUCTOR - for creating new recordings
+
     public Recording(String testid, String studentid,byte[] recordingData, long fileSize) {
 
         this.testid = testid;
         this.studentid = studentid;
         this.recordingData = recordingData;
         this.fileSize = fileSize;
-        // createdAt will be set by database DEFAULT CURRENT_TIMESTAMP
     }
 
     public Long getId() {

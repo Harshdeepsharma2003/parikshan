@@ -11,47 +11,24 @@
 <head>
     <meta charset="UTF-8">
     <title>Test Results - Parikshan</title>
-     <link rel="stylesheet" href="css/studentresults.css">
-
+    <link rel="stylesheet" href="css/studentresults.css">
+    <!-- Basic stylesheet -->
+        <link rel="stylesheet" href="css/landingpage.css">
+     <link rel="stylesheet" href="css/studenthome.css">
+        <link rel="stylesheet" href="css/adminhome.css">
 </head>
 <body>
+ <link rel="stylesheet" href="css/landingpage.css">
+ <link rel="stylesheet" href="css/studenthome.css">
+ <link rel="stylesheet" href="css/adminhome.css">
     <div class="container">
-        <div class="header">
-            <h1>📊 Test Results</h1>
+        <h1>Test Results</h1>
 
-            <!-- User Info -->
-            <div class="user-info">
-                <c:choose>
-                    <c:when test="${userType eq 'admin'}">
-                        <p><strong>👨‍💼 Admin View:</strong> Viewing all test results</p>
-                    </c:when>
-                    <c:otherwise>
-                        <p><strong>👨‍🎓 Student View:</strong> Your test results</p>
-                    </c:otherwise>
-                </c:choose>
-            </div>
-        </div>
 
-        <!-- Error/Info Messages -->
-        <c:if test="${not empty errorMessage}">
-            <div class="error-message">
-                <strong>⚠️ Error:</strong> ${errorMessage}
-            </div>
-        </c:if>
-
-        <c:if test="${not empty infoMessage}">
-            <div class="info-message">
-                <strong>ℹ️ Info:</strong> ${infoMessage}
-            </div>
-        </c:if>
-
-        <!-- Statistics Summary -->
+        <!-- Simple Stats -->
         <c:if test="${not empty testResults}">
-            <div class="stats-summary">
-                <div class="stat-card">
-                    <div class="stat-number">${totalResults}</div>
-                    <div class="stat-label">Total Results</div>
-                </div>
+            <div class="stats">
+                <p><strong>Total Results: ${totalResults}</strong></p>
             </div>
         </c:if>
 
@@ -59,7 +36,7 @@
         <div class="filter-section">
             <form method="get" action="DisplayStudentResults">
                 <div class="filter-row">
-                    <div class="filter-group">
+                    <div>
                         <label for="testId">Filter by Test:</label>
                         <select name="testId" id="testId">
                             <option value="">All Tests</option>
@@ -74,19 +51,16 @@
 
                     <!-- Admin can filter by student ID -->
                     <c:if test="${userType eq 'admin'}">
-                        <div class="filter-group">
+                        <div>
                             <label for="studentId">Filter by Student ID:</label>
                             <input type="text" name="studentId" id="studentId"
                                    value="${selectedStudentId}" placeholder="Enter Student ID">
                         </div>
                     </c:if>
 
-                    <div class="filter-group">
-                        <input type="submit" value="🔍 Filter Results">
-                    </div>
-
-                    <div class="filter-group">
-                        <a href="DisplayStudentResults" class="btn">🔄 Clear Filters</a>
+                    <div>
+                        <input type="submit" value="Filter Results" class="btn-primary">
+                        <a href="DisplayStudentResults" class="btn">Clear Filters</a>
                     </div>
                 </div>
             </form>
@@ -104,7 +78,7 @@
                         <th>Test Title</th>
                         <th>Score</th>
                         <th>Percentage</th>
-                        <th>Time Taken (in seconds)</th>
+                        <th>Time Taken</th>
                         <th>Test Date</th>
                     </tr>
                 </thead>
@@ -124,7 +98,6 @@
                                     <td><strong>${result.score}/${result.totalMarks}</strong></td>
                                     <td>
                                         <%
-                                            // Calculate percentage
                                             TestResult currentResult = (TestResult) pageContext.getAttribute("result");
                                             double percentage = 0;
                                             try {
@@ -151,14 +124,9 @@
                                         <c:choose>
                                             <c:when test="${not empty result.timeTaken}">
                                                 ${result.timeTaken}
-                                                <c:choose>
-                                                    <c:when test="${fn:contains(result.timeTaken, ':')}">
-                                                        <!-- Already formatted as MM:SS -->
-                                                    </c:when>
-                                                    <c:otherwise>
-                                                        sec
-                                                    </c:otherwise>
-                                                </c:choose>
+                                                <c:if test="${not fn:contains(result.timeTaken, ':')}">
+                                                    sec
+                                                </c:if>
                                             </c:when>
                                             <c:otherwise>
                                                 N/A
@@ -175,7 +143,7 @@
                         <c:otherwise>
                             <tr>
                                 <td colspan="${userType eq 'admin' ? '7' : '6'}" class="no-results">
-                                    📋 No test results found for the selected criteria.
+                                    No test results found.
                                     <c:if test="${userType ne 'admin'}">
                                         <br><a href="testformats.jsp" class="btn">Take a Test</a>
                                     </c:if>
@@ -191,15 +159,17 @@
         <div class="actions">
             <c:choose>
                 <c:when test="${userType eq 'admin'}">
-                    <a href="adminhome.jsp" class="btn">🏠 Admin Dashboard</a>
-                    <a href="processrecording.jsp" class="btn">📊 Detailed Analytics</a>
+                    <a href="adminhome.jsp" class="btn">Home</a>
+                    <a href="processrecording.jsp" class="btn">Detailed Analytics</a>
                 </c:when>
                 <c:otherwise>
-                    <a href="homestudent.jsp" class="btn">🏠 Student Dashboard</a>
-                    <a href="testformats.jsp" class="btn">📝 Take Another Test</a>
+                    <a href="homestudent.jsp" class="btn">Student Dashboard</a>
+                    <a href="testformats.jsp" class="btn">Take Another Test</a>
                 </c:otherwise>
             </c:choose>
         </div>
     </div>
+    <!-- Footer placeholder -->
+    <div id="footer-container"></div>
 </body>
 </html>

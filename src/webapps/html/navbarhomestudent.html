@@ -1,43 +1,25 @@
+<!-- Navigation (using your theme) -->
 <nav class="main-navbar">
     <div class="container">
-        <div class="navbar-content">
-            <div class="navbar-brand">
-                <a href="homestudent.jsp">
-                    <i class="fas fa-home"></i>
-                    <span>Home</span>
-                </a>
-            </div>
+        <div class="nav-content">
+            <ul class="nav-links">
+                <li><a href="instructions.jsp">Instructions</a></li>
+                <li><a href="AvailableTests">Available Tests</a></li>
+                <li><a href="MyResults">My Results</a></li>
 
-            <ul class="navbar-menu">
-                <li class="navbar-item">
-                    <a href="instructions.jsp" class="navbar-link">
-                        <i class="fas fa-clipboard-list"></i>
-                        <span>Instructions</span>
+                <!-- Other nav items … -->
+                <li class="dropdown">
+                    <a href="profile.jsp" class="dropdown-toggle">
+                        Profile <i class="fas fa-angle-down"></i>
                     </a>
-                </li>
-                <li class="navbar-item dropdown">
-                    <a href="#" class="navbar-link dropdown-toggle">
-                        <i class="fas fa-users"></i>
-                        <span>Account Profile </span>
-                        <i class="fas fa-chevron-down"></i>
-                    </a>
+
                     <ul class="dropdown-menu">
-                        <!--   <li><a href="student-dashboard.jsp">Dashboard</a></li>
-                           <li><a href="available-tests.jsp">Available Tests</a></li>
-                           <li><a href="test-history.jsp">Test History</a></li>
-                         -->
                         <li><a href="updateprofile.jsp">Update Profile</a></li>
                         <li><a href="deleteprofile.jsp">Delete Profile</a></li>
-
                     </ul>
                 </li>
-               </ul>
+            </ul>
 
-            <div class="navbar-toggle">
-                <span></span>
-                <span></span>
-                <span></span>
-            </div>
         </div>
     </div>
 </nav>

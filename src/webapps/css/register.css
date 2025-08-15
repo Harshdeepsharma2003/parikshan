@@ -1,286 +1,272 @@
-/* Student Registration Form Section - Compact Grid Layout */
-.student-register-section {
+/* Registration Section */
+.register-section {
     background: linear-gradient(135deg, var(--bg-primary) 0%, var(--gray-50) 100%);
-    padding: var(--space-xl) 0;
-    position: relative;
-    overflow: hidden;
-    min-height: 60vh;
+    padding: var(--space-3xl) 0;
+    min-height: 70vh;
     display: flex;
     align-items: center;
+    position: relative;
 }
 
-.student-register-section::before {
+.register-section::before {
     content: '';
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    background: radial-gradient(circle at 30% 70%, rgba(37, 99, 235, 0.08) 0%, transparent 50%);
+    background: radial-gradient(circle at 30% 20%, rgba(37, 99, 235, 0.05) 0%, transparent 50%);
     pointer-events: none;
 }
 
-.student-register-section .container {
-    position: relative;
-    z-index: 1;
-    max-width: 900px;
+.register-container {
+    max-width: 700px;
     margin: 0 auto;
-    width: 100%;
-}
-
-.student-register-section .section-title {
-    text-align: center;
-    margin-bottom: var(--space-lg);
-    color: var(--text-primary);
-    font-size: 2rem;
-    font-weight: 700;
-    position: relative;
-}
-
-.student-register-section .section-title::after {
-    content: '';
-    position: absolute;
-    bottom: -6px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 70px;
-    height: 3px;
-    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
-    border-radius: var(--radius-sm);
-}
-
-/* Registration Form - Compact Grid */
-.register-form {
     background: var(--bg-primary);
-    padding: var(--space-xl);
+    padding: var(--space-2xl);
     border-radius: var(--radius-xl);
-    box-shadow: var(--shadow-xl);
+    box-shadow: var(--shadow-lg);
     border: 1px solid var(--gray-200);
     position: relative;
-    overflow: hidden;
+    z-index: 1;
 }
 
-.register-form::before {
+.register-title {
+    text-align: center;
+    font-size: 2rem;
+    margin-bottom: var(--space-xl);
+    color: var(--text-primary);
+    font-weight: 700;
+}
+
+.register-title::after {
     content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
+    display: block;
+    width: 80px;
     height: 3px;
     background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+    margin: var(--space-md) auto 0;
+    border-radius: var(--radius-md);
 }
 
-/* Compact Form Grid Layout */
+/* Form Grid Layout - Updated */
 .form-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: var(--space-lg) var(--space-xl);
-    margin-bottom: var(--space-lg);
+    gap: var(--space-lg);
+    margin-bottom: var(--space-xl);
 }
 
 .form-group {
     position: relative;
-    margin-bottom: 0;
 }
 
+/* Password field - smaller width (same as other fields) */
 .form-group.full-width {
-    grid-column: 1 / -1;
+    grid-column: 1 / 2; /* Only first column - same size as other fields */
+    max-width: 350px;
 }
 
-/* Compact Labels */
+/* Form Labels */
 .register-form .form-group label {
-    display: block;
-    margin-bottom: var(--space-xs);
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    margin-bottom: var(--space-sm);
     color: var(--text-primary);
     font-weight: 600;
-    font-size: 0.85rem;
-    position: relative;
+    font-size: 0.9rem;
 }
 
-.register-form .form-group label::after {
-    content: '';
-    position: absolute;
-    left: 0;
-    bottom: -1px;
-    width: 0;
-    height: 1px;
-    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
-    transition: width var(--transition-fast);
+.register-form .form-group label i {
+    color: var(--primary-color);
+    width: 16px;
 }
 
-.register-form .form-group:focus-within label::after {
-    width: 100%;
-}
-
-/* Compact Input Fields */
+/* Form Inputs */
 .register-form .form-group input {
     width: 100%;
-    padding: var(--space-sm) var(--space-md);
-    border: 1px solid var(--gray-200);
-    border-radius: var(--radius-sm);
-    font-size: 0.9rem;
+    padding: var(--space-md);
+    border: 1px solid var(--gray-300);
+    border-radius: var(--radius-md);
+    font-size: 1rem;
     color: var(--text-primary);
     background: var(--bg-primary);
     transition: all var(--transition-fast);
-    box-sizing: border-box;
-    height: 38px;
+    max-width: 100%;
 }
 
 .register-form .form-group input:focus {
     outline: none;
     border-color: var(--primary-color);
-    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
-    transform: translateY(-1px);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
 }
 
 .register-form .form-group input::placeholder {
     color: var(--text-secondary);
-    font-size: 0.85rem;
-    transition: all var(--transition-fast);
 }
 
-.register-form .form-group input:focus::placeholder {
-    opacity: 0.6;
-}
-
-/* Compact Helper Text */
+/* Helper Text */
 .register-form .form-group small {
     display: block;
-    margin-top: 2px;
+    margin-top: var(--space-xs);
     color: var(--text-secondary);
-    font-size: 0.75rem;
-    font-style: italic;
-    opacity: 0.8;
-    line-height: 1.2;
+    font-size: 0.8rem;
 }
 
-.register-form .form-group:focus-within small {
-    color: var(--primary-color);
-    opacity: 1;
-}
-
-/* Compact Icons */
-.form-group.with-icon input {
-    padding-left: 2.2rem;
-}
-
-.form-group.with-icon .form-icon {
-    position: absolute;
-    left: var(--space-xs);
-    top: 50%;
-    transform: translateY(-50%);
-    color: var(--text-secondary);
-    font-size: 0.85rem;
-    z-index: 2;
-    margin-top: 10px;
-    transition: all var(--transition-fast);
-}
-
-.form-group.with-icon:focus-within .form-icon {
-    color: var(--primary-color);
-    transform: translateY(-50%) scale(1.05);
-}
-
-/* Submit Button - Compact */
+/* Submit Section */
 .submit-section {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: var(--space-sm);
-    margin-top: var(--space-md);
-}
-
-.register-form .btn {
-    min-width: 180px;
-    padding: var(--space-sm) var(--space-xl);
-    font-size: 0.95rem;
-    font-weight: 600;
-    border-radius: var(--radius-md);
-    transition: all var(--transition-normal);
-    position: relative;
-    overflow: hidden;
-    text-transform: uppercase;
-    letter-spacing: 0.3px;
-    height: 42px;
-}
-
-.register-form .btn-primary {
-    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
-    color: var(--text-light);
-    border: none;
-    box-shadow: var(--shadow-md);
-}
-
-.register-form .btn-primary::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-    transition: left 0.5s;
-}
-
-.register-form .btn-primary:hover {
-    background: linear-gradient(135deg, var(--primary-dark), var(--primary-color));
-    box-shadow: var(--shadow-lg);
-    transform: translateY(-1px);
-}
-
-.register-form .btn-primary:hover::before {
-    left: 100%;
-}
-
-/* Compact Login Link */
-.login-link {
     text-align: center;
+}
+
+.register-btn {
+    width: 100%;
+    max-width: 300px;
+    margin-bottom: var(--space-lg);
+    padding: var(--space-md) var(--space-lg);
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.login-link {
     color: var(--text-secondary);
-    font-size: 0.85rem;
+    font-size: 0.9rem;
+    margin-top: var(--space-md);
+    padding-top: var(--space-md);
+    border-top: 1px solid var(--gray-200);
 }
 
 .login-link a {
     color: var(--primary-color);
     text-decoration: none;
     font-weight: 600;
-    transition: all var(--transition-fast);
-    position: relative;
-}
-
-.login-link a::after {
-    content: '';
-    position: absolute;
-    bottom: -1px;
-    left: 0;
-    width: 0;
-    height: 1px;
-    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
-    transition: width var(--transition-fast);
+    transition: color var(--transition-fast);
 }
 
 .login-link a:hover {
     color: var(--primary-dark);
 }
 
-.login-link a:hover::after {
-    width: 100%;
+/* Testimonials Section */
+.testimonials {
+    padding: var(--space-3xl) 0;
+    background: var(--gray-50);
 }
 
-/* Validation States - Compact */
+.testimonials .section-title {
+    text-align: center;
+    font-size: 2.5rem;
+    margin-bottom: var(--space-md);
+    color: var(--text-primary);
+}
+
+.testimonials .section-subtitle {
+    text-align: center;
+    font-size: 1.125rem;
+    color: var(--text-secondary);
+    margin-bottom: var(--space-3xl);
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.testimonials-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: var(--space-xl);
+    margin-top: var(--space-2xl);
+}
+
+.testimonial-card {
+    background: var(--bg-primary);
+    padding: var(--space-xl);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-md);
+    border: 1px solid var(--gray-200);
+    transition: all var(--transition-normal);
+}
+
+.testimonial-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-lg);
+}
+
+.testimonial-content {
+    margin-bottom: var(--space-lg);
+}
+
+.testimonial-content i {
+    color: var(--primary-color);
+    font-size: 1.5rem;
+    margin-bottom: var(--space-sm);
+    display: block;
+}
+
+.testimonial-content p {
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin: 0;
+}
+
+.testimonial-author {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    margin-bottom: var(--space-md);
+}
+
+.author-avatar {
+    width: 50px;
+    height: 50px;
+    background: var(--primary-color);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.2rem;
+}
+
+.author-info h4 {
+    margin: 0;
+    color: var(--text-primary);
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.author-info span {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+.rating {
+    text-align: left;
+}
+
+.rating i {
+    color: #fbbf24;
+    margin-right: 2px;
+    font-size: 0.9rem;
+}
+
+/* Form Validation States */
 .register-form .form-group input:valid:not(:placeholder-shown) {
-    border-color: var(--success-color);
-    background-image: linear-gradient(45deg, transparent 40%, rgba(34, 197, 94, 0.02) 40%, rgba(34, 197, 94, 0.02) 60%, transparent 60%);
+    border-color: var(--secondary-color);
 }
 
 .register-form .form-group input:invalid:not(:placeholder-shown) {
-    border-color: var(--error-color);
-    background-image: linear-gradient(45deg, transparent 40%, rgba(239, 68, 68, 0.02) 40%, rgba(239, 68, 68, 0.02) 60%, transparent 60%);
+    border-color: #ef4444;
 }
 
-/* Responsive Grid Layout */
+/* Responsive Design */
 @media (max-width: 768px) {
-    .student-register-section {
-        padding: var(--space-lg) 0;
+    .register-section {
+        padding: var(--space-xl) 0;
+    }
+
+    .register-container {
+        margin: 0 var(--space-md);
+        padding: var(--space-xl);
     }
 
     .form-grid {
@@ -288,69 +274,62 @@
         gap: var(--space-md);
     }
 
-    .register-form {
-        padding: var(--space-lg);
+    /* Password field full width on mobile */
+    .form-group.full-width {
+        grid-column: 1 / -1;
+        max-width: none;
     }
 
-    .student-register-section .section-title {
+    .register-title {
         font-size: 1.7rem;
-        margin-bottom: var(--space-md);
+    }
+
+    .testimonials .section-title {
+        font-size: 2rem;
+    }
+
+    .testimonials-grid {
+        grid-template-columns: 1fr;
     }
 }
 
 @media (max-width: 480px) {
-    .student-register-section {
-        padding: var(--space-md) 0;
+    .register-container {
+        margin: 0 var(--space-sm);
+        padding: var(--space-lg);
     }
 
-    .register-form {
-        padding: var(--space-md);
-        margin: 0 var(--space-xs);
-    }
-
-    .student-register-section .section-title {
+    .register-title {
         font-size: 1.5rem;
     }
 
     .register-form .form-group input {
-        height: 36px;
-        padding: var(--space-xs) var(--space-sm);
+        padding: var(--space-sm);
+        font-size: 0.9rem;
     }
 
-    .form-group.with-icon input {
-        padding-left: 2rem;
+    .register-btn {
+        padding: var(--space-sm) var(--space-md);
+        font-size: 0.9rem;
     }
 
-    .form-group.with-icon .form-icon {
-        font-size: 0.8rem;
-        left: 6px;
-    }
-}
-
-/* Three Column Layout for Larger Screens */
-@media (min-width: 1200px) {
-    .form-grid {
-        grid-template-columns: repeat(3, 1fr);
-        gap: var(--space-md) var(--space-lg);
+    .testimonial-card {
+        padding: var(--space-lg);
     }
 
-    .form-group.half-width {
-        grid-column: span 1;
-    }
-
-    .form-group.two-thirds {
-        grid-column: span 2;
+    .testimonials .section-title {
+        font-size: 1.8rem;
     }
 }
 
-/* Loading State - Compact */
-.register-form .btn.loading {
+/* Loading State for Register Button */
+.register-btn.loading {
     position: relative;
     color: transparent;
     cursor: not-allowed;
 }
 
-.register-form .btn.loading::after {
+.register-btn.loading::after {
     content: '';
     position: absolute;
     width: 16px;
@@ -363,4 +342,26 @@
     border-top-color: var(--text-light);
     border-radius: 50%;
     animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Focus States for Better Accessibility */
+.register-form .form-group input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.register-btn:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.3);
+}
+
+.login-link a:focus {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
 }

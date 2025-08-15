@@ -1,4 +1,3 @@
-
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions"  prefix="fn" %>
@@ -10,23 +9,63 @@
     <title>Available Tests - Parikshan</title>
 
     <!-- Shared styles / icons -->
-    <link rel="stylesheet" href="css/common.css">
+
+     <link rel="stylesheet" href="css/studenthome.css"> <!-- Simple student home styles -->
+<link rel="stylesheet" href="css/landingpage.css"> <!-- Your main theme CSS -->
+
      <link rel="stylesheet" href="css/availabletests.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 
 </head>
 <body>
-<!-- Loading Overlay -->
-<div class="loading-overlay" id="loadingOverlay">
-    <div class="loading-box">
-        <div class="spinner"></div>
-        <p>Please wait…</p>
-    </div>
-</div>
+<!-- ===== Header ===== -->
+<header class="main-header">
+    <div class="container">
+        <div class="header-content">
+            <!-- Brand -->
+            <div class="logo">
+                <a href="landingpage.jsp">
+                    <div class="logo-icon"><i class="fas fa-graduation-cap"></i></div>
+                    <span class="logo-text">Parikshan</span>
+                </a>
+            </div>
 
-<!-- Header / Navbar / Footer placeholders -->
-<div id="header-container"></div>
-<div id="navbar-container"></div>
+            <!-- Right-side actions -->
+            <div class="header-actions">
+                <div class="auth-buttons">
+                    <a href="logout" class="btn btn-primary-small">
+                        <i class="fas fa-sign-out-alt"></i>
+                        Logout
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- ===== Navbar ===== -->
+<nav class="main-navbar">
+    <div class="container">
+        <div class="nav-content">
+            <ul class="nav-links">
+                <li><a href="homestudent.jsp">Home</a></li>
+               <li><a href="myresults.jsp">My Results</a></li>
+
+                <!-- Profile dropdown -->
+                <li class="dropdown">
+                    <a href="profile.jsp" class="dropdown-toggle" aria-haspopup="true" aria-expanded="false">
+                        Profile <i class="fas fa-angle-down"></i>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a href="updateprofile.jsp">Update Profile</a></li>
+                        <li><a href="deleteprofile.jsp">Delete Profile</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
 
 <main>
     <section class="list-section">

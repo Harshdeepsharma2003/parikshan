@@ -12,11 +12,11 @@ public class TestResult {
     private String timeTaken;
     private Timestamp testDate;
 
-    // Additional fields for display purposes
+    // For display purposes
     private String studentName;
     private String testTitle;
     private String percentage;
-    private String status = "COMPLETED"; // COMPLETED, TERMINATED
+    private String status = "COMPLETED";
     private String invalidationReason;
     private int violationCount = 0;
 

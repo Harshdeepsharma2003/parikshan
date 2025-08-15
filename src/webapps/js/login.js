@@ -14,7 +14,7 @@ fetch('html/loginnavbar.html')
 });
 
 // Load external navbar
-fetch('html/loginfooter.html')
+fetch('html/footer.html')
     .then(response => response.text())
     .then(data => {
     document.getElementById('footer-container').innerHTML = data;

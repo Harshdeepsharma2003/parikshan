@@ -5,13 +5,12 @@ public class Question {
     private String questionId;
     private String testId;
     private String content;
-    private String questionType;  // e.g., "MCQ", "TrueFalse", "FillBlank"
-    private String imageUrl;// optional
+    private String questionType;
+    private String imageUrl;
     private String answerText;
     private boolean isCorrect;
 
     public Question(){}
-
 
     public Question(String questionId, String testId, String content, String questionType, String imageUrl, String answerText, boolean isCorrect) {
         this.questionId = questionId;

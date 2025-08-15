@@ -3,93 +3,58 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Parikshan -Admin Dashboard</title>
-    <link rel="stylesheet" href="css/common.css">
+    <title>Parikshan · Admin Dashboard</title>
+
+    <!-- Basic stylesheet -->
+    <link rel="stylesheet" href="css/landingpage.css">
+    <link rel="stylesheet" href="css/studenthome.css">
     <link rel="stylesheet" href="css/adminhome.css">
+    <!-- Font & Icons (optional) -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+
 </head>
 <body>
 
-    <!-- Header -->
-    <div id="header-container"></div>
+<!-- Header / Navbar placeholders -->
+<div id="header-container"></div>
+<div id="navbar-container"></div>
 
-    <!-- Navbar -->
-    <div id="navbar-container"></div>
-
-<a href="AdminResultsServlet" class="btn">📊 Test Results Dashboard</a>
+<main class="dashboard">
+    <h1 class="page-title">Admin Dashboard</h1>
 
 
-    <!-- Teacher Dashboard Section -->
-    <section class="teacher-dashboard">
-        <div class="container">
-            <h2 class="section-title">Admin Dashboard</h2>
-            <p class="section-subtitle">Create tests, track student progress, and manage your courses</p>
+    <section class="cards">
+        <!-- Card 1 -->
+        <a href="createtest.jsp" class="card">
+            <i class="fas fa-plus-circle card-icon"></i>
+            <h2>Create Test</h2>
+            <p>Design new tests and set time limits.</p>
+        </a>
 
-            <div class="teacher-features-grid">
-                <div class="teacher-feature-card">
-                    <a href="createtest.jsp">
-                        <div class="feature-icon">
-                            <i class="fas fa-plus-circle"></i>
-                        </div>
-                        <h3>Create Test</h3>
-                        <p>Design new tests with multiple question types, set time limits, and configure grading parameters.</p>
-                        <div class="feature-benefits">
-                            <span>MCQ Questions</span>
-                            <span>Auto Grading</span>
-                            <span>Time Control</span>
-                        </div>
-                        <div class="feature-action">
-                            <span>Create New Test</span>
-                            <i class="fas fa-arrow-right"></i>
-                        </div>
-                    </a>
-                </div>
+        <!-- Card 2 -->
+        <a href="managetest.jsp" class="card">
+            <i class="fas fa-edit card-icon"></i>
+            <h2>Manage Tests</h2>
+            <p>Edit tests and control availability.</p>
+        </a>
 
-                <div class="teacher-feature-card">
-                    <a href="managetest.jsp">
-                        <div class="feature-icon">
-                            <i class="fas fa-edit"></i>
-                        </div>
-                        <h3>Manage Tests</h3>
-                        <p>Edit existing tests, update questions, modify schedules, and control test availability.</p>
-                        <div class="feature-benefits">
-                            <span>Edit Tests</span>
-                            <span>Schedule Tests</span>
-                            <span>Test Settings</span>
-                        </div>
-                        <div class="feature-action">
-                            <span>Manage Tests</span>
-                            <i class="fas fa-arrow-right"></i>
-                        </div>
-                    </a>
-                </div>
-
-                <div class="teacher-feature-card">
-                    <a href="DisplayStudentResults">
-                        <div class="feature-icon">
-                            <i class="fas fa-chart-line"></i>
-                        </div>
-                        <h3>Student Results</h3>
-                        <p>View detailed student performance, analyze test results, and generate progress reports.</p>
-                        <div class="feature-benefits">
-                            <span>Grade Analysis</span>
-                            <span>Performance Tracking</span>
-                            <span>Export Reports</span>
-                        </div>
-                        <div class="feature-action">
-                            <span>View Results</span>
-                            <i class="fas fa-arrow-right"></i>
-                        </div>
-                    </a>
-                </div>
-
-            </div>
-        </div>
+        <!-- Card 3 -->
+        <a href="DisplayStudentResults" class="card">
+            <i class="fas fa-chart-line card-icon"></i>
+            <h2>Student Results</h2>
+            <p>View detailed performance reports.</p>
+        </a>
+          <a href="AdminResultsServlet" class="btn-primary mb-32">
+                <i class="fas fa-chart-bar"></i>
+                Recordings Results
+            </a>
     </section>
+</main>
 
-    <!-- Footer -->
-    <div id="footer-container"></div>
+<!-- Footer placeholder -->
+<div id="footer-container"></div>
+<script src="js/adminhome.js"></script>
 
-    <script src="js/adminhome.js"></script>
 </body>
 </html>

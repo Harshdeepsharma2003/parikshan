@@ -11,9 +11,9 @@ public class VideoProcessorResult {
     private String studentId;
     private String testId;
     private Timestamp processedAt;
-    private Long recordingId; // Add recording ID field
+    private Long recordingId;
 
-    // Default constructor
+
     public VideoProcessorResult() {}
 
     // Constructor for error results
@@ -25,7 +25,7 @@ public class VideoProcessorResult {
         return error != null && !error.isEmpty();
     }
 
-    // Getters and Setters
+
     public String getStatus() {
         return status;
     }

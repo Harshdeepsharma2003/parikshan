@@ -30,17 +30,18 @@ public class StudentLogin extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        logger.info("Student login attempt started");
+        logger.info("=== Student login attempt started ===");
 
         String studentId = request.getParameter("studentid");
         String password = request.getParameter("password");
 
         // Log the attempt (without password for security)
-        logger.info("Login attempt for student ID: " + studentId);
+        logger.info("Login attempt for student ID: '" + studentId + "'");
+        System.out.println("DEBUG LOGIN: Student ID from form: '" + studentId + "'");
 
         if (studentId == null || studentId.isEmpty() || password == null || password.isEmpty()) {
             logger.warning("Login attempt failed: Missing student ID or password");
-            request.setAttribute("error", "student ID and password are required.");
+            request.setAttribute("error", "Student ID and password are required.");
             request.getRequestDispatcher("login.jsp").forward(request, response);
             return;
         }
@@ -51,17 +52,40 @@ public class StudentLogin extends HttpServlet {
 
             if (authenticated) {
                 logger.info("Authentication successful for student: " + studentId);
-                HttpSession session = request.getSession();
+
+                // IMPORTANT: Destroy any existing session first
+                HttpSession existingSession = request.getSession(false);
+                if (existingSession != null) {
+                    System.out.println("DEBUG LOGIN: Invalidating existing session: " + existingSession.getId());
+                    existingSession.invalidate();
+                }
+
+                // Create fresh session
+                HttpSession session = request.getSession(true);
+                System.out.println("DEBUG LOGIN: Created new session: " + session.getId());
+
+                // Set session attributes
                 session.setAttribute("studentid", studentId);
+                session.setAttribute("userType", studentId.endsWith("@yash") ? "admin" : "student");
+                session.setAttribute("loginTime", System.currentTimeMillis());
+
+                // VERIFY session was set correctly
+                String verifyStudentId = (String) session.getAttribute("studentid");
+                String verifyUserType = (String) session.getAttribute("userType");
+
+                System.out.println("DEBUG LOGIN: Session attributes set:");
+                System.out.println("  studentid = '" + verifyStudentId + "'");
+                System.out.println("  userType = '" + verifyUserType + "'");
+                System.out.println("  loginTime = " + session.getAttribute("loginTime"));
 
                 // Check if it's an admin (ends with @yash)
                 if (studentId.endsWith("@yash")) {
                     logger.info("Admin user logged in: " + studentId);
-                    session.setAttribute("userType", "admin");
+                    System.out.println("DEBUG LOGIN: Redirecting to adminhome.jsp");
                     response.sendRedirect("adminhome.jsp");
                 } else {
                     logger.info("Student user logged in: " + studentId);
-                    session.setAttribute("userType", "student");
+                    System.out.println("DEBUG LOGIN: Redirecting to homestudent.jsp");
                     response.sendRedirect("homestudent.jsp");
                 }
 
@@ -76,5 +100,11 @@ public class StudentLogin extends HttpServlet {
             request.setAttribute("error", "Database error: " + e.getMessage());
             request.getRequestDispatcher("login.jsp").forward(request, response);
         }
+    }
+
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        logger.info("GET request to StudentLogin - redirecting to login.jsp");
+        response.sendRedirect("login.jsp");
     }
 }

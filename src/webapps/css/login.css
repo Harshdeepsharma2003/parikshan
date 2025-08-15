@@ -1,389 +1,135 @@
-/* Student Login Form Section - Compact Layout */
-.student-login-section {
+/* Login Section Specific Styles */
+.login-section {
     background: linear-gradient(135deg, var(--bg-primary) 0%, var(--gray-50) 100%);
-    padding: var(--space-xl) 0;
-    position: relative;
-    overflow: hidden;
-    min-height: 50vh;
+    padding: var(--space-3xl) 0;
+    min-height: 60vh;
     display: flex;
     align-items: center;
+    position: relative;
 }
 
-.student-login-section::before {
+.login-section::before {
     content: '';
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    background: radial-gradient(circle at 70% 30%, rgba(37, 99, 235, 0.1) 0%, transparent 50%);
+    background: radial-gradient(circle at 30% 20%, rgba(37, 99, 235, 0.05) 0%, transparent 50%);
     pointer-events: none;
 }
 
-.student-login-section .container {
+.login-container {
+    max-width: 350px; /* decreased from 450px */
+    margin: 0 auto;
+    background: var(--bg-primary);
+    padding: var(--space-xl); /* reduced from var(--space-2xl) */
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-lg);
+    border: 1px solid var(--gray-200);
     position: relative;
     z-index: 1;
-    max-width: 500px;
-    margin: 0 auto;
 }
 
-.student-login-section .section-title {
+/* Smaller Title */
+.login-title {
     text-align: center;
-    margin-bottom: var(--space-lg);
+    font-size: 1.3rem; /* smaller mobile title */
+     margin-bottom: var(--space-lg); /* decreased from var(--space-xl) */
     color: var(--text-primary);
-    font-size: 2rem;
     font-weight: 700;
-    position: relative;
 }
 
-.student-login-section .section-title::after {
+.login-title::after {
     content: '';
-    position: absolute;
-    bottom: -6px;
-    left: 50%;
-    transform: translateX(-50%);
+    display: block;
     width: 60px;
     height: 3px;
     background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
-    border-radius: var(--radius-sm);
+    margin: var(--space-md) auto 0;
+    border-radius: var(--radius-md);
 }
 
-/* Login Form Styling - Compact */
-.login-form {
-    background: var(--bg-primary);
-    padding: var(--space-xl);
-    border-radius: var(--radius-xl);
-    box-shadow: var(--shadow-xl);
-    border: 1px solid var(--gray-200);
-    position: relative;
-    overflow: hidden;
-}
-
-.login-form::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 3px;
-    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
-}
-
-/* Compact Form Groups */
+/* Smaller Form Elements */
 .login-form .form-group {
-    margin-bottom: var(--space-lg);
-    position: relative;
+    margin-bottom: var(--space-md); /* decreased from var(--space-lg) */
 }
 
-.login-form .form-group:last-of-type {
-    margin-bottom: var(--space-xl);
-}
-
-/* Compact Labels */
 .login-form .form-group label {
-    display: block;
-    margin-bottom: var(--space-xs);
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    margin-bottom: var(--space-sm);
     color: var(--text-primary);
     font-weight: 600;
-    font-size: 0.85rem;
-    position: relative;
+    font-size: 0.9rem;
 }
 
-.login-form .form-group label::after {
-    content: '';
-    position: absolute;
-    left: 0;
-    bottom: -1px;
-    width: 0;
-    height: 1px;
-    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
-    transition: width var(--transition-fast);
+.login-form .form-group label i {
+    color: var(--primary-color);
+    width: 16px;
 }
 
-.login-form .form-group:focus-within label::after {
-    width: 100%;
-}
-
-/* Compact Input Fields */
 .login-form .form-group input {
     width: 100%;
-    padding: var(--space-sm) var(--space-md);
-    border: 1px solid var(--gray-200);
-    border-radius: var(--radius-sm);
-    font-size: 0.9rem;
+    padding: var(--space-sm); /* decreased from var(--space-md) */
+    border: 1px solid var(--gray-300);
+    border-radius: var(--radius-md);
+    font-size: 0.9rem; /* decreased from 1rem */
     color: var(--text-primary);
     background: var(--bg-primary);
     transition: all var(--transition-fast);
-    box-sizing: border-box;
-    height: 38px;
 }
 
 .login-form .form-group input:focus {
     outline: none;
     border-color: var(--primary-color);
-    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
-    transform: translateY(-1px);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
 }
 
 .login-form .form-group input::placeholder {
     color: var(--text-secondary);
-    font-size: 0.85rem;
-    transition: all var(--transition-fast);
 }
 
-.login-form .form-group input:focus::placeholder {
-    opacity: 0.6;
-}
-
-.login-form .form-group input:valid {
-    border-color: var(--success-color);
-}
-
-.login-form .form-group input:invalid:not(:placeholder-shown) {
-    border-color: var(--error-color);
-}
-
-/* Compact Icons */
-.login-form .form-group.with-icon input {
-    padding-left: 2.2rem;
-}
-
-.login-form .form-group.with-icon .form-icon {
-    position: absolute;
-    left: var(--space-xs);
-    top: 50%;
-    transform: translateY(-50%);
-    color: var(--text-secondary);
-    font-size: 0.85rem;
-    z-index: 2;
-    margin-top: 10px;
-    transition: all var(--transition-fast);
-}
-
-.login-form .form-group.with-icon:focus-within .form-icon {
-    color: var(--primary-color);
-    transform: translateY(-50%) scale(1.05);
-}
-
-/* Form Button - Compact */
-.login-form .btn {
+/* Smaller Button */
+.login-btn {
     width: 100%;
-    padding: var(--space-sm) var(--space-lg);
-    font-size: 0.95rem;
+    margin-top: var(--space-sm); /* decreased from var(--space-md) */
+    padding: var(--space-sm) var(--space-md); /* decreased padding */
+    font-size: 0.9rem; /* decreased from 1rem */
     font-weight: 600;
-    border-radius: var(--radius-md);
-    transition: all var(--transition-normal);
-    position: relative;
-    overflow: hidden;
-    height: 42px;
-    text-transform: uppercase;
-    letter-spacing: 0.3px;
 }
 
-.login-form .btn-primary {
-    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
-    color: var(--text-light);
-    border: none;
-    box-shadow: var(--shadow-md);
-}
-
-.login-form .btn-primary::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-    transition: left 0.5s;
-}
-
-.login-form .btn-primary:hover {
-    background: linear-gradient(135deg, var(--primary-dark), var(--primary-color));
-    box-shadow: var(--shadow-lg);
-    transform: translateY(-1px);
-}
-
-.login-form .btn-primary:hover::before {
-    left: 100%;
-}
-
-.login-form .btn-primary:active {
-    transform: translateY(0);
-    box-shadow: var(--shadow-md);
-}
-
-/* Register Link - Compact */
+/* Register Link */
 .register-link {
     text-align: center;
-    margin-top: var(--space-md);
-    color: var(--text-secondary);
-    font-size: 0.85rem;
-    padding-top: var(--space-sm);
+    margin-top: var(--space-lg);
+    padding-top: var(--space-lg);
     border-top: 1px solid var(--gray-200);
+    color: var(--text-secondary);
+    font-size: 0.9rem;
 }
 
 .register-link a {
     color: var(--primary-color);
     text-decoration: none;
     font-weight: 600;
-    transition: all var(--transition-fast);
-    position: relative;
-    display: inline-block;
-}
-
-.register-link a::after {
-    content: '';
-    position: absolute;
-    bottom: -1px;
-    left: 0;
-    width: 0;
-    height: 1px;
-    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
-    transition: width var(--transition-fast);
+    transition: color var(--transition-fast);
 }
 
 .register-link a:hover {
     color: var(--primary-dark);
 }
 
-.register-link a:hover::after {
-    width: 100%;
-}
-
-/* Enhanced Form Interactions - Compact */
-.login-form .form-group {
-    position: relative;
-}
-
-.login-form .form-group::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    bottom: 0;
-    width: 0;
-    height: 1px;
-    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
-    transition: width var(--transition-fast);
-    z-index: 1;
-}
-
-.login-form .form-group input:focus + ::before,
-.login-form .form-group:focus-within::before {
-    width: 100%;
-}
-
-/* Loading State for Button - Compact */
-.login-form .btn.loading {
-    position: relative;
-    color: transparent;
-}
-
-.login-form .btn.loading::after {
-    content: '';
-    position: absolute;
-    width: 16px;
-    height: 16px;
-    top: 50%;
-    left: 50%;
-    margin-left: -8px;
-    margin-top: -8px;
-    border: 2px solid transparent;
-    border-top-color: var(--text-light);
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-}
-
-/* Responsive Design for Login Form - Compact */
+/* Updated Responsive Design */
 @media (max-width: 768px) {
-    .student-login-section {
-        padding: var(--space-lg) 0;
-        min-height: 45vh;
+    .login-section {
+        padding: var(--space-xl) 0;
     }
 
-    .student-login-section .container {
-        max-width: 100%;
-        padding: 0 var(--space-lg);
-    }
-
-    .login-form {
-        padding: var(--space-lg);
+    .login-container {
         margin: 0 var(--space-md);
+        padding: var(--space-md); /* smaller mobile padding */
+        max-width: 320px; /* even smaller on mobile */
     }
-
-    .student-login-section .section-title {
-        font-size: 1.7rem;
-        margin-bottom: var(--space-md);
-    }
-}
-
-@media (max-width: 480px) {
-    .student-login-section {
-        padding: var(--space-md) 0;
-    }
-
-    .login-form {
-        padding: var(--space-md);
-        margin: 0 var(--space-sm);
-    }
-
-    .student-login-section .section-title {
-        font-size: 1.5rem;
-    }
-
-    .login-form .form-group {
-        margin-bottom: var(--space-md);
-    }
-
-    .login-form .form-group input {
-        padding: var(--space-xs) var(--space-sm);
-        height: 36px;
-    }
-
-    .login-form .form-group.with-icon input {
-        padding-left: 2rem;
-    }
-
-    .login-form .form-group.with-icon .form-icon {
-        font-size: 0.8rem;
-        left: 6px;
-    }
-
-    .login-form .btn {
-        height: 40px;
-        font-size: 0.9rem;
-    }
-}
-
-/* Error and Success States - Compact */
-.login-form .form-group.error input {
-    border-color: var(--error-color);
-    box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.1);
-}
-
-.login-form .form-group.success input {
-    border-color: var(--success-color);
-    box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.1);
-}
-
-.form-error-message {
-    color: var(--error-color);
-    font-size: 0.75rem;
-    margin-top: 2px;
-    display: none;
-}
-
-.login-form .form-group.error .form-error-message {
-    display: block;
-}
-
-/* Form Validation Indicators - Compact */
-.login-form .form-group input:valid:not(:placeholder-shown) {
-    border-color: var(--success-color);
-    background-image: linear-gradient(45deg, transparent 40%, rgba(34, 197, 94, 0.02) 40%, rgba(34, 197, 94, 0.02) 60%, transparent 60%);
-}
-
-.login-form .form-group input:invalid:not(:placeholder-shown) {
-    border-color: var(--error-color);
-    background-image: linear-gradient(45deg, transparent 40%, rgba(239, 68, 68, 0.02) 40%, rgba(239, 68, 68, 0.02) 60%, transparent 60%);
 }

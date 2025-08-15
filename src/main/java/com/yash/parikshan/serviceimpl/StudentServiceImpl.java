@@ -12,7 +12,6 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public void insertStudent(Student student) throws Exception {
-
         studentDao.save(student);
 
     }

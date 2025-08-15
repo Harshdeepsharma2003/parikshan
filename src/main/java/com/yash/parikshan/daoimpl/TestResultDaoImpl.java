@@ -12,13 +12,11 @@ import java.util.List;
 import java.util.logging.Level;
 
 import java.util.logging.Logger;
-import java.util.logging.Level;
 
 public class TestResultDaoImpl implements TestResultDao {
 
     private static final Logger logger = Logger.getLogger(RecordingServlet.class.getName());
 
-    // Updated mapping method to include status fields
     private TestResult mapResultSetToTestResult(ResultSet resultSet) throws SQLException {
         TestResult result = new TestResult();
         result.setResultId(resultSet.getString("resultid"));
@@ -384,6 +382,62 @@ public class TestResultDaoImpl implements TestResultDao {
         return results;
     }
 
+    @Override
+    public List<TestResult> findByStudentId(String studentId) throws Exception {
+        String sql = "SELECT tr.resultid, tr.studentid, tr.testid, tr.score, " +
+                "tr.totalmarks, tr.timetaken, tr.testdate, tr.status, " +
+                "tr.invalidationreason, tr.violationcount, t.title " +
+                "FROM testresults tr " +
+                "LEFT JOIN tests t ON tr.testid = t.testid " +
+                "WHERE tr.studentid = ? " +
+                "ORDER BY tr.testdate DESC";
+
+        List<TestResult> results = new ArrayList<>();
+
+        // DEBUG: Print the query and parameter
+        System.out.println("DEBUG DAO: Executing query: " + sql);
+        System.out.println("DEBUG DAO: With studentId parameter: '" + studentId + "'");
+
+        try (Connection con = DbUtil.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setString(1, studentId);
+
+            // DEBUG: Print the actual prepared statement if possible
+            System.out.println("DEBUG DAO: Prepared statement: " + ps.toString());
+
+            try (ResultSet rs = ps.executeQuery()) {
+                int rowCount = 0;
+                while (rs.next()) {
+                    rowCount++;
+                    TestResult result = new TestResult();
+                    result.setResultId(rs.getString("resultid"));
+                    result.setStudentId(rs.getString("studentid"));
+                    result.setTestId(rs.getString("testid"));
+                    result.setScore(rs.getString("score"));
+                    result.setTotalMarks(rs.getString("totalmarks"));
+                    result.setTimeTaken(rs.getString("timetaken"));
+                    result.setTestDate(rs.getTimestamp("testdate"));
+                    result.setStatus(rs.getString("status"));
+                    result.setInvalidationReason(rs.getString("invalidationreason"));
+                    result.setViolationCount(rs.getInt("violationcount"));
+                    result.setTestTitle(rs.getString("title"));
+
+                    // DEBUG: Print each result
+                    System.out.println("DEBUG DAO: Row " + rowCount + " - StudentId: '" +
+                            rs.getString("studentid") + "', TestId: '" + rs.getString("testid") + "'");
+
+                    results.add(result);
+                }
+                System.out.println("DEBUG DAO: Total rows found: " + rowCount);
+            }
+        } catch (SQLException e) {
+            System.out.println("DEBUG DAO: SQL Exception: " + e.getMessage());
+            throw e;
+        }
+
+        return results;
+    }
 
 
     /**
@@ -420,6 +474,5 @@ public class TestResultDaoImpl implements TestResultDao {
             logger.log(Level.SEVERE, "Failed to invalidate test", e);
         }
     }
-
 
 }
