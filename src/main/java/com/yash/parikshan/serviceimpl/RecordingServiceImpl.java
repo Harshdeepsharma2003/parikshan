@@ -1,4 +1,4 @@
-// RecordingServiceImpl.java
+
 package com.yash.parikshan.serviceimpl;
 import com.yash.parikshan.dao.RecordingDao;
 
@@ -16,22 +16,36 @@ public class RecordingServiceImpl implements RecordingService {
 
     @Override
     public boolean saveRecording(String testid, String userid, byte[] recordingData) {
+        // Validate input
+        if (testid == null || testid.trim().isEmpty()) {
+            System.err.println("Test ID cannot be null or empty");
+            return false;
+        }
+
+        if (userid == null || userid.trim().isEmpty()) {
+            System.err.println("User ID cannot be null or empty");
+            return false;
+        }
+
+        if (recordingData == null || recordingData.length == 0) {
+            System.err.println("Recording data cannot be null or empty");
+            return false;
+        }
+
         try {
-            String studentid = null;
-
-            // RecordingServiceImpl.java - Fix in saveRecording method
-            Recording recording = new Recording(testid, studentid, recordingData, (long) recordingData.length);
+            // Use the userid parameter, not null!
+            Recording recording = new Recording(testid, userid, recordingData, (long) recordingData.length);
             return recordingDao.saveRecording(recording);
-
-
         } catch (Exception e) {
-            e.printStackTrace();
+            System.err.println("Error saving recording: " + e.getMessage());
             return false;
         }
     }
 
+
     @Override
-    public Recording getRecording(String testid, String userid) {
+    public Recording getRecording(String testid, String userid)
+    {
         return recordingDao.getRecording(testid, userid);
     }
 }

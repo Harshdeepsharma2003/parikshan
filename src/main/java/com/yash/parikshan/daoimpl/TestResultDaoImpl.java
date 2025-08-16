@@ -173,7 +173,7 @@ public class TestResultDaoImpl implements TestResultDao {
                     "FROM testresults tr " +
                     "JOIN students s ON tr.studentid = s.studentid " +
                     "JOIN tests t ON tr.testid = t.testid " +
-                    "WHERE tr.result_id = ?";
+                    "WHERE tr.resultid = ?";
 
             statement = connection.prepareStatement(sql);
             statement.setString(1, resultId);
@@ -227,14 +227,16 @@ public class TestResultDaoImpl implements TestResultDao {
 
     @Override
     public boolean saveTestResult(TestResult testResult) {
-        Connection connection = null;
-        PreparedStatement statement = null;
+        // Generate resultid if not provided
+        if (testResult.getResultId() == null || testResult.getResultId().isEmpty()) {
+            testResult.setResultId(generateResultId());
+        }
 
-        try {
-            connection = DbUtil.getConnection();
-            String sql = "INSERT INTO testresults (resultid, studentid, testid, score, totalmarks, timetaken, testdate) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO testresults (resultid, studentid, testid, score, totalmarks, timetaken, testdate) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
-            statement = connection.prepareStatement(sql);
+        try (Connection connection = DbUtil.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+
             statement.setString(1, testResult.getResultId());
             statement.setString(2, testResult.getStudentId());
             statement.setString(3, testResult.getTestId());
@@ -243,16 +245,15 @@ public class TestResultDaoImpl implements TestResultDao {
             statement.setString(6, testResult.getTimeTaken());
             statement.setTimestamp(7, testResult.getTestDate());
 
-            int rowsAffected = statement.executeUpdate();
-            return rowsAffected > 0;
-
+            return statement.executeUpdate() > 0;
         } catch (SQLException e) {
             System.err.println("Error saving test result: " + e.getMessage());
-            e.printStackTrace();
             return false;
-        } finally {
-            closeResources(null, statement, connection);
         }
+    }
+
+    private String generateResultId() {
+        return "RESULT_" + System.currentTimeMillis() + "_" + (int)(Math.random() * 1000);
     }
 
     @Override

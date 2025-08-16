@@ -94,17 +94,15 @@ public class StudentDaoImpl implements StudentDao {
 
                 ps.setString(1,student.getName());
                 System.out.println("Username: " + student.getName());
-
-                ps.setString(2, student.getPassword());
-                ps.setString(3, student.getEmail());
-                ps.setString(4,student.getStudentId());
+                ps.setString(2, student.getEmail());
+                ps.setString(3, student.getPassword());
+                ps.setString(4, student.getPhone());
+                ps.setString(5,student.getStudentId());
 
                 System.out.println("Updating user with ID: " + studentId);
                 System.out.println("New username: " + student.getName());
                 System.out.println("New password: " + student.getPassword());
                 System.out.println("New email: " + student.getEmail());
-
-                ps.executeUpdate();
 
                 int rowsAffected = ps.executeUpdate();
                 System.out.println("Rows updated: " + rowsAffected);

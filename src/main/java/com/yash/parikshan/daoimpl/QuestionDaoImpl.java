@@ -34,9 +34,10 @@ public class QuestionDaoImpl implements QuestionDao {
     public List<Question> getQuestionsByTestId(String testId) throws Exception {
         List<Question> questions = new ArrayList<>();
 
-        String sql = "SELECT DISTINCT questionid, content, questiontype, imageurl, testid, answertext, iscorrect " +
-                "FROM questions WHERE testid = ? AND questiontype = 'MCQ' AND iscorrect = true " +
-                "ORDER BY questionid";
+        // Get ALL options for each question, not just correct ones
+        String sql = "SELECT questionid, content, questiontype, imageurl, testid, answertext, iscorrect " +
+                "FROM questions WHERE testid = ? AND questiontype = 'MCQ' " +
+                "ORDER BY questionid, iscorrect DESC"; // Correct answers first
 
         try (Connection con = DbUtil.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {

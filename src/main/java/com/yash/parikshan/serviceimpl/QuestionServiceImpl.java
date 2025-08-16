@@ -2,6 +2,7 @@ package com.yash.parikshan.serviceimpl;
 
 import com.yash.parikshan.dao.QuestionDao;
 import com.yash.parikshan.daoimpl.QuestionDaoImpl;
+import com.yash.parikshan.exceptions.GlobalException;
 import com.yash.parikshan.model.Question;
 import com.yash.parikshan.service.QuestionService;
 
@@ -10,6 +11,8 @@ import java.util.List;
 public class QuestionServiceImpl implements QuestionService {
 
     private QuestionDao questionDao = new QuestionDaoImpl();
+    // Business rule: Maximum questions allowed per test
+    private static final int MAX_QUESTIONS_PER_TEST = 5;
 
 
     @Override
@@ -20,5 +23,34 @@ public class QuestionServiceImpl implements QuestionService {
     @Override
     public List<Question> getQuestionsByTestId(String testId) throws Exception {
         return questionDao.getQuestionsByTestId(testId);
+    }
+
+    @Override
+    public int getMaxQuestionsAllowed() {
+        return MAX_QUESTIONS_PER_TEST;
+    }
+
+    @Override
+    public void validateQuestionCount(List<Question> questions) throws Exception {
+        if (questions == null || questions.isEmpty()) {
+            throw GlobalException.validationError(
+                    "No valid questions found. Please ensure each question has: " +
+                            "question text, all 4 options (A, B, C, D), and a correct answer selection");
+        }
+
+        if (questions.size() > MAX_QUESTIONS_PER_TEST) {
+            throw GlobalException.validationError(
+                    "Maximum " + MAX_QUESTIONS_PER_TEST + " questions allowed per test. " +
+                            "You submitted " + questions.size() + " questions.");
+        }
+    }
+
+    @Override
+    public void addQuestionsWithValidation(List<Question> questions) throws Exception {
+        // Validate business rules first
+        validateQuestionCount(questions);
+
+        // Then save to database
+        addQuestions(questions);
     }
 }

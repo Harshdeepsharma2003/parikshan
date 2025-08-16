@@ -56,12 +56,7 @@ public class AdminResultsServlet extends HttpServlet {
 
     private List<VideoProcessorResult> getVideoProcessorResults() throws SQLException {
         List<VideoProcessorResult> results = new ArrayList<>();
-        Connection connection = null;
-        PreparedStatement statement = null;
-        ResultSet resultSet = null;
 
-        try {
-            connection = DbUtil.getConnection();
 
             // Updated SQL query to match actual database schema
             String sql = """
@@ -72,9 +67,9 @@ public class AdminResultsServlet extends HttpServlet {
                 JOIN video_analysis_results var ON r.id = var.recording_id 
                 ORDER BY var.processed_at DESC
             """;
-
-            statement = connection.prepareStatement(sql);
-            resultSet = statement.executeQuery();
+        try (Connection connection = DbUtil.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql);
+             ResultSet resultSet = statement.executeQuery()) {
 
             while (resultSet.next()) {
                 VideoProcessorResult result = new VideoProcessorResult();
@@ -88,13 +83,7 @@ public class AdminResultsServlet extends HttpServlet {
 
                 results.add(result);
             }
-
-        } finally {
-            if (resultSet != null) resultSet.close();
-            if (statement != null) statement.close();
-            if (connection != null) connection.close();
         }
-
         return results;
     }
 

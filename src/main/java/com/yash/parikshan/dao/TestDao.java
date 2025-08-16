@@ -11,6 +11,5 @@ public interface TestDao {
     boolean insertTest(Test test) throws Exception;
     Test getTestById(String testId) throws Exception;
     void deleteTest(String testId) ;
-    Test getLoginTestId(String testId) throws Exception;
-    List<Test> findAllActive() throws SQLException;
+     List<Test> findAllActive() throws SQLException;
 }

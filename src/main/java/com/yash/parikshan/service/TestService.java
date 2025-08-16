@@ -1,8 +1,6 @@
 package com.yash.parikshan.service;
 
-import com.yash.parikshan.model.Question;
 import com.yash.parikshan.model.Test;
-
 import java.sql.SQLException;
 import java.util.List;
 

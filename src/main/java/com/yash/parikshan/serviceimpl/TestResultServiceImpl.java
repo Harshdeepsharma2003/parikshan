@@ -85,6 +85,12 @@ public class TestResultServiceImpl implements TestResultService {
             throw new IllegalArgumentException("TestResult cannot be null");
         }
 
+        // Generate resultID if not provided
+        if (testResult.getResultId() == null || testResult.getResultId().trim().isEmpty()) {
+            testResult.setResultId(generateResultId());
+        }
+
+        // Validate required fields
         if (testResult.getStudentId() == null || testResult.getStudentId().trim().isEmpty()) {
             throw new IllegalArgumentException("Student ID is required");
         }
@@ -96,7 +102,7 @@ public class TestResultServiceImpl implements TestResultService {
         try {
             return testResultDao.saveTestResult(testResult);
         } catch (Exception e) {
-            System.err.println("Error in service saveTestResult: " + e.getMessage());
+            System.err.println("Error saving test result: " + e.getMessage());
             throw new RuntimeException("Failed to save test result", e);
         }
     }
@@ -142,8 +148,22 @@ public class TestResultServiceImpl implements TestResultService {
 
     @Override
     public TestResult getTestResult(String testId, String studentId) {
-        return null;
-    }
+
+        if (testId == null || testId.trim().isEmpty()) {
+            throw new IllegalArgumentException("Test ID cannot be null or empty");
+        }
+
+        if (studentId == null || studentId.trim().isEmpty()) {
+            throw new IllegalArgumentException("Student ID cannot be null or empty");
+        }
+
+        try {
+            return testResultDao.getTestResult(testId, studentId);
+        } catch (Exception e) {
+            System.err.println("Error getting test result: " + e.getMessage());
+            return null;
+        }
+         }
 
     @Override
     public List<TestResult> findByStudentId(String studentId) throws Exception {

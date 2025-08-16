@@ -8,12 +8,29 @@ import com.yash.parikshan.util.PasswordUtil;
 
 public class StudentServiceImpl implements StudentService {
 
-    public StudentDao studentDao=new StudentDaoImpl();
+    public StudentDao studentDao = new StudentDaoImpl();
 
     @Override
     public void insertStudent(Student student) throws Exception {
-        studentDao.save(student);
+        // Basic password validation
+        String password = student.getPassword();
 
+        // Check minimum 6 characters
+        if (password == null || password.length() < 6) {
+            throw new Exception("Password must be at least 6 characters long");
+        }
+
+        // Check for at least 1 special character
+        if (!password.matches(".*[!@#$%^&*(),.?\":{}|<>].*")) {
+            throw new Exception("Password must contain at least 1 special character");
+        }
+
+        // Hash the password after validation
+        String hashedPassword = PasswordUtil.hashPassword(password);
+        student.setPassword(hashedPassword);
+
+        // Save to database
+        studentDao.save(student);
     }
 
     @Override
@@ -28,11 +45,39 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public void updateStudentProfile(String studentId, Student student) {
-        try {
-            studentDao.updateStudentProfile(studentId,student);
-        } catch (Exception e) {
-            e.printStackTrace();
+        // Validate student ID
+        if (studentId == null || studentId.trim().isEmpty()) {
+            throw new IllegalArgumentException("Student ID cannot be null or empty");
         }
+
+        // If password is being updated, validate it
+        if (student.getPassword() != null && !student.getPassword().isEmpty()) {
+            String password = student.getPassword();
+
+            // Check minimum 6 characters
+            if (password.length() < 6) {
+                try {
+                    throw new Exception("Password must be at least 6 characters long");
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
+            // Check for at least 1 special character
+            if (!password.matches(".*[!@#$%^&*(),.?\":{}|<>].*")) {
+                try {
+                    throw new Exception("Password must contain at least 1 special character");
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
+            // Hash the password
+            String hashedPassword = PasswordUtil.hashPassword(password);
+            student.setPassword(hashedPassword);
+        }
+
+        studentDao.updateStudentProfile(studentId, student);
     }
 
     @Override
@@ -78,10 +123,18 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public boolean deleteProfile(String studentId, String password) {
         try {
-            studentDao.deleteProfile(studentId,password);
+            // First authenticate the user
+            if (!authenticate(studentId, password)) {
+                return false; // Wrong password
+            }
+
+            // Hash the password for deletion (DAO expects hashed password)
+            String hashedPassword = PasswordUtil.hashPassword(password);
+            studentDao.deleteProfile(studentId, hashedPassword);
+            return true;
         } catch (Exception e) {
-            e.printStackTrace();
+            System.err.println("Error deleting profile: " + e.getMessage());
+            return false;
         }
-        return false;
     }
 }

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Parikshan - Update Profile</title>
-    <link rel="stylesheet" href="css/common.css">
+    <link rel="stylesheet" href="css/studenthome.css">
     <link rel="stylesheet" href="css/landingpage.css">
     <link rel="stylesheet" href="css/updateprofilestudent.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
@@ -31,9 +31,9 @@
                         <input type="text" name="studentId" id="studentid" required placeholder="Enter your Student ID">
                         <i class="fas fa-id-card form-icon"></i>
                     </div>
-                    <button type="submit" class="btn btn-secondary">
-                        <i class="fas fa-download"></i>
-                        Fetch Profile
+                    <button type="submit" class="btn btn-primary">
+                       <i class="fas fa-save"></i>
+                       Fetch Profile
                     </button>
                 </form>
             </div>

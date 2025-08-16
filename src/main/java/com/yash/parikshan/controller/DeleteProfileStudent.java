@@ -69,22 +69,29 @@ public class DeleteProfileStudent extends HttpServlet {
 
             logger.info("Service validation passed, proceeding with profile deletion");
 
-            // 3. Additional security validation - check if user is authorized to delete this profile
             HttpSession session = request.getSession(false);
-            if (session != null) {
-                String sessionStudentId = (String) session.getAttribute("studentId");
-                logger.info("Session student ID: " + sessionStudentId + ", Requested deletion for: " + studentId);
-
-                // Only allow users to delete their own profile
-                if (sessionStudentId != null && !sessionStudentId.equals(studentId.trim())) {
-                    logger.warning("Unauthorized profile deletion attempt - Session user: " + sessionStudentId +
-                            " trying to delete profile: " + studentId);
-                    throw GlobalException.securityError("Unauthorized attempt to delete another user's profile");
-                }
-                logger.info("Authorization check passed for student: " + studentId);
-            } else {
+            if (session == null) {
                 logger.warning("No active session found for profile deletion request");
+                System.out.println("No active session. Please log in.");
             }
+
+            String sessionStudentId = (String) session.getAttribute("studentid");
+            if (sessionStudentId == null) {
+                logger.warning("No student ID found in session for profile deletion request");
+                System.out.println("Invalid session. Please log in again.");
+            }
+
+            logger.info("Session student ID: " + sessionStudentId + ", Requested deletion for: " + studentId);
+
+// 2. Authorization check - Only allow users to delete their own profile
+            if (!sessionStudentId.equals(studentId.trim())) {
+                logger.warning("Unauthorized profile deletion attempt - Session user: " + sessionStudentId +
+                        " trying to delete profile: " + studentId);
+                throw GlobalException.securityError("Unauthorized attempt to delete another user's profile");
+            }
+
+            logger.info("Authorization check passed for student: " + studentId);
+
 
             // 4. Perform profile deletion with proper error handling
             try {

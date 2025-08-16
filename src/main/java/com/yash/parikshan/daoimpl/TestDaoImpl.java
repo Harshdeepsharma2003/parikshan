@@ -56,33 +56,13 @@ public class TestDaoImpl implements TestDao {
         }
     }
 
-    @Override
-    public Test getLoginTestId(String testId) throws Exception {
-        String sql = "SELECT testid,title,description,noofquestions FROM tests WHERE testid = ?";
-        try (Connection conn = DbUtil.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, testId);
-            try (ResultSet rs = stmt.executeQuery()) {
-                if (rs.next()) {
-                    String title = rs.getString("title");
-                    String description = rs.getString("description");
-                    String noOfQuestions = rs.getString("noofquestions");
 
-                    return new Test(testId, title, description, noOfQuestions);
-                }
-            }
-        }
-        return null;
-    }
 
     @Override
     public List<Test> findAllActive() throws SQLException {
-        System.out.println("=== TestDAO.findAllActive() called ===");
-
-        List<Test> list = new ArrayList<>();
+         List<Test> list = new ArrayList<>();
         String sql = "SELECT * FROM tests";  // Get ALL tests for now
 
-        System.out.println("SQL Query: " + sql);
 
         try (Connection conn = DbUtil.getConnection()) {
             System.out.println("Database connection obtained: " + (conn != null ? "SUCCESS" : "FAILED"));

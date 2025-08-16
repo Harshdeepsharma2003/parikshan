@@ -45,7 +45,7 @@ public class DisplayStudentResults extends HttpServlet {
             }
 
             String userType = (String) session.getAttribute("userType");
-            String sessionUserId = (String) session.getAttribute("studentId");
+            String sessionUserId = (String) session.getAttribute("studentid");
 
             // Handle backward compatibility
             if (sessionUserId == null) {

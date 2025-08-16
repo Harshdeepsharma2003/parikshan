@@ -23,7 +23,13 @@ public class Student {
     }
 
     public void setStudentId(String studentId) {
-        this.studentId = studentId;
+        if (studentId == null || studentId.trim().isEmpty()) {
+            throw new IllegalArgumentException("Student ID cannot be null or empty");
+        }
+        if (studentId.length() > 50) {
+            throw new IllegalArgumentException("Student ID cannot exceed 50 characters");
+        }
+        this.studentId = studentId.trim();
     }
 
     public String getName() {
@@ -31,7 +37,13 @@ public class Student {
     }
 
     public void setName(String name) {
-        this.name = name;
+        if (name == null || name.trim().isEmpty()) {
+            throw new IllegalArgumentException("Name cannot be null or empty");
+        }
+        if (name.length() > 100) {
+            throw new IllegalArgumentException("Name cannot exceed 100 characters");
+        }
+        this.name = name.trim();
     }
 
     public String getEmail() {
@@ -39,7 +51,21 @@ public class Student {
     }
 
     public void setEmail(String email) {
-        this.email = email;
+        if (email == null || email.trim().isEmpty()) {
+            throw new IllegalArgumentException("Email cannot be null or empty");
+        }
+
+        // Basic email validation
+        String emailRegex = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
+        if (!email.matches(emailRegex)) {
+            throw new IllegalArgumentException("Invalid email format");
+        }
+
+        if (email.length() > 255) {
+            throw new IllegalArgumentException("Email cannot exceed 255 characters");
+        }
+
+        this.email = email.trim().toLowerCase();
     }
 
     public String getPassword() {
@@ -55,7 +81,28 @@ public class Student {
     }
 
     public void setPhone(String phone) {
-        this.phone = phone;
+        if (phone == null || phone.trim().isEmpty()) {
+            throw new IllegalArgumentException("Phone cannot be null or empty");
+        }
+
+        // Remove all non-digit characters for validation
+        String cleanPhone = phone.replaceAll("\\D", "");
+
+        // Basic phone validation (10 digits)
+        if (cleanPhone.length() < 10 || cleanPhone.length() > 15) {
+            throw new IllegalArgumentException("Phone number must be between 10-15 digits");
+        }
+
+        this.phone = phone.trim();
     }
 
+    @Override
+    public String toString() {
+        return "Student{" +
+                "studentId='" + studentId + '\'' +
+                ", name='" + name + '\'' +
+                ", email='" + email + '\'' +
+                ", phone='" + phone + '\'' +
+                '}';
+    }
 }

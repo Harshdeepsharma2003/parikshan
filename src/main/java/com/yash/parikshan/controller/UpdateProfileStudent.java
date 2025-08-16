@@ -50,7 +50,11 @@ public class UpdateProfileStudent extends HttpServlet {
             student.setPassword(password);
             student.setEmail(email);
             student.setPhone(phone);
-            studentService.updateStudentProfile(studentId,student);
+            try {
+                studentService.updateStudentProfile(studentId,student);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
 
             response.sendRedirect("homestudent.jsp"); // or wherever you want to redirect
         }

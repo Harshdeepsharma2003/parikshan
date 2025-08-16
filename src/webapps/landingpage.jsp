@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Parikshan - Online Testing Platform</title>
     <link rel="stylesheet" href="css/landingpage.css"> <!-- Your main theme CSS -->
-
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 
 </head>
@@ -80,7 +79,7 @@
                             <i class="fas fa-clipboard-check"></i>
                         </div>
                         <h3>Choose Your Test</h3>
-                        <p>Select from various test formats including MCQs, True/False, and image-based questions</p>
+                        <p>Select from various test formats including MCQs</p>
                     </div>
 
                     <div class="step-card">

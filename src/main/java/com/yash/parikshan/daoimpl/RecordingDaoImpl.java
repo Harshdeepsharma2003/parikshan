@@ -27,8 +27,8 @@ public class RecordingDaoImpl implements RecordingDao {
                 try (ResultSet keys = stmt.getGeneratedKeys()) {
                     if (keys.next()) {
                         long generatedId = keys.getLong(1);
-                        recording.setId(Long.valueOf(String.valueOf(generatedId))); // or change id type to long in the model
-                    }
+                        recording.setId(generatedId);
+                         }
                 }
             }
             return result > 0;
@@ -42,7 +42,7 @@ public class RecordingDaoImpl implements RecordingDao {
 
     @Override
     public Recording getRecording(String testid, String userid) {
-        String sql = "SELECT * FROM recordings WHERE testid = ? AND (studentid = ? OR tempuserid = ?)";
+        String sql = "SELECT * FROM recordings WHERE testid = ? AND studentid = ? ";
 
         try (Connection conn = DbUtil.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {

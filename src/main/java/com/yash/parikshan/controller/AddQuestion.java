@@ -60,7 +60,8 @@ public class AddQuestion extends HttpServlet {
 
             // Dynamically determine maximum question number to check
             // Fixed limit of 5 questions maximum
-            int maxToCheck = 5; // Fixed maximum of 5 questions
+            int maxToCheck = questionService.getMaxQuestionsAllowed();
+
 
             logger.info("Starting to process questions (maximum 5 questions allowed)");
             for (int i = 1; i <= maxToCheck; i++) {
@@ -133,7 +134,7 @@ public class AddQuestion extends HttpServlet {
             // Save to database
             try {
                 logger.info("Attempting to save questions to database");
-                questionService.addQuestions(questions);
+                questionService.addQuestionsWithValidation(questions);
                 logger.info("Successfully saved " + questions.size() + " questions to database");
             } catch (SQLException e) {
                 logger.log(Level.SEVERE, "SQL exception occurred while saving questions", e);
@@ -164,7 +165,7 @@ public class AddQuestion extends HttpServlet {
             request.setAttribute("questions", questions);
             request.setAttribute("expectedQuestions", expectedQuestions);
             request.setAttribute("successMessage",
-                    String.format("Successfully added %d questions to test %s!", successfullyProcessed, testId));
+            String.format("Successfully added %d questions to test %s!", successfullyProcessed, testId));
 
             logger.info("Question addition completed successfully. Test ID: " + testId +
                     ", Questions added: " + successfullyProcessed);

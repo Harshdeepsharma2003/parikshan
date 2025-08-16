@@ -4,8 +4,6 @@ import com.yash.parikshan.dao.TestDao;
 import com.yash.parikshan.daoimpl.TestDaoImpl;
 import com.yash.parikshan.model.Test;
 import com.yash.parikshan.service.TestService;
-
-import java.sql.SQLException;
 import java.util.List;
 
 
@@ -47,7 +45,7 @@ public class TestServiceImpl implements TestService {
 
     @Override
     public boolean loginTest(String testId) throws Exception {
-        Test test = testDao.getLoginTestId(testId);
+        Test test = testDao.getTestById(testId);
         if (test != null ) {
             System.out.println("Retrieved test: " + test);
             System.out.println("User input testId: '" + testId + "'");
