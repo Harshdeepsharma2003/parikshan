@@ -17,7 +17,7 @@ public class VideoProcessorServlet extends HttpServlet {
 
     // Path to your Python script and video analyzer project
     private static final String PYTHON_SCRIPT_PATH = "D:\\Intellijprojects\\MediaPipeService\\videoanalyzer.py";
-    private static final String PYTHON_EXECUTABLE = "python"; // or "python3" depending on your setup
+    private static final String PYTHON_EXECUTABLE = "python";
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
