@@ -1,10 +1,11 @@
-// Initialize variables
+
 let currentQuestionCount = 0;
-const maxQuestions = 5;
+const maxQuestions = 5; // Fixed maximum of 5 questions
+const testId = '<%= testId %>';
 
 // Function to create a new question block
 function createQuestionBlock(questionNumber) {
-    return `
+    const questionHtml = `
         <div class="question-block" id="question_${questionNumber}">
             <div class="form-group">
                 <label>Question ${questionNumber}</label>
@@ -36,136 +37,124 @@ function createQuestionBlock(questionNumber) {
             </div>
         </div>
     `;
+    return questionHtml;
 }
 
 // Function to add a new question
-function showNextQuestion() {
+function addNewQuestion() {
     if (currentQuestionCount < maxQuestions) {
         currentQuestionCount++;
         const container = document.getElementById('questionsContainer');
-        if (container) {
-            container.insertAdjacentHTML('beforeend', createQuestionBlock(currentQuestionCount));
-            updateCounter();
+        container.insertAdjacentHTML('beforeend', createQuestionBlock(currentQuestionCount));
+        updateCounter();
 
-            // Scroll to the new question
-            const newQuestion = document.getElementById(`question_${currentQuestionCount}`);
-            if (newQuestion) {
-                newQuestion.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        // Scroll to the new question
+        const newQuestion = document.getElementById(`question_${currentQuestionCount}`);
+        newQuestion.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
-                // Focus on the new question textarea
-                const textarea = newQuestion.querySelector('textarea');
-                if (textarea) {
-                    setTimeout(() => textarea.focus(), 300);
-                }
-            }
-        }
+        // Focus on the new question textarea
+        const textarea = newQuestion.querySelector('textarea');
+        setTimeout(() => textarea.focus(), 300);
     }
 
     // Hide add button if we've reached the maximum
     if (currentQuestionCount >= maxQuestions) {
-        const addBtn = document.getElementById('addQuestionBtn');
-        if (addBtn) {
-            addBtn.style.display = 'none';
-        }
+        document.getElementById('addQuestionBtn').style.display = 'none';
     }
 }
 
 // Function to update the counter
 function updateCounter() {
-    const counterElement = document.getElementById('questionCounter');
-    if (counterElement) {
-        counterElement.textContent = `Showing: ${currentQuestionCount} questions`;
-    }
+    document.getElementById('questionCounter').textContent = `Showing: ${currentQuestionCount} questions`;
 
     // Update submit button text
     const submitBtn = document.getElementById('submitBtn');
-    if (submitBtn) {
-        if (currentQuestionCount === 0) {
-            submitBtn.textContent = 'Add at least one question first';
-            submitBtn.disabled = true;
-        } else {
-            submitBtn.textContent = `Save ${currentQuestionCount} Question${currentQuestionCount > 1 ? 's' : ''} to Database`;
-            submitBtn.disabled = false;
-        }
+    if (currentQuestionCount === 0) {
+        submitBtn.textContent = 'Add at least one question first';
+        submitBtn.disabled = true;
+    } else {
+        submitBtn.textContent = `Save ${currentQuestionCount} Question${currentQuestionCount > 1 ? 's' : ''} to Database`;
+        submitBtn.disabled = false;
     }
 }
 
-// Initialize when DOM is loaded
+// Event listener for add question button
+document.getElementById('addQuestionBtn').addEventListener('click', addNewQuestion);
+
+// Form validation
+document.getElementById('questionsForm').addEventListener('submit', function(e) {
+    if (currentQuestionCount === 0) {
+        alert('Please add at least one question before submitting.');
+        e.preventDefault();
+        return;
+    }
+
+    let isValid = true;
+
+    for (let i = 1; i <= currentQuestionCount; i++) {
+        const questionBlock = document.getElementById(`question_${i}`);
+        if (!questionBlock) continue;
+
+        const textarea = questionBlock.querySelector('textarea');
+        const optionA = questionBlock.querySelector(`input[name="optionA_${i}"]`);
+        const optionB = questionBlock.querySelector(`input[name="optionB_${i}"]`);
+        const optionC = questionBlock.querySelector(`input[name="optionC_${i}"]`);
+        const optionD = questionBlock.querySelector(`input[name="optionD_${i}"]`);
+        const correct = questionBlock.querySelector(`input[name="correct_${i}"]:checked`);
+
+        if (!textarea.value.trim()) {
+            alert(`Please enter text for Question ${i}`);
+            textarea.focus();
+            isValid = false;
+            break;
+        }
+
+        if (!optionA.value.trim() || !optionB.value.trim() ||
+        !optionC.value.trim() || !optionD.value.trim()) {
+            alert(`Please fill all options for Question ${i}`);
+            isValid = false;
+            break;
+        }
+
+        if (!correct) {
+            alert(`Please select the correct answer for Question ${i}`);
+            isValid = false;
+            break;
+        }
+    }
+
+    if (!isValid) {
+        e.preventDefault();
+    } else {
+        // Show saving message
+        const submitBtn = document.getElementById('submitBtn');
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving to Database...';
+        submitBtn.disabled = true;
+    }
+});
+
+// Initialize with first question
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('AddQuestion page loaded');
+    addNewQuestion();
+});
 
-    // Set up add question button
-    const addQuestionBtn = document.getElementById('addQuestionBtn');
-    if (addQuestionBtn) {
-        addQuestionBtn.addEventListener('click', showNextQuestion);
-    }
+// Load external header
+fetch('html/headerhomestudent.html')
+    .then(response => response.text())
+    .then(data => {
+    document.getElementById('header-container').innerHTML = data;
+});
 
-    // Set up form validation
-    const form = document.getElementById('questionsForm');
-    if (form) {
-        form.addEventListener('submit', function(e) {
-            console.log('Questions form submission started');
+// Load external navbar
+fetch('html/navbarhomestudent.html')
+    .then(response => response.text())
+    .then(data => {
+    document.getElementById('navbar-container').innerHTML = data;
+});
 
-            if (currentQuestionCount === 0) {
-                e.preventDefault();
-                alert('Please add at least one question before submitting.');
-                return false;
-            }
-
-            let isValid = true;
-
-            for (let i = 1; i <= currentQuestionCount; i++) {
-                const questionBlock = document.getElementById(`question_${i}`);
-                if (!questionBlock) continue;
-
-                const textarea = questionBlock.querySelector('textarea');
-                const optionA = questionBlock.querySelector(`input[name="optionA_${i}"]`);
-                const optionB = questionBlock.querySelector(`input[name="optionB_${i}"]`);
-                const optionC = questionBlock.querySelector(`input[name="optionC_${i}"]`);
-                const optionD = questionBlock.querySelector(`input[name="optionD_${i}"]`);
-                const correct = questionBlock.querySelector(`input[name="correct_${i}"]:checked`);
-
-                if (!textarea || !textarea.value.trim()) {
-                    alert(`Please enter text for Question ${i}`);
-                    if (textarea) textarea.focus();
-                    isValid = false;
-                    break;
-                }
-
-                if (!optionA || !optionB || !optionC || !optionD ||
-                !optionA.value.trim() || !optionB.value.trim() ||
-                !optionC.value.trim() || !optionD.value.trim()) {
-                    alert(`Please fill all options for Question ${i}`);
-                    isValid = false;
-                    break;
-                }
-
-                if (!correct) {
-                    alert(`Please select the correct answer for Question ${i}`);
-                    isValid = false;
-                    break;
-                }
-            }
-
-            if (!isValid) {
-                e.preventDefault();
-                return false;
-            } else {
-                // Show saving message
-                const submitBtn = document.getElementById('submitBtn');
-                if (submitBtn) {
-                    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving to Database...';
-                    submitBtn.disabled = true;
-                }
-
-                console.log('Form validation passed, submitting questions...');
-                return true;
-            }
-        });
-    }
-
-    // Initialize with first question
-    showNextQuestion();
-
-    console.log('AddQuestion JavaScript initialized successfully');
+// Load external footer
+fetch('html/footerstudenthome.html')
+    .then(response => response.text())
+    .then(data => {
+    document.getElementById('footer-container').innerHTML = data;
 });
