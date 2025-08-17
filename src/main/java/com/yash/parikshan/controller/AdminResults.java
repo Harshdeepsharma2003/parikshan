@@ -80,9 +80,7 @@ public class AdminResults extends HttpServlet {
         }
     }
 
-    /**
-     * Handle viewing results by test ID
-     */
+
     private void handleViewByTest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException, GlobalException {
 

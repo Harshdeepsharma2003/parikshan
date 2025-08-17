@@ -78,8 +78,8 @@ public class StudentLogin extends HttpServlet {
                 System.out.println("  userType = '" + verifyUserType + "'");
                 System.out.println("  loginTime = " + session.getAttribute("loginTime"));
 
-                // Check if it's an admin (ends with @yash)
-                if (studentId.endsWith("@yash")) {
+                // Check if it's the specific admin user
+                if (studentId.equals("Harshdeep@yash")) {
                     logger.info("Admin user logged in: " + studentId);
                     System.out.println("DEBUG LOGIN: Redirecting to adminhome.jsp");
                     response.sendRedirect("adminhome.jsp");
