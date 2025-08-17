@@ -20,11 +20,6 @@
         <!-- Header -->
         <div class="header">
             <h1>🎉 Test Results</h1>
-            <div class="result-info">
-                <p><strong>Result ID:</strong> ${testResult.resultId}</p>
-                <p><strong>Test ID:</strong> ${testId}</p>
-                <p><strong>Date:</strong> <fmt:formatDate value="${currentDate}" pattern="dd MMM yyyy, hh:mm a"/></p>
-            </div>
         </div>
 
         <!-- Warning message if save failed -->

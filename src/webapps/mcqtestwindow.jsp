@@ -45,85 +45,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MCQ Test - Test ID: <%= testId %></title>
 <link rel="stylesheet" href="css/mcqtestwindow.css">
-<style>
-/* Essential CSS for immediate functionality */
-.recording-dot {
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    display: inline-block;
-    margin-right: 8px;
-}
-
-.recording-dot.active {
-    background-color: #dc3545;
-    animation: pulse 1s infinite;
-}
-
-.recording-dot.inactive {
-    background-color: #6c757d;
-}
-
-.timer.warning {
-    color: #ffc107;
-}
-
-.timer.critical {
-    color: #dc3545;
-    animation: blink 1s infinite;
-}
-
-@keyframes pulse {
-    0% { opacity: 1; }
-    50% { opacity: 0.5; }
-    100% { opacity: 1; }
-}
-
-@keyframes blink {
-    0%, 50% { opacity: 1; }
-    51%, 100% { opacity: 0.3; }
-}
-
-.loading-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.8);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 9999;
-}
-
-.loading-content {
-    background: white;
-    padding: 30px;
-    border-radius: 10px;
-    text-align: center;
-}
-
-.spinner {
-    border: 4px solid #f3f3f3;
-    border-top: 4px solid #3498db;
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    animation: spin 2s linear infinite;
-    margin: 0 auto 20px;
-}
-
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-</style>
 </head>
 <body>
 
 <!-- Loading Overlay -->
-<div class="loading-overlay" id="loadingOverlay" style="display: none;">
+<div class="loading-overlay" id="loadingOverlay">
   <div class="loading-content">
     <div class="spinner"></div>
     <h3>Time's Up!</h3>
@@ -131,56 +57,65 @@
   </div>
 </div>
 
-<div class="test-container">
-  <!-- Test Header -->
-  <div class="test-header">
+<!-- Main Container -->
+<div class="container">
+
+  <!-- Header -->
+  <header class="header">
     <h1>MCQ Test</h1>
-    <div class="test-info">Test ID: <%= testId %> | Total Questions: <%= questions.size() %></div>
-  </div>
+    <p>Test ID: <%= testId %> | Total Questions: <%= questions.size() %></p>
+  </header>
 
-  <!-- Recording Section -->
-  <div class="recording-section">
-    <div class="recording-status">
-      <div class="recording-indicator">
-        <div class="recording-dot inactive" id="recordingDot"></div>
-        <span id="recordingStatus">Starting camera...</span>
+  <!-- Top Controls -->
+  <div class="top-controls">
+
+    <!-- Timer Section -->
+    <div class="timer-section">
+      <div class="timer" id="timer">10:00</div>
+      <div class="progress-bar">
+        <div class="progress-fill" id="progressFill"></div>
       </div>
-      <video id="videoPreview" class="video-preview" autoplay muted playsinline style="width: 320px; height: 240px; border: 1px solid #ddd; border-radius: 8px;"></video>
     </div>
-    <div class="recording-controls">
-      <button type="button" class="btn btn-warning" id="testCameraBtn" onclick="testCameraMic()">🎥 Test Camera</button>
-      <button type="button" class="btn btn-info" id="retryRecordingBtn" onclick="initializeRecording()" style="display: none;">🔄 Retry Recording</button>
-      <span id="recordingDuration">00:00</span>
-    </div>
-  </div>
 
-  <!-- Timer and Progress -->
-  <div class="timer-section">
-    <div class="timer" id="timer">30:00</div>
-    <div class="progress-bar">
-      <div class="progress-fill" id="progressFill" style="width: 0%; height: 100%; background: #007bff; transition: width 0.3s;"></div>
-    </div>
-    <div class="question-counter" id="questionCounter">Question 1 of <%= questions.size() %></div>
-  </div>
-
-  <!-- Question Navigation Panel -->
-  <div class="question-navigation">
-      <div class="nav-header">Questions</div>
-      <div class="question-numbers" id="questionNumbers">
-          <% for (int i = 1; i <= questions.size(); i++) { %>
-              <button type="button" class="question-num-btn" data-question="<%= i %>" onclick="goToQuestion(<%= i %>)">
-                  <%= i %>
-              </button>
-          <% } %>
+    <!-- Recording Section -->
+    <div class="recording-section">
+      <div class="recording-status">
+        <div class="recording-indicator">
+          <span class="recording-dot inactive" id="recordingDot"></span>
+          <span id="recordingStatus">Starting camera...</span>
+        </div>
+        <span class="recording-duration" id="recordingDuration">00:00</span>
       </div>
+      <video id="videoPreview" autoplay muted playsinline></video>
+      <div class="recording-controls">
+        <button type="button" class="btn btn-test" id="testCameraBtn" onclick="testCameraMic()">Test Camera</button>
+        <button type="button" class="btn btn-retry" id="retryRecordingBtn" onclick="initializeRecording()">Retry Recording</button>
+      </div>
+    </div>
   </div>
 
-  <!-- Questions Container -->
+  <!-- Question Navigation -->
+  <div class="question-nav-panel">
+    <h4>Questions</h4>
+    <div class="question-numbers" id="questionNumbers">
+      <% for (int i = 1; i <= questions.size(); i++) { %>
+        <button type="button" class="question-num-btn" data-question="<%= i %>" onclick="goToQuestion(<%= i %>)">
+          <%= i %>
+        </button>
+      <% } %>
+    </div>
+  </div>
+
+  <!-- Test Form -->
   <form id="testForm" action="SubmitTest" method="POST">
     <input type="hidden" name="testId" value="<%= testId %>" />
     <input type="hidden" name="totalQuestions" value="<%= questions.size() %>" />
     <input type="hidden" name="userid" value="<%= userid %>" />
 
+    <!-- Question Counter -->
+    <div class="question-counter" id="questionCounter">Question 1 of <%= questions.size() %></div>
+
+    <!-- Questions Container -->
     <div class="questions-container">
       <%
       for (int i = 0; i < questions.size(); i++) {
@@ -197,83 +132,81 @@
           }
       %>
 
-      <div class="question-card <%= i == 0 ? "active" : "" %>" data-question="<%= i + 1 %>" style="<%= i == 0 ? "display: block;" : "display: none;" %>">
-        <div class="question-number">Question <%= i + 1 %> of <%= questions.size() %></div>
-        <div class="question-text"><%= q.getContent() %></div>
+      <div class="question-card <%= i == 0 ? "active" : "" %>" data-question="<%= i + 1 %>">
+        <div class="question-text">
+          <strong>Q<%= i + 1 %>.</strong> <%= q.getContent() %>
+        </div>
 
-        <div class="options-grid">
-          <div class="option" onclick="selectOption(this, '<%= i + 1 %>', 'A')">
-            <input type="radio" name="question_<%= i + 1 %>" value="A" class="option-radio">
-            <div class="option-text">A. <%= optionA %></div>
-          </div>
-          <div class="option" onclick="selectOption(this, '<%= i + 1 %>', 'B')">
-            <input type="radio" name="question_<%= i + 1 %>" value="B" class="option-radio">
-            <div class="option-text">B. <%= optionB %></div>
-          </div>
-          <div class="option" onclick="selectOption(this, '<%= i + 1 %>', 'C')">
-            <input type="radio" name="question_<%= i + 1 %>" value="C" class="option-radio">
-            <div class="option-text">C. <%= optionC %></div>
-          </div>
-          <div class="option" onclick="selectOption(this, '<%= i + 1 %>', 'D')">
-            <input type="radio" name="question_<%= i + 1 %>" value="D" class="option-radio">
-            <div class="option-text">D. <%= optionD %></div>
-          </div>
+        <div class="options">
+          <label class="option" onclick="selectOption(this, '<%= i + 1 %>', 'A')">
+            <input type="radio" name="question_<%= i + 1 %>" value="A">
+            <span class="option-text">A. <%= optionA %></span>
+          </label>
+          <label class="option" onclick="selectOption(this, '<%= i + 1 %>', 'B')">
+            <input type="radio" name="question_<%= i + 1 %>" value="B">
+            <span class="option-text">B. <%= optionB %></span>
+          </label>
+          <label class="option" onclick="selectOption(this, '<%= i + 1 %>', 'C')">
+            <input type="radio" name="question_<%= i + 1 %>" value="C">
+            <span class="option-text">C. <%= optionC %></span>
+          </label>
+          <label class="option" onclick="selectOption(this, '<%= i + 1 %>', 'D')">
+            <input type="radio" name="question_<%= i + 1 %>" value="D">
+            <span class="option-text">D. <%= optionD %></span>
+          </label>
         </div>
       </div>
       <% } %>
 
       <!-- Test Summary -->
-      <div class="test-summary" id="testSummary" style="display: none;">
-        <div class="summary-title">Test Summary</div>
+      <div class="test-summary" id="testSummary">
+        <h3>Test Summary</h3>
         <div class="summary-stats">
-          <div class="stat-card">
-            <div class="stat-number" id="answeredCount">0</div>
-            <div class="stat-label">Answered</div>
+          <div class="stat">
+            <span class="stat-number" id="answeredCount">0</span>
+            <span class="stat-label">Answered</span>
           </div>
-          <div class="stat-card">
-            <div class="stat-number" id="unansweredCount"><%= questions.size() %></div>
-            <div class="stat-label">Unanswered</div>
+          <div class="stat">
+            <span class="stat-number" id="unansweredCount"><%= questions.size() %></span>
+            <span class="stat-label">Unanswered</span>
           </div>
-          <div class="stat-card">
-            <div class="stat-number" id="totalTime">00:00</div>
-            <div class="stat-label">Time Taken</div>
+          <div class="stat">
+            <span class="stat-number" id="totalTime">00:00</span>
+            <span class="stat-label">Time Taken</span>
           </div>
         </div>
-        <p style="margin: 30px 0; color: #6c757d; font-size: 16px;">
-          Review your answers before submitting. Once submitted, you cannot change your answers.
-        </p>
+        <p>Review your answers before submitting. Once submitted, you cannot change your answers.</p>
       </div>
     </div>
 
-    <!-- Navigation -->
-    <div class="navigation-section">
-      <div class="question-nav">
+    <!-- Navigation Buttons -->
+    <div class="navigation">
+      <div class="nav-buttons">
         <button type="button" class="btn btn-secondary" id="prevBtn" onclick="previousQuestion()" disabled>← Previous</button>
         <button type="button" class="btn btn-primary" id="nextBtn" onclick="nextQuestion()">Next →</button>
       </div>
-      <div class="question-nav">
-        <button type="button" class="btn btn-success" id="reviewBtn" onclick="showSummary()" style="display: none;">📋 Review Answers</button>
-        <button type="submit" class="btn btn-success" id="submitBtn" style="display: none;">✓ Submit Test</button>
+      <div class="nav-buttons">
+        <button type="button" class="btn btn-review" id="reviewBtn" onclick="showSummary()">Review Answers</button>
+        <button type="submit" class="btn btn-submit" id="submitBtn">Submit Test</button>
       </div>
     </div>
   </form>
 </div>
 
-<!-- CRITICAL: Embed JSP variables into JavaScript BEFORE loading external script -->
+<!-- JavaScript Configuration -->
 <script type="text/javascript">
-    // Global variables - MUST be declared before external script loads
+    // Global variables
     var totalQuestions = <%= questions.size() %>;
     var userid = '<%= userid %>';
     var testId = '<%= testId %>';
 
-    // Ensure immediate initialization
     console.log("JSP Variables initialized:", {
         totalQuestions: totalQuestions,
         userid: userid,
         testId: testId
     });
 
-    // IMMEDIATE initialization - don't wait for DOMContentLoaded
+    // Configuration object
     window.MCQ_CONFIG = {
         totalQuestions: totalQuestions,
         userid: userid,
@@ -281,28 +214,24 @@
         autoStart: true
     };
 
-    // Force start as soon as possible
+    // Initialize when DOM is ready
     document.addEventListener('DOMContentLoaded', function() {
-        console.log("DOM Ready - Force starting all systems");
+        console.log("DOM Ready - Starting test systems");
 
-        // Update status immediately
         const recordingStatus = document.getElementById('recordingStatus');
         if (recordingStatus) {
             recordingStatus.textContent = "Requesting camera access...";
         }
 
-        // Force immediate start
         if (window.startTestSystems) {
             window.startTestSystems();
         }
     });
 
-    // Also try to start immediately if DOM is already ready
+    // Fallback initialization
     if (document.readyState === 'loading') {
-        // Document still loading
-        console.log("Document still loading, will wait for DOMContentLoaded");
+        console.log("Document still loading, waiting for DOMContentLoaded");
     } else {
-        // Document already loaded
         console.log("Document already loaded, starting immediately");
         setTimeout(function() {
             if (window.startTestSystems) {
@@ -312,16 +241,15 @@
     }
 </script>
 
-<!-- Load external JavaScript file AFTER variables are set -->
+<!-- External JavaScript -->
 <script src="js/mcqtestwindow.js"></script>
 
-<!-- Fallback initialization script -->
+<!-- Fallback Scripts -->
 <script type="text/javascript">
-    // Fallback - ensure everything starts even if external script fails
+    // Fallback initialization check
     setTimeout(function() {
         console.log("Fallback initialization check");
 
-        // Check if timer is running
         const timerElement = document.getElementById('timer');
         if (timerElement && timerElement.textContent === '30:00') {
             console.log("Timer not started - forcing manual start");
@@ -330,7 +258,6 @@
             }
         }
 
-        // Check if camera is initializing
         const recordingStatus = document.getElementById('recordingStatus');
         const videoPreview = document.getElementById('videoPreview');
         if (recordingStatus && recordingStatus.textContent.includes('Starting camera') &&
@@ -342,7 +269,7 @@
         }
     }, 2000);
 
-    // Additional safety net
+    // Safety net
     setTimeout(function() {
         console.log("Final safety check");
         const timer = document.getElementById('timer');

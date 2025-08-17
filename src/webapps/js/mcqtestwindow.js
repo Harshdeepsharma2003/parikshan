@@ -1,7 +1,7 @@
 // Use variables from JSP (declared globally in HTML)
 // These should be available from the inline script in JSP
 let currentQuestion = 1;
-let timeRemaining = 1800; // 30 minutes = 1800 seconds
+let timeRemaining = 600; // Changed from 1800 to 600 (10 minutes)
 let timerInterval = null;
 let answers = {};
 
@@ -99,9 +99,9 @@ function startTimer() {
         const timerElement = document.getElementById('timer');
         if (timerElement) {
             timerElement.classList.remove('warning', 'critical');
-            if (timeRemaining <= 300) { // 5 minutes
+            if (timeRemaining <= 120) { // 2 minutes - adjusted for 10-minute test
                 timerElement.classList.add('critical');
-            } else if (timeRemaining <= 600) { // 10 minutes
+            } else if (timeRemaining <= 300) { // 5 minutes - adjusted for 10-minute test
                 timerElement.classList.add('warning');
             }
         }
@@ -140,9 +140,24 @@ function autoSubmitTest() {
         stopRecording();
     }
 
+    // Add time taken to form
+    const form = document.getElementById('testForm');
+    if (form) {
+        const timeTakenInput = document.createElement('input');
+        timeTakenInput.type = 'hidden';
+        timeTakenInput.name = 'timeTaken';
+        timeTakenInput.value = 600; // Full 10 minutes when auto-submitted
+        form.appendChild(timeTakenInput);
+
+        const timeTakenMinutesInput = document.createElement('input');
+        timeTakenMinutesInput.type = 'hidden';
+        timeTakenMinutesInput.name = 'timeTakenMinutes';
+        timeTakenMinutesInput.value = 10; // Changed from 30 to 10 minutes
+        form.appendChild(timeTakenMinutesInput);
+    }
+
     // Give a moment for recording to stop, then submit
     setTimeout(function() {
-        const form = document.getElementById('testForm');
         if (form) {
             form.submit();
         }
@@ -624,7 +639,7 @@ function updateQuestionNavigationButtons() {
 function updateSummaryStats() {
     const answeredCount = Object.keys(answers).length;
     const unansweredCount = totalQuestions - answeredCount;
-    const totalTimeUsed = 1800 - timeRemaining; // Total seconds used
+    const totalTimeUsed = 600 - timeRemaining; // Changed from 1800 to 600 (10 minutes total)
 
     const answeredElement = document.getElementById('answeredCount');
     const unansweredElement = document.getElementById('unansweredCount');
@@ -680,7 +695,7 @@ window.addEventListener('beforeunload', function(e) {
 
 // Add this function to calculate time taken
 function getTimeTaken() {
-    const timeUsed = 1800 - timeRemaining; // Total seconds used (30 minutes = 1800 seconds)
+    const timeUsed = 600 - timeRemaining; // Changed from 1800 to 600 (10 minutes total)
     return Math.max(0, timeUsed); // Ensure it's never negative
 }
 
@@ -718,41 +733,3 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
-
-// Also update the autoSubmitTest function
-function autoSubmitTest() {
-    console.log("Time expired - auto submitting");
-
-    const loadingOverlay = document.getElementById('loadingOverlay');
-    if (loadingOverlay) {
-        loadingOverlay.style.display = 'flex';
-    }
-
-    // Stop recording before submitting
-    if (isRecording && mediaRecorder && mediaRecorder.state === 'recording') {
-        stopRecording();
-    }
-
-    // Add time taken to form
-    const form = document.getElementById('testForm');
-    if (form) {
-        const timeTakenInput = document.createElement('input');
-        timeTakenInput.type = 'hidden';
-        timeTakenInput.name = 'timeTaken';
-        timeTakenInput.value = 1800; // Full 30 minutes when auto-submitted
-        form.appendChild(timeTakenInput);
-
-        const timeTakenMinutesInput = document.createElement('input');
-        timeTakenMinutesInput.type = 'hidden';
-        timeTakenMinutesInput.name = 'timeTakenMinutes';
-        timeTakenMinutesInput.value = 30;
-        form.appendChild(timeTakenMinutesInput);
-    }
-
-    // Give a moment for recording to stop, then submit
-    setTimeout(function() {
-        if (form) {
-            form.submit();
-        }
-    }, 2000);
-}
