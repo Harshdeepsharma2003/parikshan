@@ -62,14 +62,14 @@ public class TestServiceImpl implements TestService {
 
     @Override
     public List<Test> findAllActive() throws Exception {
-        System.out.println("=== TestServiceImpl.findAllActive() called ===");
+        System.out.println("TestServiceImpl.findAllActive() called");
         try {
             System.out.println("Calling testDao.findAllActive()...");
             List<Test> result = testDao.findAllActive();
             System.out.println("DAO returned: " + (result != null ? result.size() + " tests" : "NULL"));
             return result;
         } catch (Exception e) {
-            System.err.println("=== ERROR in TestServiceImpl.findAllActive() ===");
+            System.out.println("ERROR in TestServiceImpl.findAllActive() ===");
             e.printStackTrace();
             throw new Exception("Unable to fetch available tests", e);
         }

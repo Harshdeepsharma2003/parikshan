@@ -11,7 +11,7 @@ import java.util.List;
 public class QuestionServiceImpl implements QuestionService {
 
     private QuestionDao questionDao = new QuestionDaoImpl();
-    // Business rule: Maximum questions allowed per test
+
     private static final int MAX_QUESTIONS_PER_TEST = 5;
 
 
@@ -47,10 +47,7 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Override
     public void addQuestionsWithValidation(List<Question> questions) throws Exception {
-        // Validate business rules first
         validateQuestionCount(questions);
-
-        // Then save to database
         addQuestions(questions);
     }
 }

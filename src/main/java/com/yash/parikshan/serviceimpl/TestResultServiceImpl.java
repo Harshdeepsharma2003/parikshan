@@ -85,12 +85,12 @@ public class TestResultServiceImpl implements TestResultService {
             throw new IllegalArgumentException("TestResult cannot be null");
         }
 
-        // Generate resultID if not provided
+
         if (testResult.getResultId() == null || testResult.getResultId().trim().isEmpty()) {
             testResult.setResultId(generateResultId());
         }
 
-        // Validate required fields
+
         if (testResult.getStudentId() == null || testResult.getStudentId().trim().isEmpty()) {
             throw new IllegalArgumentException("Student ID is required");
         }
@@ -119,6 +119,13 @@ public class TestResultServiceImpl implements TestResultService {
     }
 
     @Override
+    public List<TestResult> findByStudentId(String studentId) throws Exception {
+        return testResultDao.findByStudentId(studentId);
+    }
+}
+
+    /*
+    @Override
     public boolean terminateTestForViolations(String testId, String studentId, int violationCount) {
         try {
             String reason = "Test terminated - " + violationCount + " violations detected";
@@ -145,7 +152,7 @@ public class TestResultServiceImpl implements TestResultService {
             return false;
         }
     }
-
+/*
     @Override
     public TestResult getTestResult(String testId, String studentId) {
 
@@ -164,10 +171,6 @@ public class TestResultServiceImpl implements TestResultService {
             return null;
         }
          }
+*/
 
-    @Override
-    public List<TestResult> findByStudentId(String studentId) throws Exception {
-        return testResultDao.findByStudentId(studentId);
-        }
-    }
 

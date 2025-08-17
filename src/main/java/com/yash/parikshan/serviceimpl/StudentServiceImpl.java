@@ -25,11 +25,11 @@ public class StudentServiceImpl implements StudentService {
             throw new Exception("Password must contain at least 1 special character");
         }
 
-        // Hash the password after validation
+
         String hashedPassword = PasswordUtil.hashPassword(password);
         student.setPassword(hashedPassword);
 
-        // Save to database
+
         studentDao.save(student);
     }
 
@@ -45,16 +45,16 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public void updateStudentProfile(String studentId, Student student) {
-        // Validate student ID
+
         if (studentId == null || studentId.trim().isEmpty()) {
             throw new IllegalArgumentException("Student ID cannot be null or empty");
         }
 
-        // If password is being updated, validate it
+
         if (student.getPassword() != null && !student.getPassword().isEmpty()) {
             String password = student.getPassword();
 
-            // Check minimum 6 characters
+
             if (password.length() < 6) {
                 try {
                     throw new Exception("Password must be at least 6 characters long");
@@ -63,7 +63,7 @@ public class StudentServiceImpl implements StudentService {
                 }
             }
 
-            // Check for at least 1 special character
+
             if (!password.matches(".*[!@#$%^&*(),.?\":{}|<>].*")) {
                 try {
                     throw new Exception("Password must contain at least 1 special character");
@@ -72,7 +72,7 @@ public class StudentServiceImpl implements StudentService {
                 }
             }
 
-            // Hash the password
+
             String hashedPassword = PasswordUtil.hashPassword(password);
             student.setPassword(hashedPassword);
         }
@@ -82,7 +82,7 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public boolean authenticate(String studentId, String password) throws Exception {
-        // Input validation
+
         if (studentId == null || studentId.trim().isEmpty()) {
             throw new IllegalArgumentException("Student ID cannot be null or empty");
         }
@@ -99,7 +99,7 @@ public class StudentServiceImpl implements StudentService {
                     return false;
                 }
 
-                String storedHash = student.getPassword(); // This should be the BCrypt hash
+                String storedHash = student.getPassword(); // BCrypt hash
 
                 System.out.println("DEBUG: Raw password length: " + password.length());
                 System.out.println("DEBUG: Stored hash: " + storedHash);
@@ -111,7 +111,7 @@ public class StudentServiceImpl implements StudentService {
                     return false;
                 }
 
-                // Verify the hash format (BCrypt hashes start with $2a$, $2b$, or $2y$)
+
                 if (!storedHash.startsWith("$2")) {
                     System.out.println("WARNING: Password doesn't appear to be BCrypt hashed!");
                     System.out.println("Stored value: " + storedHash);
@@ -124,7 +124,7 @@ public class StudentServiceImpl implements StudentService {
 
             } catch (Exception e) {
                 System.err.println("Authentication error for student " + studentId + ": " + e.getMessage());
-                e.printStackTrace(); // Add full stack trace
+                e.printStackTrace();
                 throw new Exception("Authentication system error", e);
             }
         }
@@ -134,12 +134,12 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public boolean deleteProfile(String studentId, String password) {
         try {
-            // First authenticate the user
+
             if (!authenticate(studentId, password)) {
-                return false; // Wrong password
+                return false;
             }
 
-            // Hash the password for deletion (DAO expects hashed password)
+
             String hashedPassword = PasswordUtil.hashPassword(password);
             studentDao.deleteProfile(studentId, hashedPassword);
             return true;

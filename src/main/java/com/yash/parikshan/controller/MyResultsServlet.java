@@ -21,7 +21,7 @@ public class MyResultsServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
 
-        // Prevent browser caching
+        // Prevents browser caching
         resp.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
         resp.setHeader("Pragma", "no-cache");
         resp.setDateHeader("Expires", 0);

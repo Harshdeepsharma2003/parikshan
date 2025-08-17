@@ -20,15 +20,17 @@ public interface TestResultDao {
 
     List<Test> getAllTests();
 
-    boolean saveTestResult(TestResult testResult);
 
-    boolean terminateTest(String testId, String studentId, String reason);
-
-    boolean isTestTerminated(String testId, String studentId);
+   // boolean isTestTerminated(String testId, String studentId);
 
     TestResult getTestResult(String testId, String studentId);
 
-    List<TestResult> getResultsWithViolations();
-
     List<TestResult> findByStudentId(String studentId) throws Exception;
+    boolean saveTestResult(TestResult testResult);
+
+    //List<TestResult> getResultsWithViolations();
+
+    // boolean terminateTest(String testId, String studentId, String reason);
+
+
 }

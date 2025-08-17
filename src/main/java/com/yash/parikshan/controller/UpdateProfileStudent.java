@@ -30,7 +30,7 @@ public class UpdateProfileStudent extends HttpServlet {
             HttpSession session = request.getSession(false);
             if (session != null && session.getAttribute("studentid") != null) {
                 String sessionUserId = (String) session.getAttribute("studentid");
-                // Use sessionUserId as needed
+
             } else {
                 response.sendRedirect("updateprofile.jsp");
                 return;
@@ -56,7 +56,7 @@ public class UpdateProfileStudent extends HttpServlet {
                 throw new RuntimeException(e);
             }
 
-            response.sendRedirect("homestudent.jsp"); // or wherever you want to redirect
+            response.sendRedirect("homestudent.jsp");
         }
 }
 

@@ -20,22 +20,19 @@ public class LogoutServlet extends HttpServlet {
         response.setHeader("Pragma", "no-cache");
         response.setDateHeader("Expires", 0);
 
-        // Get the current session (don't create new one if doesn't exist)
         HttpSession session = request.getSession(false);
 
-        // Invalidate session if it exists
         if (session != null) {
             session.invalidate();
         }
 
-        // Redirect to login page
         response.sendRedirect("login.jsp");
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        // Handle both GET and POST requests the same way
+
         doGet(request, response);
     }
 }

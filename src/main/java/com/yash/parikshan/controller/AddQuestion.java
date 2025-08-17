@@ -45,7 +45,7 @@ public class AddQuestion extends HttpServlet {
                 throw GlobalException.validationError("Test ID is required and cannot be empty");
             }
 
-            // Get expected questions count for validation
+            // Getting expected questions count for validation
             int expectedQuestions = 0;
             if (expectedQuestionsStr != null) {
                 try {
@@ -58,10 +58,8 @@ public class AddQuestion extends HttpServlet {
             List<Question> questions = new ArrayList<>();
             int successfullyProcessed = 0;
 
-            // Dynamically determine maximum question number to check
-            // Fixed limit of 5 questions maximum
+            // Dynamically determine maximum question number to check Fixed limit of 5 questions maximum
             int maxToCheck = questionService.getMaxQuestionsAllowed();
-
 
             logger.info("Starting to process questions (maximum 5 questions allowed)");
             for (int i = 1; i <= maxToCheck; i++) {
@@ -131,7 +129,7 @@ public class AddQuestion extends HttpServlet {
                 throw GlobalException.validationError("Maximum 5 questions allowed per test. You submitted " + questions.size() + " questions.");
             }
 
-            // Save to database
+
             try {
                 logger.info("Attempting to save questions to database");
                 questionService.addQuestionsWithValidation(questions);
@@ -158,8 +156,7 @@ public class AddQuestion extends HttpServlet {
                 }
             }
 
-            // Set success attributes and forward to success page
-            request.setAttribute("testId", testId);
+             request.setAttribute("testId", testId);
             request.setAttribute("questionsAdded", successfullyProcessed);
             request.setAttribute("totalRecords", questions.size());
             request.setAttribute("questions", questions);
@@ -170,25 +167,21 @@ public class AddQuestion extends HttpServlet {
             logger.info("Question addition completed successfully. Test ID: " + testId +
                     ", Questions added: " + successfullyProcessed);
 
-            // Forward to success JSP
+
             request.getRequestDispatcher("adminhome.jsp").forward(request, response);
 
         } catch (GlobalException e) {
             logger.log(Level.WARNING, "GlobalException occurred: " + e.getMessage(), e);
-            // Handle our custom GlobalException with proper error categorization
             handleGlobalException(e, request, response);
 
         } catch (Exception e) {
             logger.log(Level.SEVERE, "Unexpected exception occurred in AddQuestion servlet", e);
-            // Handle any other unexpected exceptions
             GlobalException globalEx = new GlobalException("Unexpected error occurred while processing questions", e);
             handleGlobalException(globalEx, request, response);
         }
     }
 
-    /**
-     * Handle GlobalException and forward to appropriate error page
-     */
+
     private void handleGlobalException(GlobalException e, HttpServletRequest request,
                                        HttpServletResponse response) throws ServletException, IOException {
 
@@ -226,7 +219,6 @@ public class AddQuestion extends HttpServlet {
         }
 
         logger.info("Forwarding to error page: question-error.jsp");
-        // Forward to error page
         request.getRequestDispatcher("question-error.jsp").forward(request, response);
     }
 }

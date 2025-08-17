@@ -21,9 +21,9 @@ public interface TestResultService {
 
     String generateResultId();
 
-    boolean terminateTestForViolations(String testId, String studentId, int violationCount);
-    boolean isTestAlreadyTerminated(String testId, String studentId);
-    TestResult getTestResult(String testId, String studentId);
-
     List<TestResult> findByStudentId(String studentId) throws Exception;
+  //  boolean terminateTestForViolations(String testId, String studentId, int violationCount);
+    // boolean isTestAlreadyTerminated(String testId, String studentId);
+    // TestResult getTestResult(String testId, String studentId);
+
 }

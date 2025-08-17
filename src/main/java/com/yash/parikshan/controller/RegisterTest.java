@@ -32,7 +32,7 @@ public class RegisterTest extends HttpServlet {
         logger.info("RegisterTest servlet: Processing new test registration");
 
         try {
-            // Get parameters
+
             String testId = request.getParameter("testid");
             String title = request.getParameter("testTitle");
             String description = request.getParameter("testDesc");
@@ -40,7 +40,7 @@ public class RegisterTest extends HttpServlet {
 
             logger.info("Test registration attempt - ID: " + testId + ", Title: " + title + ", Questions: " + noOfQuestions);
 
-            // Basic validation
+
             if (testId == null || testId.trim().isEmpty()) {
                 logger.warning("Test ID validation failed: empty or null");
                 request.setAttribute("errorMessage", "Validation Error");
@@ -57,7 +57,7 @@ public class RegisterTest extends HttpServlet {
                 return;
             }
 
-            // Validate number of questions
+            // Validating number of questions
             int questionCount = 0;
             if (noOfQuestions != null && !noOfQuestions.trim().isEmpty()) {
                 try {
@@ -84,7 +84,6 @@ public class RegisterTest extends HttpServlet {
                 return;
             }
 
-            // Create Test object
             Test test = new Test();
             test.setTestId(testId.trim());
             test.setTitle(title.trim());
@@ -93,21 +92,17 @@ public class RegisterTest extends HttpServlet {
 
             logger.info("Attempting to register test: " + testId);
 
-            // Save to database
             boolean success = testService.registerTest(test);
 
             if (success) {
                 logger.info("Test registered successfully: " + testId);
 
-                // Store in session for next step
                 request.getSession().setAttribute("testid", testId);
                 request.getSession().setAttribute("noOfQuestions", noOfQuestions);
                 request.getSession().setAttribute("testTitle", title);
-
-                // Set success message
                 request.setAttribute("successMessage", "Test '" + title.trim() + "' created successfully! Now add your questions.");
 
-                // Forward to add questions page
+
                 request.getRequestDispatcher("addquestion.jsp").forward(request, response);
 
             } else {
@@ -120,7 +115,7 @@ public class RegisterTest extends HttpServlet {
         } catch (Exception e) {
             logger.log(Level.SEVERE, "Unexpected error in RegisterTest servlet", e);
 
-            // Handle different types of exceptions
+            // Handling different types of exceptions
             String errorDetails;
             if (e.getMessage() != null && e.getMessage().contains("duplicate")) {
                 errorDetails = "A test with this ID already exists. Please choose a different Test ID.";

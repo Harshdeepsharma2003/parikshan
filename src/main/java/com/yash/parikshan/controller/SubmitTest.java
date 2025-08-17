@@ -45,12 +45,12 @@ public class SubmitTest extends HttpServlet {
         String studentId = null;
 
         try {
-            // Get basic parameters
+
             testId = request.getParameter("testId");
             String totalQuestionsStr = request.getParameter("totalQuestions");
             String timeTaken = request.getParameter("timeTaken");
 
-            // Get student ID from session first, then from parameter
+
             HttpSession session = request.getSession(false);
             if (session != null) {
                 studentId = (String) session.getAttribute("studentid");
@@ -60,26 +60,26 @@ public class SubmitTest extends HttpServlet {
                 studentId = request.getParameter("studentid");
             }
 
-            // Log the received parameters for debugging
+
             System.out.println("SubmitTest - Received parameters:");
             System.out.println("testId: " + testId);
             System.out.println("studentId: " + studentId);
             System.out.println("totalQuestions: " + totalQuestionsStr);
             System.out.println("timeTaken: " + timeTaken);
 
-            // Validate required parameters
+            // Validating required parameters
             validateRequiredParameters(testId, totalQuestionsStr, studentId);
 
             int totalQuestions = parseIntegerParameter(totalQuestionsStr, "totalQuestions");
 
-            // Get questions and calculate score
+
             List<Question> questions = getQuestionsForTest(testId);
             ScoreCalculationResult scoreResult = calculateScore(request, questions, totalQuestions);
 
-            // Create and save test result
+
             TestResult testResult = createTestResult(studentId, testId, scoreResult, timeTaken, totalQuestions);
 
-            // Try to save the result
+
             boolean resultSaved = saveTestResult(testResult);
 
             if (!resultSaved) {
@@ -87,10 +87,10 @@ public class SubmitTest extends HttpServlet {
                 request.setAttribute("saveWarning", "Test completed successfully, but there was an issue saving to database. Please contact administrator.");
             }
 
-            // Set attributes for JSP display
+            // Setting attributes for JSP display
             setResultAttributes(request, testResult, scoreResult, totalQuestions, questions);
 
-            // Forward to results page
+
             RequestDispatcher dispatcher = request.getRequestDispatcher("testresultstudents.jsp");
             dispatcher.forward(request, response);
 
@@ -108,9 +108,6 @@ public class SubmitTest extends HttpServlet {
         }
     }
 
-    /**
-     * Validate required parameters
-     */
     private void validateRequiredParameters(String testId, String totalQuestionsStr, String studentId)
             throws ParameterValidationException {
 
@@ -127,9 +124,7 @@ public class SubmitTest extends HttpServlet {
         }
     }
 
-    /**
-     * Parse integer parameter with proper error handling
-     */
+     // Parsing integer parameter with proper error handling
     private int parseIntegerParameter(String value, String paramName) throws NumberFormatException {
         try {
             int result = Integer.parseInt(value.trim());
@@ -143,9 +138,6 @@ public class SubmitTest extends HttpServlet {
         }
     }
 
-    /**
-     * Get questions for test with error handling
-     */
     private List<Question> getQuestionsForTest(String testId) throws ServiceException {
         try {
             List<Question> questions = questionService.getQuestionsByTestId(testId);
@@ -159,9 +151,7 @@ public class SubmitTest extends HttpServlet {
         }
     }
 
-    /**
-     * Calculate score with detailed result
-     */
+     // Calculate score with detailed result
     private ScoreCalculationResult calculateScore(HttpServletRequest request, List<Question> questions, int totalQuestions) {
         int correctAnswers = 0;
         int attemptedQuestions = 0;
@@ -176,7 +166,7 @@ public class SubmitTest extends HttpServlet {
                     Question question = questions.get(i - 1);
                     String answerText = question.getAnswerText();
 
-                    // Extract correct answer
+                    // Extracting correct answer
                     String correctAnswer = extractCorrectAnswer(answerText);
 
                     if (studentAnswer.trim().equalsIgnoreCase(correctAnswer.trim())) {
@@ -191,9 +181,6 @@ public class SubmitTest extends HttpServlet {
         return new ScoreCalculationResult(correctAnswers, attemptedQuestions, percentage);
     }
 
-    /**
-     * Extract correct answer from answer text
-     */
     private String extractCorrectAnswer(String answerText) {
         if (answerText == null) return "";
 
@@ -206,9 +193,6 @@ public class SubmitTest extends HttpServlet {
         return "";
     }
 
-    /**
-     * Create test result object
-     */
     private TestResult createTestResult(String studentId, String testId, ScoreCalculationResult scoreResult,
                                         String timeTaken, int totalQuestions) {
         TestResult testResult = new TestResult();
@@ -223,9 +207,6 @@ public class SubmitTest extends HttpServlet {
         return testResult;
     }
 
-    /**
-     * Save test result with proper error handling
-     */
     private boolean saveTestResult(TestResult testResult) {
         try {
             return testResultService.saveTestResult(testResult);
@@ -236,9 +217,7 @@ public class SubmitTest extends HttpServlet {
         }
     }
 
-    /**
-     * Set all attributes needed for JSP display
-     */
+ // for jsp display
     private void setResultAttributes(HttpServletRequest request, TestResult testResult,
                                      ScoreCalculationResult scoreResult, int totalQuestions, List<Question> questions) {
 
@@ -258,14 +237,12 @@ public class SubmitTest extends HttpServlet {
         request.setAttribute("currentDate", new java.util.Date());
     }
 
-    /**
-     * Comprehensive error handling
-     */
+  // error handling
     private void handleError(HttpServletRequest request, HttpServletResponse response,
                              String errorTitle, String userMessage, Exception e,
                              String testId, String studentId) throws ServletException, IOException {
 
-        // Log detailed error information
+        // Logged detailed error information
         System.err.println("=== SubmitTest Error ===");
         System.err.println("Error Title: " + errorTitle);
         System.err.println("Test ID: " + testId);
@@ -275,14 +252,14 @@ public class SubmitTest extends HttpServlet {
         e.printStackTrace();
         System.err.println("========================");
 
-        // Set user-friendly error attributes
+        // Setting user-friendly error attributes
         request.setAttribute("hasError", true);
         request.setAttribute("errorTitle", errorTitle);
         request.setAttribute("errorMessage", userMessage);
         request.setAttribute("testId", testId);
         request.setAttribute("studentId", studentId);
 
-        // Add technical details for debugging (can be hidden from users)
+        //debugging
         request.setAttribute("technicalDetails", e.getClass().getSimpleName() + ": " + e.getMessage());
 
         // Forward to error page
@@ -290,9 +267,6 @@ public class SubmitTest extends HttpServlet {
         dispatcher.forward(request, response);
     }
 
-    /**
-     * Generate unique result ID
-     */
     private String generateResultId() {
         return "RESULT_" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
     }

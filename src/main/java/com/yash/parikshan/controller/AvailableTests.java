@@ -26,7 +26,6 @@ public class AvailableTests extends HttpServlet {
     public void init() throws ServletException {
         logger.info("=== AvailableTests Servlet Initialization Started ===");
         try {
-            // Create the service once for the servlet's lifetime
             this.testService = new TestServiceImpl();
             logger.info("TestService created successfully: " + (testService != null ? "SUCCESS" : "FAILED"));
         } catch (Exception e) {
@@ -48,7 +47,6 @@ public class AvailableTests extends HttpServlet {
         try {
             logger.info("Starting to fetch available tests...");
 
-            // 1. Validate service availability
             if (testService == null) {
                 logger.severe("Test service is null - service not properly initialized");
                 throw GlobalException.databaseError("Test service is not available");
@@ -56,19 +54,17 @@ public class AvailableTests extends HttpServlet {
 
             logger.info("Test service validation passed, proceeding to fetch tests");
 
-            // 2. Fetch list of tests
+            // Fetching list of tests
             List<Test> tests = testService.findAllActive();
 
             logger.info("Tests fetched from service successfully!");
             logger.info("Number of tests retrieved: " + (tests != null ? tests.size() : "NULL"));
 
-            // 3. Handle null response from service
-            if (tests == null) {
+                if (tests == null) {
                 tests = new ArrayList<>();
                 logger.warning("Service returned null, using empty list as fallback");
             }
 
-            // 4. Log test details for debugging
             if (!tests.isEmpty()) {
                 logger.info("Logging test details for debugging:");
                 for (int i = 0; i < tests.size(); i++) {
@@ -82,7 +78,7 @@ public class AvailableTests extends HttpServlet {
                 logger.warning("No active tests found in the system");
             }
 
-            // 5. Expose list to JSP
+            // exposing list to JSP
             req.setAttribute("tests", tests);
             req.setAttribute("totalTests", tests.size());
             logger.info("Tests attribute set on request - Total tests: " + tests.size());
@@ -93,7 +89,7 @@ public class AvailableTests extends HttpServlet {
             return;
         } catch (Exception e) {
             logger.log(Level.SEVERE, "Unexpected exception occurred while fetching tests", e);
-            // Handle unexpected exceptions by wrapping in GlobalException
+            // Handle unexpected exceptions in GlobalException
             GlobalException globalEx = handleUnexpectedException(e);
             handleGlobalException(globalEx, req, resp);
             return;
@@ -102,15 +98,11 @@ public class AvailableTests extends HttpServlet {
         logger.info("Successfully processed test data, forwarding to JSP");
         logger.info("Forwarding to availabletests.jsp...");
 
-        // Forward to JSP
         req.getRequestDispatcher("availabletests.jsp").forward(req, resp);
 
         logger.info("=== AvailableTests doGet() completed successfully ===");
     }
 
-    /**
-     * Convert unexpected exceptions to appropriate GlobalExceptions
-     */
     private GlobalException handleUnexpectedException(Exception e) {
         logger.severe("=== Handling unexpected exception in AvailableTests servlet ===");
         logger.log(Level.SEVERE, "Exception details:", e);
@@ -157,9 +149,7 @@ public class AvailableTests extends HttpServlet {
         return new GlobalException("Unexpected error occurred while loading available tests", e);
     }
 
-    /**
-     * Handle GlobalException and set appropriate request attributes
-     */
+
     private void handleGlobalException(GlobalException e, HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
 
@@ -218,7 +208,6 @@ public class AvailableTests extends HttpServlet {
         logger.info("=== AvailableTests error handling completed ===");
     }
 
-    // Delegate POST → GET (e.g., if a form submits here)
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {

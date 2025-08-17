@@ -36,7 +36,7 @@ public class DisplayStudentResults extends HttpServlet {
         logger.info("DisplayStudentResults servlet called");
 
         try {
-            // Check if user is logged in
+
             HttpSession session = request.getSession(false);
             if (session == null) {
                 logger.warning("No session found, redirecting to login");
@@ -47,7 +47,7 @@ public class DisplayStudentResults extends HttpServlet {
             String userType = (String) session.getAttribute("userType");
             String sessionUserId = (String) session.getAttribute("studentid");
 
-            // Handle backward compatibility
+
             if (sessionUserId == null) {
                 sessionUserId = (String) session.getAttribute("studentid");
             }
@@ -107,13 +107,13 @@ public class DisplayStudentResults extends HttpServlet {
             List<Test> tests = testResultService.getAllTests();
             logger.info("Retrieved " + results.size() + " results and " + tests.size() + " tests");
 
-            // Set attributes for JSP
+            // Setting attributes for JSP
             request.setAttribute("testResults", results);
             request.setAttribute("tests", tests);
             request.setAttribute("totalResults", results.size());
             request.setAttribute("userType", userType);
 
-            // Add info message if no results found
+
             if (results.isEmpty()) {
                 if ("admin".equals(userType)) {
                     logger.info("No results found for admin filter criteria");
@@ -124,7 +124,6 @@ public class DisplayStudentResults extends HttpServlet {
                 }
             }
 
-            // Forward to JSP
             logger.info("Forwarding to studentresults.jsp");
             request.getRequestDispatcher("/studentresults.jsp").forward(request, response);
 

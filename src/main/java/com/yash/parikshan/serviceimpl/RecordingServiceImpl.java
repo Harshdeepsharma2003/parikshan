@@ -16,7 +16,7 @@ public class RecordingServiceImpl implements RecordingService {
 
     @Override
     public boolean saveRecording(String testid, String userid, byte[] recordingData) {
-        // Validate input
+
         if (testid == null || testid.trim().isEmpty()) {
             System.err.println("Test ID cannot be null or empty");
             return false;
@@ -33,7 +33,7 @@ public class RecordingServiceImpl implements RecordingService {
         }
 
         try {
-            // Use the userid parameter, not null!
+
             Recording recording = new Recording(testid, userid, recordingData, (long) recordingData.length);
             return recordingDao.saveRecording(recording);
         } catch (Exception e) {

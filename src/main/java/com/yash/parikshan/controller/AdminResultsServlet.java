@@ -23,8 +23,7 @@ public class AdminResultsServlet extends HttpServlet {
         System.out.println("AdminResultsServlet doGet called");
 
         try {
-            // Check for success message in session
-            HttpSession session = request.getSession(false);
+             HttpSession session = request.getSession(false);
             if (session != null && session.getAttribute("successMessage") != null) {
                 request.setAttribute("successMessage", session.getAttribute("successMessage"));
                 session.removeAttribute("successMessage"); // Remove after displaying
@@ -40,7 +39,7 @@ public class AdminResultsServlet extends HttpServlet {
             request.setAttribute("testResults", testResults);
             request.setAttribute("totalTestResults", testResults.size());
 
-            // Calculate summary statistics
+            // Calculatin summary statistics
             calculateSummaryStats(request, videoResults, testResults);
 
             System.out.println("Fetched " + videoResults.size() + " video analysis results");
@@ -56,10 +55,7 @@ public class AdminResultsServlet extends HttpServlet {
 
     private List<VideoProcessorResult> getVideoProcessorResults() throws SQLException {
         List<VideoProcessorResult> results = new ArrayList<>();
-
-
-            // Updated SQL query to match actual database schema
-            String sql = """
+        String sql = """
                 SELECT r.id as recording_id, r.studentid, r.testid, 
                        var.status, var.total_frames, var.pose_detected_frames, 
                        var.detection_percentage, var.processed_at
@@ -96,8 +92,7 @@ public class AdminResultsServlet extends HttpServlet {
         try {
             connection = DbUtil.getConnection();
 
-            // Updated SQL query to match actual database schema
-            String sql = """
+              String sql = """
                 SELECT resultid, studentid, testid, score, totalmarks, 
                        timetaken, testdate, status, invalidationreason, violationcount
                 FROM testresults 

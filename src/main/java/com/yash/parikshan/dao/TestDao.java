@@ -1,9 +1,6 @@
 package com.yash.parikshan.dao;
 
-import com.yash.parikshan.model.Question;
-import com.yash.parikshan.model.Student;
 import com.yash.parikshan.model.Test;
-
 import java.sql.SQLException;
 import java.util.List;
 

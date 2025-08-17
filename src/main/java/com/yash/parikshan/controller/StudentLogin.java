@@ -35,7 +35,7 @@ public class StudentLogin extends HttpServlet {
         String studentId = request.getParameter("studentid");
         String password = request.getParameter("password");
 
-        // Log the attempt (without password for security)
+
         logger.info("Login attempt for student ID: '" + studentId + "'");
         System.out.println("DEBUG LOGIN: Student ID from form: '" + studentId + "'");
 
@@ -53,23 +53,21 @@ public class StudentLogin extends HttpServlet {
             if (authenticated) {
                 logger.info("Authentication successful for student: " + studentId);
 
-                // IMPORTANT: Destroy any existing session first
+
                 HttpSession existingSession = request.getSession(false);
                 if (existingSession != null) {
                     System.out.println("DEBUG LOGIN: Invalidating existing session: " + existingSession.getId());
                     existingSession.invalidate();
                 }
 
-                // Create fresh session
                 HttpSession session = request.getSession(true);
                 System.out.println("DEBUG LOGIN: Created new session: " + session.getId());
 
-                // Set session attributes
                 session.setAttribute("studentid", studentId);
                 session.setAttribute("userType", studentId.endsWith("@yash") ? "admin" : "student");
                 session.setAttribute("loginTime", System.currentTimeMillis());
 
-                // VERIFY session was set correctly
+
                 String verifyStudentId = (String) session.getAttribute("studentid");
                 String verifyUserType = (String) session.getAttribute("userType");
 
@@ -78,7 +76,7 @@ public class StudentLogin extends HttpServlet {
                 System.out.println("  userType = '" + verifyUserType + "'");
                 System.out.println("  loginTime = " + session.getAttribute("loginTime"));
 
-                // Check if it's the specific admin user
+                // the specific admin user
                 if (studentId.equals("Harshdeep@yash")) {
                     logger.info("Admin user logged in: " + studentId);
                     System.out.println("DEBUG LOGIN: Redirecting to adminhome.jsp");

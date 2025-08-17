@@ -43,7 +43,7 @@ public class DeleteProfileStudent extends HttpServlet {
         logger.info("Context Path: " + request.getContextPath());
 
         try {
-            // 1. Validate input parameters
+
             String studentId = request.getParameter("studentid");
             String password = request.getParameter("password");
 
@@ -61,7 +61,7 @@ public class DeleteProfileStudent extends HttpServlet {
 
             logger.info("Input validation passed for student: " + studentId);
 
-            // 2. Validate service availability
+
             if (studentService == null) {
                 logger.severe("Student service is null - service not properly initialized");
                 throw GlobalException.databaseError("Student service is not available");
@@ -83,7 +83,7 @@ public class DeleteProfileStudent extends HttpServlet {
 
             logger.info("Session student ID: " + sessionStudentId + ", Requested deletion for: " + studentId);
 
-// 2. Authorization check - Only allow users to delete their own profile
+//  Authorization check - Only allow users to delete their own profile
             if (!sessionStudentId.equals(studentId.trim())) {
                 logger.warning("Unauthorized profile deletion attempt - Session user: " + sessionStudentId +
                         " trying to delete profile: " + studentId);
@@ -92,8 +92,6 @@ public class DeleteProfileStudent extends HttpServlet {
 
             logger.info("Authorization check passed for student: " + studentId);
 
-
-            // 4. Perform profile deletion with proper error handling
             try {
                 logger.info("Attempting to delete profile for student: " + studentId);
                 boolean deleteResult = studentService.deleteProfile(studentId.trim(), password.trim());
@@ -109,14 +107,12 @@ public class DeleteProfileStudent extends HttpServlet {
 
                 logger.info("Profile deletion successful for student: " + studentId);
 
-                // 5. Clean up session after successful deletion
-                if (session != null) {
+                  if (session != null) {
                     logger.info("Invalidating session after successful profile deletion for student: " + studentId);
                     session.invalidate();
                 }
 
-                // 6. Set success message and redirect
-                logger.info("Setting success message and redirecting after profile deletion");
+                   logger.info("Setting success message and redirecting after profile deletion");
                 request.getSession().setAttribute("successMessage", "Your profile has been successfully deleted.");
                 logger.info("Redirecting to landingpage.jsp after successful profile deletion");
                 response.sendRedirect("landingpage.jsp");
@@ -124,8 +120,7 @@ public class DeleteProfileStudent extends HttpServlet {
             } catch (Exception e) {
                 logger.log(Level.WARNING, "Exception occurred during profile deletion service call for student: " + studentId, e);
 
-                // Handle service layer exceptions
-                String errorMessage = e.getMessage();
+                  String errorMessage = e.getMessage();
                 if (errorMessage != null) {
                     if (errorMessage.contains("Invalid password") || errorMessage.contains("authentication")) {
                         logger.warning("Invalid password provided for profile deletion - Student: " + studentId);
@@ -171,9 +166,6 @@ public class DeleteProfileStudent extends HttpServlet {
         doGet(request, response);
     }
 
-    /**
-     * Handle GlobalException and redirect with appropriate error messages
-     */
     private void handleGlobalException(GlobalException e, HttpServletRequest request,
                                        HttpServletResponse response) throws ServletException, IOException {
 
@@ -186,7 +178,7 @@ public class DeleteProfileStudent extends HttpServlet {
         getServletContext().log("Error in DeleteProfileStudent servlet: " + e.getErrorType() +
                 " - " + e.getErrorCode() + " - " + e.getMessage(), e);
 
-        // Set error attributes for JSP display
+        // Setting error attributes for JSP display
         HttpSession session = request.getSession();
         session.setAttribute("hasError", true);
         session.setAttribute("errorCode", e.getErrorCode());
@@ -194,7 +186,7 @@ public class DeleteProfileStudent extends HttpServlet {
 
         logger.info("Set common error attributes on session");
 
-        // Set specific error messages based on error type
+        // Setting specific error messages based on error type
         if (e.isValidationError()) {
             logger.warning("Handling validation error");
             session.setAttribute("errorTitle", "Validation Error");
