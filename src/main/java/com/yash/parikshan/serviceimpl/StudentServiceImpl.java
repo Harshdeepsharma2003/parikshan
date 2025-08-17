@@ -91,34 +91,45 @@ public class StudentServiceImpl implements StudentService {
             throw new IllegalArgumentException("Password cannot be null or empty");
         }
 
-        try {
-            // Get student from database
-            Student student = studentDao.getStudentById(studentId.trim());
+            try {
+                Student student = studentDao.getStudentById(studentId.trim());
 
-            if (student == null) {
-                System.out.println("No user found for ID: " + studentId);
-                return false; // Student not found
+                if (student == null) {
+                    System.out.println("No user found for ID: " + studentId);
+                    return false;
+                }
+
+                String storedHash = student.getPassword(); // This should be the BCrypt hash
+
+                System.out.println("DEBUG: Raw password length: " + password.length());
+                System.out.println("DEBUG: Stored hash: " + storedHash);
+                System.out.println("DEBUG: Hash starts with $2: " + (storedHash != null && storedHash.startsWith("$2")));
+                System.out.println("DEBUG: Hash length: " + (storedHash != null ? storedHash.length() : "null"));
+
+                if (storedHash == null || storedHash.trim().isEmpty()) {
+                    System.out.println("No password hash found for student: " + studentId);
+                    return false;
+                }
+
+                // Verify the hash format (BCrypt hashes start with $2a$, $2b$, or $2y$)
+                if (!storedHash.startsWith("$2")) {
+                    System.out.println("WARNING: Password doesn't appear to be BCrypt hashed!");
+                    System.out.println("Stored value: " + storedHash);
+                }
+
+                boolean isValid = PasswordUtil.verifyPassword(password, storedHash);
+                System.out.println("Password verification result: " + isValid);
+
+                return isValid;
+
+            } catch (Exception e) {
+                System.err.println("Authentication error for student " + studentId + ": " + e.getMessage());
+                e.printStackTrace(); // Add full stack trace
+                throw new Exception("Authentication system error", e);
             }
-
-            if (student.getPassword() == null || student.getPassword().trim().isEmpty()) {
-                System.out.println("No password hash found for student: " + studentId);
-                return false; // No password set
-            }
-
-            System.out.println("Retrieved user: " + student.getStudentId());
-            System.out.println("Verifying password for: " + studentId);
-
-            // Verify password using BCrypt
-            boolean isValid = PasswordUtil.verifyPassword(password, student.getPassword());
-
-            System.out.println("Password verification result: " + isValid);
-            return isValid;
-
-        } catch (Exception e) {
-            System.err.println("Authentication error for student " + studentId + ": " + e.getMessage());
-            throw new Exception("Authentication system error", e);
         }
-    }
+
+
 
     @Override
     public boolean deleteProfile(String studentId, String password) {
