@@ -10,7 +10,6 @@
     <link rel="stylesheet" href="css/landingpage.css">
     <link rel="stylesheet" href="css/studenthome.css">
     <link rel="stylesheet" href="css/managetest.css">
-    <!-- Font & Icons (optional) -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 

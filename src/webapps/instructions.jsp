@@ -8,7 +8,8 @@
     <title>Test Instructions - Parikshan</title>
 
     <!-- Shared styles / icons -->
-    <link rel="stylesheet" href="css/common.css">
+   <link rel="stylesheet" href="css/landingpage.css">
+       <link rel="stylesheet" href="css/studenthome.css">
     <link rel="stylesheet" href="css/instructions.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 
@@ -37,13 +38,13 @@
                                 <div class="detail-item">
                                     <i class="fas fa-question-circle detail-icon"></i>
                                     <div>
-                                        <strong>${totalQuestions != null ? totalQuestions : '25'} Questions</strong>
+                                        <strong>${totalQuestions != null ? totalQuestions : '5'} Questions</strong>
                                     </div>
                                 </div>
                                 <div class="detail-item">
                                     <i class="fas fa-clock detail-icon"></i>
                                     <div>
-                                        <strong>${timeLimit != null ? timeLimit : '45'} Minutes</strong>
+                                        <strong>${timeLimit != null ? timeLimit : '10'} Minutes</strong>
                                     </div>
                                 </div>
                                 <div class="detail-item">

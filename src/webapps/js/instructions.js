@@ -1,7 +1,6 @@
 let cameraGranted = false;
 let micGranted = false;
 
-/* ---------- REQUEST CAMERA AND MICROPHONE PERMISSIONS ---------- */
 async function requestPermissions() {
     try {
         // Request camera and microphone access
@@ -20,10 +19,10 @@ async function requestPermissions() {
         document.getElementById('micStatus').className = 'permission-status status-granted';
         micGranted = true;
 
-        // Enable start button if both permissions granted
+
         checkPermissionsAndEnableButton();
 
-        // Stop the stream (we'll request again during actual test)
+
         stream.getTracks().forEach(track => track.stop());
 
         alert('Permissions granted successfully! You can now start the test.');
@@ -31,7 +30,7 @@ async function requestPermissions() {
     } catch (error) {
         console.error('Permission denied:', error);
 
-        // Update status to denied
+
         document.getElementById('cameraStatus').textContent = 'Denied';
         document.getElementById('cameraStatus').className = 'permission-status status-denied';
         document.getElementById('micStatus').textContent = 'Denied';
@@ -41,7 +40,6 @@ async function requestPermissions() {
     }
 }
 
-/* ---------- CHECK PERMISSIONS AND ENABLE START BUTTON ---------- */
 function checkPermissionsAndEnableButton() {
     const startBtn = document.getElementById('startTestBtn');
     if (cameraGranted && micGranted) {
@@ -50,16 +48,12 @@ function checkPermissionsAndEnableButton() {
     }
 }
 
-/* ---------- LOAD SHARED COMPONENTS ---------- */
+
 function loadComponent(url, where){
     fetch(url).then(r=>r.text()).then(html=>{document.getElementById(where).innerHTML = html})
         .catch(()=>console.warn('Failed to load', url));
 }
-loadComponent('html/headerhomestudent.html','header-container');
-loadComponent('html/navbarhomestudent.html','navbar-container');
-loadComponent('html/footerstudenthome.html','footer-container');
 
-/* ---------- CONFIRM BEFORE STARTING TEST ---------- */
 document.getElementById('startTestBtn').addEventListener('click', function(e) {
     if (!cameraGranted || !micGranted) {
         e.preventDefault();
@@ -72,7 +66,7 @@ document.getElementById('startTestBtn').addEventListener('click', function(e) {
     }
 });
 
-/* ---------- CHECK EXISTING PERMISSIONS ON PAGE LOAD ---------- */
+
 window.addEventListener('load', async function() {
     try {
         const permissions = await navigator.permissions.query({name: 'camera'});
@@ -96,3 +90,26 @@ window.addEventListener('load', async function() {
         console.log('Permissions not yet granted');
     }
 });
+
+
+// Load external header
+fetch('html/headerhomestudent.html')
+    .then(response => response.text())
+    .then(data => {
+    document.getElementById('header-container').innerHTML = data;
+});
+
+// Load external navbar
+fetch('html/navbarhomestudent.html')
+    .then(response => response.text())
+    .then(data => {
+    document.getElementById('navbar-container').innerHTML = data;
+});
+
+// Load external footer
+fetch('html/footerstudenthome.html')
+    .then(response => response.text())
+    .then(data => {
+    document.getElementById('footer-container').innerHTML = data;
+});
+
