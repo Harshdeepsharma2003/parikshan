@@ -4,8 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Parikshan - Delete Profile</title>
-    <link rel="stylesheet" href="css/common.css">
+
     <link rel="stylesheet" href="css/landingpage.css">
+    <link rel="stylesheet" href="css/studenthome.css">
     <link rel="stylesheet" href="css/deleteprofilestudent.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
@@ -35,23 +36,12 @@
                         </div>
                     </div>
 
-                    <!-- Confirmation Checkbox -->
-                    <div class="confirmation-section">
-                        <div class="checkbox-group">
-                            <input type="checkbox" id="confirmDelete" required>
-                            <label for="confirmDelete">
-                                <span class="checkmark"></span>
-                                I understand that this action is permanent and cannot be undone
-                            </label>
-                        </div>
-                    </div>
-
                     <div class="form-actions">
                         <button type="button" class="btn btn-secondary" onclick="goBack()">
                             <i class="fas fa-arrow-left"></i>
                             Cancel
                         </button>
-                        <button type="submit" class="btn btn-danger">
+                        <button type="submit" class="btn">
                             <i class="fas fa-trash-alt"></i>
                             Delete Profile
                         </button>
@@ -65,6 +55,6 @@
     <!-- Footer -->
     <div id="footer-container"></div>
 
-     <script src="js/deleteprofilestudent.js"></script>
+<script src="js/deleteprofilestudent.js"></script>
 </body>
 </html>

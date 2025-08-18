@@ -66,19 +66,18 @@ public class VideoProcessorServlet extends HttpServlet {
                     RequestDispatcher dispatcher = request.getRequestDispatcher("/processRecording.jsp");
                     dispatcher.forward(request, response);
                 } else {
-                    // Save results to database
+
                     saveResultsToDB(recordingId, result);
 
                     System.out.println("Video processing completed successfully. Detection rate: " +
                             result.getDetectionPercentage() + "%");
 
-                    // Set success message in session so it persists after redirect
-                    HttpSession session = request.getSession();
+                     HttpSession session = request.getSession();
                     session.setAttribute("successMessage",
                             "Recording " + recordingId + " processed successfully! Detection rate: " +
                                     String.format("%.1f", result.getDetectionPercentage()) + "%");
 
-                    // Redirect to AdminResultsServlet to show all results
+
                     response.sendRedirect("AdminResultsServlet");
                     return;
                 }
@@ -94,7 +93,6 @@ public class VideoProcessorServlet extends HttpServlet {
             e.printStackTrace();
         }
 
-        // Only forward to processRecording.jsp if there was an error
         RequestDispatcher dispatcher = request.getRequestDispatcher("/processRecording.jsp");
         dispatcher.forward(request, response);
     }
@@ -105,15 +103,15 @@ public class VideoProcessorServlet extends HttpServlet {
         ResultSet rs = null;
 
         try {
-            conn = DbUtil.getConnection(); // Your DB connection method
+            conn = DbUtil.getConnection();
             String sql = "SELECT id, testid, studentid, recordingdata, filesize, createdat FROM recordings WHERE id = ?";
             pstmt = conn.prepareStatement(sql);
             pstmt.setInt(1, recordingId);
             rs = pstmt.executeQuery();
 
             if (rs.next()) {
-                Recording recording = new Recording(); // Changed from RecordingData
-                recording.setId((long) rs.getInt("id")); // Convert int to Long
+                Recording recording = new Recording();
+                recording.setId((long) rs.getInt("id"));
                 recording.setTestid(rs.getString("testid"));
                 recording.setStudentid(rs.getString("studentid"));
                 recording.setRecordingData(rs.getBytes("recordingdata"));
@@ -131,17 +129,15 @@ public class VideoProcessorServlet extends HttpServlet {
     }
 
     private String createTempVideoFile(Recording recording) throws IOException {
-        // Create temp directory if it doesn't exist
         File tempDir = new File(System.getProperty("java.io.tmpdir"), "video_processing");
         if (!tempDir.exists()) {
             tempDir.mkdirs();
         }
 
-        // Generate unique filename
         String fileName = "recording_" + recording.getId() + "_" + System.currentTimeMillis() + ".mp4";
         File tempFile = new File(tempDir, fileName);
 
-        // Write BLOB data to temporary file
+
         try (FileOutputStream fos = new FileOutputStream(tempFile)) {
             fos.write(recording.getRecordingData());
         }
@@ -168,12 +164,10 @@ public class VideoProcessorServlet extends HttpServlet {
                 videoPath
         );
 
-        // Set working directory if needed
-        // processBuilder.directory(new File("/path/to/python/project"));
 
         Process process = processBuilder.start();
 
-        // Read output
+
         BufferedReader reader = new BufferedReader(
                 new InputStreamReader(process.getInputStream())
         );
@@ -225,8 +219,7 @@ public class VideoProcessorServlet extends HttpServlet {
         try {
             conn = DbUtil.getConnection();
 
-            // Create results table if it doesn't exist
-            String createTableSQL = """
+             String createTableSQL = """
                 CREATE TABLE IF NOT EXISTS video_analysis_results (
                     id BIGINT PRIMARY KEY AUTO_INCREMENT,
                     recording_id BIGINT NOT NULL,

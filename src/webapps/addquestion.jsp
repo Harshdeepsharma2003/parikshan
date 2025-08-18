@@ -24,12 +24,14 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Add MCQ Questions</title>
+<link rel="stylesheet" href="css/landingpage.css">
+<link rel="stylesheet" href="css/studenthome.css">
 <link rel="stylesheet" href="css/addquestion.css">
 </head>
 <body>
 
 <!-- Header / Navbar placeholders -->
-<div id="header-container"></div>
+
 <div id="navbar-container"></div>
 
 <div class="container">
@@ -72,8 +74,6 @@
   </form>
 </div>
 
-<!-- Footer placeholder -->
-<div id="footer-container"></div>
 <script src="js/addquestion.js"></script>
 </body>
 </html>
