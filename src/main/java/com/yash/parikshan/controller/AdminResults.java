@@ -144,9 +144,6 @@ public class AdminResults extends HttpServlet {
         }
     }
 
-    /**
-     * Handle viewing results by student ID
-     */
     private void handleViewByStudent(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException, GlobalException {
 

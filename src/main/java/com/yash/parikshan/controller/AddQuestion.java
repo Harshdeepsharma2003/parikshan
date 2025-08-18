@@ -61,7 +61,7 @@ public class AddQuestion extends HttpServlet {
             // Dynamically determine maximum question number to check Fixed limit of 5 questions maximum
             int maxToCheck = questionService.getMaxQuestionsAllowed();
 
-            logger.info("Starting to process questions (maximum 5 questions allowed)");
+            logger.info("Starting to process questions");
             for (int i = 1; i <= maxToCheck; i++) {
                 String questionContent = request.getParameter("question_" + i);
 

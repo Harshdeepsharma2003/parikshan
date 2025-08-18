@@ -26,7 +26,7 @@ public class AdminResultsServlet extends HttpServlet {
              HttpSession session = request.getSession(false);
             if (session != null && session.getAttribute("successMessage") != null) {
                 request.setAttribute("successMessage", session.getAttribute("successMessage"));
-                session.removeAttribute("successMessage"); // Remove after displaying
+                session.removeAttribute("successMessage");
             }
 
             // Fetch video analysis results
