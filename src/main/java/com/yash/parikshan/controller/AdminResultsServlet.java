@@ -3,8 +3,7 @@ package com.yash.parikshan.controller;
 import com.yash.parikshan.model.VideoProcessorResult;
 import com.yash.parikshan.model.TestResult;
 import com.yash.parikshan.util.DbUtil;
-
-import javax.servlet.*;
+import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
 import java.io.IOException;
