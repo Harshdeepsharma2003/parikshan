@@ -31,8 +31,8 @@
         <cookie-config>
             <http-only>false</http-only>
             <secure>false</secure>
+            <max-age>1800</max-age>
         </cookie-config>
-        <tracking-mode>COOKIE</tracking-mode>
     </session-config>
 
 </web-app>

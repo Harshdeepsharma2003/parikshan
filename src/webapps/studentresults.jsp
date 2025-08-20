@@ -6,29 +6,76 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 
+<%
+// Debug session information at the top of JSP
+System.out.println("=== JSP SESSION DEBUG ===");
+HttpSession currentSession = request.getSession(false);
+if (currentSession != null) {
+    System.out.println("JSP: Session exists: " + currentSession.getId());
+    System.out.println("JSP: Session studentid: " + currentSession.getAttribute("studentid"));
+    System.out.println("JSP: Session userType: " + currentSession.getAttribute("userType"));
+} else {
+    System.out.println("JSP: No session found!");
+}
+
+// Check if user is logged in - redirect if not
+if (currentSession == null || currentSession.getAttribute("studentid") == null) {
+    System.out.println("JSP: Redirecting to login due to missing session");
+    response.sendRedirect("login.jsp?error=sessionExpired");
+    return;
+}
+%>
+
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
     <title>Test Results - Parikshan</title>
+
+    <link rel="stylesheet" href="css/landingpage.css">
+    <link rel="stylesheet" href="css/studenthome.css">
+    <link rel="stylesheet" href="css/adminhome.css">
     <link rel="stylesheet" href="css/studentresults.css">
-    <!-- Basic stylesheet -->
-        <link rel="stylesheet" href="css/landingpage.css">
-     <link rel="stylesheet" href="css/studenthome.css">
-        <link rel="stylesheet" href="css/adminhome.css">
 </head>
 <body>
- <link rel="stylesheet" href="css/landingpage.css">
- <link rel="stylesheet" href="css/studenthome.css">
- <link rel="stylesheet" href="css/adminhome.css">
+
+
+<!-- Header / Navbar placeholders -->
+<div id="header-container"></div>
+<div id="navbar-container"></div>
+
     <div class="container">
         <h1>Test Results</h1>
 
+        <!-- Debug info (remove in production) -->
+        <%
+        if ("admin".equals(session.getAttribute("userType"))) {
+        %>
+        <div style="background: #f0f0f0; padding: 10px; margin: 10px 0; border-radius: 5px;">
+            <strong>Debug Info:</strong><br>
+            Session ID: <%= session.getAttribute("studentid") %><br>
+            User Type: <%= session.getAttribute("userType") %><br>
+            Total Results: ${totalResults}
+        </div>
+        <% } %>
 
         <!-- Simple Stats -->
         <c:if test="${not empty testResults}">
             <div class="stats">
                 <p><strong>Total Results: ${totalResults}</strong></p>
+            </div>
+        </c:if>
+
+        <!-- Error/Info Messages -->
+        <c:if test="${not empty errorMessage}">
+            <div class="error-message" style="color: red; background: #ffe6e6; padding: 10px; border-radius: 5px; margin: 10px 0;">
+                ${errorMessage}
+            </div>
+        </c:if>
+
+        <c:if test="${not empty infoMessage}">
+            <div class="info-message" style="color: blue; background: #e6f3ff; padding: 10px; border-radius: 5px; margin: 10px 0;">
+                ${infoMessage}
             </div>
         </c:if>
 
@@ -98,17 +145,21 @@
                                     <td><strong>${result.score}/${result.totalMarks}</strong></td>
                                     <td>
                                         <%
+                                            // Fixed percentage calculation
                                             TestResult currentResult = (TestResult) pageContext.getAttribute("result");
                                             double percentage = 0;
+                                            String cssClass = "score-low";
+
                                             try {
-                                                double score = Double.parseDouble(currentResult.getScore());
-                                                double total = Double.parseDouble(currentResult.getTotalMarks());
-                                                percentage = (score / total) * 100;
+                                                if (currentResult != null) {
+                                                    double score = Double.parseDouble(currentResult.getScore());
+                                                    double total = Double.parseDouble(currentResult.getTotalMarks());
+                                                    percentage = (score / total) * 100;
+                                                }
                                             } catch (Exception e) {
                                                 percentage = 0;
                                             }
 
-                                            String cssClass = "";
                                             if (percentage >= 80) cssClass = "score-high";
                                             else if (percentage >= 60) cssClass = "score-medium";
                                             else cssClass = "score-low";
@@ -117,7 +168,16 @@
                                             pageContext.setAttribute("cssClass", cssClass);
                                         %>
                                         <span class="${cssClass}">
-                                            <fmt:formatNumber value="${percentage}" pattern="##.#"/>%
+                                            <c:choose>
+                                                <c:when test="${percentage > 0}">
+                                                    <fmt:formatNumber value="${percentage}" pattern="##.#"/>%
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <!-- Fallback calculation using EL -->
+                                                    <c:set var="calcPercentage" value="${(result.score / result.totalMarks) * 100}" />
+                                                    <fmt:formatNumber value="${calcPercentage}" pattern="##.#"/>%
+                                                </c:otherwise>
+                                            </c:choose>
                                         </span>
                                     </td>
                                     <td>
@@ -134,8 +194,15 @@
                                         </c:choose>
                                     </td>
                                     <td>
-                                        <fmt:formatDate value="${result.testDate}" pattern="dd-MM-yyyy"/>
-                                        <br><small><fmt:formatDate value="${result.testDate}" pattern="HH:mm"/></small>
+                                        <c:choose>
+                                            <c:when test="${not empty result.testDate}">
+                                                <fmt:formatDate value="${result.testDate}" pattern="dd-MM-yyyy"/>
+                                                <br><small><fmt:formatDate value="${result.testDate}" pattern="HH:mm"/></small>
+                                            </c:when>
+                                            <c:otherwise>
+                                                N/A
+                                            </c:otherwise>
+                                        </c:choose>
                                     </td>
                                 </tr>
                             </c:forEach>
@@ -143,14 +210,21 @@
                         <c:otherwise>
                             <tr>
                                 <td colspan="${userType eq 'admin' ? '7' : '6'}" class="no-results">
-                                    No test results found.
+                                    <c:choose>
+                                        <c:when test="${not empty infoMessage}">
+                                            ${infoMessage}
+                                        </c:when>
+                                        <c:otherwise>
+                                            No test results found.
+                                        </c:otherwise>
+                                    </c:choose>
                                     <c:if test="${userType ne 'admin'}">
                                         <br><a href="testformats.jsp" class="btn">Take a Test</a>
                                     </c:if>
                                 </td>
                             </tr>
                         </c:otherwise>
-                    </c:choose>
+                                        </c:choose>
                 </tbody>
             </table>
         </div>
@@ -171,5 +245,6 @@
     </div>
     <!-- Footer placeholder -->
     <div id="footer-container"></div>
+<script src="js/studentresults.js"></script>
 </body>
 </html>

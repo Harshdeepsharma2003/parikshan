@@ -2,8 +2,10 @@ package com.yash.parikshan.daoimpl;
 
 import com.yash.parikshan.controller.RecordingServlet;
 import com.yash.parikshan.dao.TestResultDao;
+import com.yash.parikshan.model.Recording;
 import com.yash.parikshan.model.Test;
 import com.yash.parikshan.model.TestResult;
+import com.yash.parikshan.model.VideoProcessorResult;
 import com.yash.parikshan.util.DbUtil;
 
 import java.sql.*;
@@ -62,8 +64,8 @@ public class TestResultDaoImpl implements TestResultDao {
                     "tr.invalidationreason, tr.violationcount, " +
                     "s.name as studentname, t.title as testtitle " +
                     "FROM testresults tr " +
-                    "JOIN students s ON tr.studentid = s.studentid " +
-                    "JOIN tests t ON tr.testid = t.testid " +
+                    "LEFT JOIN students s ON tr.studentid = s.studentid " +
+                    "LEFT JOIN tests t ON tr.testid = t.testid " +
                     "ORDER BY tr.testdate DESC";
 
             statement = connection.prepareStatement(sql);
@@ -71,6 +73,10 @@ public class TestResultDaoImpl implements TestResultDao {
 
             while (resultSet.next()) {
                 TestResult result = mapResultSetToTestResult(resultSet);
+                System.out.println("DEBUG DAO: " +
+                        result.getStudentId() + " | " +
+                        result.getTestId() + " | " +
+                        result.getScore());
                 results.add(result);
             }
 
@@ -252,34 +258,71 @@ public class TestResultDaoImpl implements TestResultDao {
         }
     }
 
+    @Override
+    public void updateTestResults(Recording recording, VideoProcessorResult result) throws SQLException {
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+
+        try {
+            conn = DbUtil.getConnection();
+
+            String checkSQL = "SELECT resultid FROM testresults WHERE studentid = ? AND testid = ?";
+            PreparedStatement checkStmt = conn.prepareStatement(checkSQL);
+            checkStmt.setString(1, recording.getStudentid());
+            checkStmt.setString(2, recording.getTestid());
+            ResultSet checkRs = checkStmt.executeQuery();
+
+            String resultId = null;
+            if (checkRs.next()) {
+                resultId = checkRs.getString("resultid");
+            }
+            checkRs.close();
+            checkStmt.close();
+
+            if (resultId != null) {
+                String status = "completed";
+                String invalidationReason = "Clean";
+                int violationCount = 0;
+
+                if (result.getDetectionPercentage() < 70.0) {
+                    status = "invalid";
+                    invalidationReason = "Low pose detection rate: " +
+                            String.format("%.1f", result.getDetectionPercentage()) + "%";
+                    violationCount++;
+                }
+
+                String updateSQL = """
+                    UPDATE testresults
+                    SET status = ?, invalidationreason = ?, violationcount = ?
+                    WHERE resultid = ?
+                """;
+
+                pstmt = conn.prepareStatement(updateSQL);
+                pstmt.setString(1, status);
+                pstmt.setString(2, invalidationReason);
+                pstmt.setInt(3, violationCount);
+                pstmt.setString(4, resultId);
+
+                int rowsUpdated = pstmt.executeUpdate();
+                System.out.println("Updated testresults table for resultId: " + resultId +
+                        ", rows affected: " + rowsUpdated);
+            } else {
+                System.out.println("No existing test result found for student: " +
+                        recording.getStudentid() + ", test: " + recording.getTestid());
+            }
+
+        } finally {
+            if (pstmt != null) pstmt.close();
+            if (conn != null) conn.close();
+        }
+    }
+
+
+
     private String generateResultId() {
         return "RESULT_" + System.currentTimeMillis() + "_" + (int) (Math.random() * 1000);
     }
 
-    /*
-    @Override
-    public boolean terminateTest(String testId, String studentId, String reason) {
-        String sql = "INSERT INTO testresults (testid, studentid, status, invalidationreason, testdate, score, totalmarks, timetaken) " +
-                "VALUES (?, ?, 'TERMINATED', ?, NOW(), '0', '0', '0') " +
-                "ON DUPLICATE KEY UPDATE status = 'TERMINATED', invalidation_reason = ?";
-
-        try (Connection conn = DbUtil.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            stmt.setString(1, testId);
-            stmt.setString(2, studentId);
-            stmt.setString(3, reason);
-            stmt.setString(4, reason);
-
-            int result = stmt.executeUpdate();
-            return result > 0;
-
-        } catch (SQLException e) {
-            System.err.println("Error terminating test: " + e.getMessage());
-            return false;
-        }
-    }
-*/
 
     @Override
     public List<TestResult> findByStudentId(String studentId) throws Exception {
@@ -353,132 +396,5 @@ public class TestResultDaoImpl implements TestResultDao {
         }
     }
 
-    @Override
-    public TestResult getTestResult(String testId, String studentId) {
-        String sql = "SELECT * FROM testresults WHERE testid = ? AND studentid = ?";
-
-        try (Connection conn = DbUtil.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            stmt.setString(1, testId);
-            stmt.setString(2, studentId);
-
-            try (ResultSet rs = stmt.executeQuery()) {
-                if (rs.next()) {
-                    TestResult result = new TestResult();
-                    result.setResultId(rs.getString("resultid"));
-                    result.setTestId(rs.getString("testid"));
-                    result.setStudentId(rs.getString("studentid"));
-                    result.setScore(rs.getString("score"));
-                    result.setTotalMarks(rs.getString("totalmarks"));
-                    result.setTimeTaken(rs.getString("timetaken"));
-                    result.setTestDate(rs.getTimestamp("testdate"));
-
-                    // Handle new fields that might be null
-                    String status = rs.getString("status");
-                    result.setStatus(status != null ? status : "COMPLETED");
-
-                    result.setInvalidationReason(rs.getString("invalidationreason"));
-
-                    int violationCount = rs.getInt("violationcount");
-                    result.setViolationCount(violationCount);
-
-                    return result;
-                }
-            }
-
-        } catch (SQLException e) {
-            System.err.println("Error getting test result for testId: " + testId + ", studentId: " + studentId);
-            e.printStackTrace();
-        }
-
-        return null;
-    }
-
-
-
-    /*
-
-    // Add this method to your existing TestResultDAOImpl class
-    private void invalidateTest(String testId, String studentId) {
-        String sql = "UPDATE testresults SET status = 'INVALIDATED', invalidationreason = 'Cheating detected' WHERE testid = ? AND studentid = ?";
-
-        try (Connection connection = DbUtil.getConnection();
-             PreparedStatement stmt = connection.prepareStatement(sql)) {
-
-            stmt.setString(1, testId);
-            stmt.setString(2, studentId);
-            int updated = stmt.executeUpdate();
-
-            if (updated > 0) {
-                logger.info("Test invalidated successfully for student: " + studentId + ", test: " + testId);
-            } else {
-                logger.warning("No test record found to invalidate for student: " + studentId + ", test: " + testId);
-            }
-        } catch (SQLException e) {
-            logger.log(Level.SEVERE, "Failed to invalidate test", e);
-        }
-    }
-
-        @Override
-        public boolean isTestTerminated(String testId, String studentId) {
-            String sql = "SELECT status FROM testresults WHERE testid = ? AND studentid = ?";
-
-            try (Connection conn = DbUtil.getConnection();
-                 PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-                stmt.setString(1, testId);
-                stmt.setString(2, studentId);
-
-                try (ResultSet rs = stmt.executeQuery()) {
-                    if (rs.next()) {
-                        return "TERMINATED".equals(rs.getString("status"));
-                    }
-                }
-
-            } catch (SQLException e) {
-                System.err.println("Error checking test termination: " + e.getMessage());
-            }
-
-            return false;
-        }
-
-        @Override
-        public List<TestResult> getResultsWithViolations() {
-            List<TestResult> results = new ArrayList<>();
-            Connection connection = null;
-            PreparedStatement statement = null;
-            ResultSet resultSet = null;
-
-            try {
-                connection = DbUtil.getConnection();
-                String sql = "SELECT tr.resultid, tr.studentid, tr.testid, tr.score, " +
-                        "tr.totalmarks, tr.timetaken, tr.testdate, tr.status, " +
-                        "tr.invalidationreason, tr.violationcount, " +
-                        "s.name as studentname, t.title as testtitle " +
-                        "FROM testresults tr " +
-                        "JOIN students s ON tr.studentid = s.studentid " +
-                        "JOIN tests t ON tr.testid = t.testid " +
-                        "WHERE tr.violationcount > 0 OR tr.status = 'TERMINATED' OR tr.status = 'INVALIDATED' " +
-                        "ORDER BY tr.violationcount DESC, tr.testdate DESC";
-
-                statement = connection.prepareStatement(sql);
-                resultSet = statement.executeQuery();
-
-                while (resultSet.next()) {
-                    TestResult result = mapResultSetToTestResult(resultSet);
-                    results.add(result);
-                }
-
-            } catch (SQLException e) {
-                System.err.println("Error getting results with violations: " + e.getMessage());
-                e.printStackTrace();
-            } finally {
-                closeResources(resultSet, statement, connection);
-            }
-
-            return results;
-        }
-    */
 }
 

@@ -1,8 +1,11 @@
 package com.yash.parikshan.dao;
 
+import com.yash.parikshan.model.Recording;
 import com.yash.parikshan.model.Test;
 import com.yash.parikshan.model.TestResult;
+import com.yash.parikshan.model.VideoProcessorResult;
 
+import java.sql.SQLException;
 import java.util.List;
 
 public interface TestResultDao {
@@ -20,17 +23,9 @@ public interface TestResultDao {
 
     List<Test> getAllTests();
 
-
-   // boolean isTestTerminated(String testId, String studentId);
-
-    TestResult getTestResult(String testId, String studentId);
-
     List<TestResult> findByStudentId(String studentId) throws Exception;
     boolean saveTestResult(TestResult testResult);
 
-    //List<TestResult> getResultsWithViolations();
 
-    // boolean terminateTest(String testId, String studentId, String reason);
-
-
+    void updateTestResults(Recording recording, VideoProcessorResult result) throws SQLException;
 }

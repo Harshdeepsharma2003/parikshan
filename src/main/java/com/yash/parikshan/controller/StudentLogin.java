@@ -61,6 +61,7 @@ public class StudentLogin extends HttpServlet {
                 }
 
                 HttpSession session = request.getSession(true);
+                session.setMaxInactiveInterval(30 * 60); // 30 minutes
                 System.out.println("DEBUG LOGIN: Created new session: " + session.getId());
 
                 session.setAttribute("studentid", studentId);
