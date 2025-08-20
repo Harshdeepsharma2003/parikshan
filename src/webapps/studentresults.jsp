@@ -34,7 +34,6 @@ if (currentSession == null || currentSession.getAttribute("studentid") == null) 
 
     <link rel="stylesheet" href="css/landingpage.css">
     <link rel="stylesheet" href="css/studenthome.css">
-    <link rel="stylesheet" href="css/adminhome.css">
     <link rel="stylesheet" href="css/studentresults.css">
 </head>
 <body>
