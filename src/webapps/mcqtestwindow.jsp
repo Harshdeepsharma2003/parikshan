@@ -11,7 +11,7 @@
   }
 
   if (testId == null) {
-      response.sendRedirect("selecttest.jsp");
+      response.sendRedirect("homestudent.jsp");
       return;
   }
 
@@ -26,7 +26,7 @@
   }
 
   if (questions.isEmpty()) {
-      out.println("<script>alert('No questions found for this test!'); window.location.href='selecttest.jsp';</script>");
+      out.println("<script>alert('No questions found for this test!'); window.location.href='homestudent.jsp';</script>");
       return;
   }
 

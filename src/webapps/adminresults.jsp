@@ -14,6 +14,10 @@
 
 </head>
 <body>
+<!-- Header / Navbar placeholders -->
+<div id="header-container"></div>
+<div id="navbar-container"></div>
+
     <div class="container">
         <div class="header">
             <h1>📊 Admin - Video Analysis Results</h1>
@@ -245,5 +249,31 @@
             <a href="javascript:location.reload();" class="btn">🔄 Refresh Results</a>
         </div>
     </div>
+<!-- Footer placeholder -->
+<div id="footer-container"></div>
+<script>
+
+// Load external header
+fetch('html/headerhomestudent.html')
+    .then(response => response.text())
+    .then(data => {
+    document.getElementById('header-container').innerHTML = data;
+});
+
+// Load external navbar
+fetch('html/navbarhomestudent.html')
+    .then(response => response.text())
+    .then(data => {
+    document.getElementById('navbar-container').innerHTML = data;
+});
+
+// Load external footer
+fetch('html/footerstudenthome.html')
+    .then(response => response.text())
+    .then(data => {
+    document.getElementById('footer-container').innerHTML = data;
+});
+
+</script>
 </body>
 </html>
